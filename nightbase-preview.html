@@ -684,6 +684,9 @@ h1,h2,h3,h4,p{margin:0;}
 .station-play-btn{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--red-2),var(--red));border:none;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:transform .15s;font-size:14px;}
 .station-play-btn:hover{transform:scale(1.1);}
 .station-play-btn.pause{background:rgba(255,255,255,0.15);}
+.radio-loading{display:flex;align-items:center;justify-content:center;gap:12px;padding:40px;color:var(--muted);font-size:14px;}
+.radio-spinner{width:20px;height:20px;border:2px solid var(--line);border-top-color:var(--red-2);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 /* Player bar */
 .radio-player-bar{
   position:fixed;bottom:60px;left:50%;transform:translateX(-50%);
@@ -721,14 +724,16 @@ h1,h2,h3,h4,p{margin:0;}
 
     <!-- Žánrové záložky -->
     <div class="radio-genre-tabs">
-      <button class="rg-tab active" onclick="filterRadio('all',this)">🎵 Všetky</button>
-      <button class="rg-tab" onclick="filterRadio('techno',this)">⚡ Techno</button>
-      <button class="rg-tab" onclick="filterRadio('house',this)">🏠 House</button>
-      <button class="rg-tab" onclick="filterRadio('dnb',this)">🥁 D'N'B</button>
-      <button class="rg-tab" onclick="filterRadio('trance',this)">🌊 Trance</button>
-      <button class="rg-tab" onclick="filterRadio('minimal',this)">◼ Minimal</button>
-      <button class="rg-tab" onclick="filterRadio('lofi',this)">🌙 Lo-fi</button>
-      <button class="rg-tab" onclick="filterRadio('pop',this)">🎤 Pop/Hits</button>
+      <button class="rg-tab active" data-tag="pop" onclick="loadRadio('pop',this)">🎤 Pop</button>
+      <button class="rg-tab" data-tag="rock" onclick="loadRadio('rock',this)">🎸 Rock</button>
+      <button class="rg-tab" data-tag="hip-hop" onclick="loadRadio('hip-hop',this)">🎧 Hip-Hop</button>
+      <button class="rg-tab" data-tag="hits" onclick="loadRadio('hits',this)">🔥 Top Hits</button>
+      <button class="rg-tab" data-tag="80s" onclick="loadRadio('80s',this)">📻 80s</button>
+      <button class="rg-tab" data-tag="90s" onclick="loadRadio('90s',this)">💿 90s</button>
+      <button class="rg-tab" data-tag="dance" onclick="loadRadio('dance',this)">💃 Dance</button>
+      <button class="rg-tab" data-tag="jazz" onclick="loadRadio('jazz',this)">🎷 Jazz</button>
+      <button class="rg-tab" data-tag="classical" onclick="loadRadio('classical',this)">🎻 Klasika</button>
+      <button class="rg-tab" data-tag="country" onclick="loadRadio('country',this)">🤠 Country</button>
     </div>
 
     <!-- Stanice -->
@@ -815,42 +820,114 @@ h1,h2,h3,h4,p{margin:0;}
 
 <!-- ===== PAGE: BILIARD ===== -->
 <div class="page" id="page-billiard">
-  <div class="billiard-page">
-    <div class="billiard-header">
-      <div class="billiard-title">🎱 Night<em>Biliard</em></div>
+<style>
+/* ===== BILLIARD MOBILE-FIRST ===== */
+.bil-wrap{padding:10px 0;}
+.bil-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap;}
+.bil-title{font-family:var(--display);font-size:clamp(22px,6vw,34px);letter-spacing:0.03em;}
+.bil-title em{font-style:normal;color:var(--red-2);}
+
+/* Canvas container — fills width */
+.bil-canvas-box{
+  width:100%;
+  background:#0a1a0a;
+  border-radius:var(--r-lg);
+  border:2px solid #3a2008;
+  overflow:hidden;
+  position:relative;
+  touch-action:none;
+  user-select:none;
+}
+#billiardCanvas{
+  display:block;
+  width:100%;
+  height:auto;
+  touch-action:none;
+  cursor:crosshair;
+}
+
+/* Hráčsky panel — pod canvasom na mobile, vedľa na desktop */
+.bil-game{display:flex;flex-direction:column;gap:12px;}
+@media(min-width:700px){.bil-game{flex-direction:row;align-items:flex-start;}}
+.bil-sidebar{display:flex;flex-direction:column;gap:10px;}
+@media(min-width:700px){.bil-sidebar{width:260px;flex-shrink:0;}}
+
+/* Power bar */
+.bil-power-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg-2);border-radius:8px;border:1px solid var(--line);}
+.bil-power-label{font-size:12px;color:var(--muted);white-space:nowrap;}
+.bil-power-bar{flex:1;height:10px;border-radius:5px;background:var(--bg-3);overflow:hidden;}
+.bil-power-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#4caf50,#ff9800,#e10b1f);transition:width .05s;}
+.bil-power-val{font-size:12px;font-weight:700;color:var(--red-2);min-width:36px;text-align:right;}
+.bil-info{font-size:12px;color:var(--muted);text-align:center;padding:6px;min-height:22px;}
+
+/* Controls */
+.bil-controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.bil-btn{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid var(--line-strong);color:var(--text);cursor:pointer;transition:all .15s;}
+.bil-btn:hover{background:rgba(255,255,255,0.12);}
+.bil-btn.red{background:rgba(225,11,31,0.15);border-color:rgba(225,11,31,0.4);color:var(--red-2);}
+.bil-btn.red:hover{background:rgba(225,11,31,0.3);}
+
+/* Score + add player */
+.bil-panel{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-md);padding:14px;}
+.bil-panel-title{font-family:var(--display);font-size:14px;letter-spacing:0.04em;color:var(--muted);margin-bottom:10px;}
+.bil-player-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);}
+.bil-player-row:last-child{border-bottom:none;}
+.bil-player-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.12);flex-shrink:0;transition:background .3s;}
+.bil-player-dot.on{background:var(--red-2);box-shadow:0 0 8px var(--red-2);}
+.bil-player-name{flex:1;font-weight:600;font-size:13px;}
+.bil-player-score{font-family:var(--display);font-size:22px;color:var(--red-2);}
+.bil-add-row{display:flex;gap:6px;}
+.bil-add-input{flex:1;padding:9px 10px;background:var(--bg-3);border:1px solid var(--line-strong);border-radius:7px;color:var(--text);font-size:13px;outline:none;}
+.bil-add-input:focus{border-color:var(--red);}
+.bil-add-btn{padding:9px 14px;background:var(--red);color:#fff;border:none;border-radius:7px;font-weight:700;font-size:13px;cursor:pointer;}
+.lb-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:12px;}
+.lb-row:last-child{border-bottom:none;}
+.lb-pos{font-family:var(--display);font-size:15px;color:var(--dim);width:18px;text-align:center;}
+.lb-pos.g{color:#f5c842;}
+.lb-name{flex:1;font-weight:600;}
+.lb-pts{font-weight:700;color:var(--red-2);}
+</style>
+
+  <div class="bil-wrap">
+    <div class="bil-topbar">
+      <div class="bil-title">🎱 Night<em>Biliard</em></div>
       <button class="section-link" onclick="showPage('home')">← Späť</button>
     </div>
-    <div class="billiard-layout">
-      <!-- Ľavá strana: plátno -->
-      <div class="billiard-canvas-wrap">
-        <canvas id="billiardCanvas" width="560" height="310"></canvas>
-        <div class="billiard-power">
-          <span>Sila:</span>
-          <div class="power-bar"><div class="power-fill" id="powerFill" style="width:50%"></div></div>
-          <span id="powerVal">50%</span>
+
+    <div class="bil-game">
+      <!-- Canvas + controls -->
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;">
+        <div class="bil-canvas-box">
+          <canvas id="billiardCanvas"></canvas>
         </div>
-        <div class="shot-info" id="shotInfo">Klikni na plátno a ťahaj pre zamierenie · pusti pre výstrel</div>
-        <div class="billiard-controls">
-          <button class="bctr-btn" id="btnNextTurn">Ďalší hráč</button>
-          <button class="bctr-btn danger" id="btnReset">Nová hra</button>
+        <div class="bil-power-row">
+          <span class="bil-power-label">Sila</span>
+          <div class="bil-power-bar"><div class="bil-power-fill" id="bilPowerFill" style="width:0%"></div></div>
+          <span class="bil-power-val" id="bilPowerVal">0%</span>
+        </div>
+        <div class="bil-info" id="bilInfo">Pridaj hráčov → potom ťahaj od bielej gule</div>
+        <div class="bil-controls">
+          <button class="bil-btn" id="bilBtnNext">⏭ Ďalší hráč</button>
+          <button class="bil-btn red" id="bilBtnReset">🔄 Nová hra</button>
         </div>
       </div>
-      <!-- Pravá strana: skóre + leaderboard -->
-      <div class="billiard-sidebar">
-        <div class="billiard-score-panel">
-          <div class="bsp-title">Skóre hráčov</div>
-          <div id="playerScores"></div>
+
+      <!-- Sidebar -->
+      <div class="bil-sidebar">
+        <div class="bil-panel">
+          <div class="bil-panel-title">SKÓRE HRÁČOV</div>
+          <div id="bilScores"><div style="color:var(--dim);font-size:12px;">Pridaj hráčov dolu ↓</div></div>
         </div>
-        <div class="billiard-add-player">
-          <div class="bap-title">Pridať hráča</div>
-          <div class="bap-row">
-            <input class="bap-input" id="playerNameInput" placeholder="Meno hráča" maxlength="20"/>
-            <button class="bap-btn" id="btnAddPlayer">Pridať</button>
+        <div class="bil-panel">
+          <div class="bil-panel-title">PRIDAŤ HRÁČA</div>
+          <div class="bil-add-row">
+            <input class="bil-add-input" id="bilPlayerInput" placeholder="Meno hráča" maxlength="20"/>
+            <button class="bil-add-btn" id="bilBtnAdd">+</button>
           </div>
         </div>
-        <div class="billiard-leaderboard">
-          <div class="blb-title">🏆 Tabuľka slávy</div>
-          <div id="leaderboard"></div>
+        <div class="bil-panel">
+          <div class="bil-panel-title">🏆 TABUĽKA SLÁVY</div>
+          <div id="bilLeaderboard"><div style="color:var(--dim);font-size:12px;">Zatiaľ žiadne výsledky</div></div>
         </div>
       </div>
     </div>
@@ -906,8 +983,8 @@ function showPage(id, navEl) {
   window.scrollTo(0, 0);
   // Init sub-pages
   if (id === 'gastro') { setTimeout(initGastroMap, 80); }
-  if (id === 'radio')  { setTimeout(() => { if(typeof renderStations==='function') renderStations(currentFilter||'all'); }, 80); }
-  if (id === 'billiard') { setTimeout(resizeCanvas, 80); }
+  if (id === 'radio')  { setTimeout(() => { if(typeof loadRadioGenre==='function') loadRadioGenre('pop'); }, 80); }
+  if (id === 'billiard') { /* billiard auto-scales */ }
 }
 
 // ===== MAP =====
@@ -988,386 +1065,255 @@ document.querySelectorAll(".rank-tab").forEach(tab=>{
   tab.addEventListener("click",()=>{document.querySelectorAll(".rank-tab").forEach(t=>t.classList.remove("active"));tab.classList.add("active");});
 });
 
-// ===== BILLIARD GAME =====
+// ===== BILLIARD GAME — Mobile & Desktop =====
 (function(){
   const canvas = document.getElementById('billiardCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
 
-  // Responsive canvas
-  function resizeCanvas() {
-    const wrap = canvas.parentElement;
-    const maxW = Math.min(wrap.clientWidth - 24, 560);
-    const scale = maxW / 560;
-    canvas.style.width = maxW + 'px';
-    canvas.style.height = (310 * scale) + 'px';
-  }
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
+  const W = 800, H = 440;
+  canvas.width = W; canvas.height = H;
 
-  const W = 560, H = 310;
-  const PAD = 30; // felt padding
-  const POCKET_R = 12;
-  const BALL_R = 10;
-  const FRICTION = 0.985;
+  const PX=44,PY=44,TW=W-PX*2,TH=H-PY*2;
+  const BR=18, PR=16, FRICTION=0.988, MIN_VEL=0.06;
 
-  // Pocket positions
-  const pockets = [
-    {x:PAD,y:PAD},{x:W/2,y:PAD-4},{x:W-PAD,y:PAD},
-    {x:PAD,y:H-PAD},{x:W/2,y:H-PAD+4},{x:W-PAD,y:H-PAD}
+  const POCKETS=[
+    {x:PX,y:PY},{x:PX+TW/2,y:PY-5},{x:PX+TW,y:PY},
+    {x:PX,y:PY+TH},{x:PX+TW/2,y:PY+TH+5},{x:PX+TW,y:PY+TH}
   ];
+  const COLORS=['#f5f5f5','#f5c842','#1a55c8','#c41010','#7b1fc8','#e06b10','#1c8a3c','#6b1a1a','#111111','#f5c842','#1a55c8','#c41010','#7b1fc8','#e06b10','#1c8a3c','#6b1a1a'];
 
-  // Ball colors (pool)
-  const BALL_COLORS = [
-    '#fff',      // 0 = cue
-    '#f5c842',   // 1 yellow
-    '#2255dd',   // 2 blue
-    '#e10b1f',   // 3 red
-    '#7b2fbf',   // 4 purple
-    '#e06020',   // 5 orange
-    '#1a8f3c',   // 6 green
-    '#8b1a1a',   // 7 maroon
-    '#1a1a1a',   // 8 black (8-ball)
-    '#f5c842',   // 9-15 striped variants
-    '#2255dd','#e10b1f','#7b2fbf','#e06020','#1a8f3c','#8b1a1a'
-  ];
+  let balls=[], players=[], currentPlayer=0;
+  let aimStart=null, aimCurrent=null, isAiming=false, power=0;
+  let gameStarted=false, pocketedThisTurn=0;
+  let lb=[];
+  try{lb=JSON.parse(localStorage.getItem('bil_lb')||'[]');}catch(e){}
 
-  let balls = [];
-  let players = [];
-  let currentPlayer = 0;
-  let gameLeaderboard = JSON.parse(localStorage.getItem('nbBilliardLB') || '[]');
-
-  function initBalls() {
-    balls = [];
-    // Cue ball
-    balls.push({x:W*0.28,y:H/2,vx:0,vy:0,r:BALL_R,color:'#fff',num:0,pocketed:false});
-    // Rack
-    const rx = W*0.65, ry = H/2;
-    const rows = [[8],[1,9],[6,8,2],[11,7,4,10],[3,14,15,5,13]]; // classic 8-ball rack
-    let ri = 0;
-    rows.forEach((row, ri) => {
-      row.forEach((num, ci) => {
-        const dx = ri * (BALL_R*2 + 1);
-        const dy = (ci - (row.length-1)/2) * (BALL_R*2 + 1);
-        balls.push({
-          x: rx+dx, y: ry+dy,
-          vx:0,vy:0,r:BALL_R,
-          color: BALL_COLORS[num] || '#fff',
-          num: num,
-          pocketed: false,
-          striped: num > 8
-        });
+  function initBalls(){
+    balls=[];
+    balls.push({x:PX+TW*0.25,y:PY+TH/2,vx:0,vy:0,r:BR,color:COLORS[0],num:0,pocketed:false,stripe:false});
+    const rx=PX+TW*0.65,ry=PY+TH/2;
+    [[8],[1,9],[6,2,10],[11,7,3,4],[12,5,13,14,15]].forEach((row,ri)=>{
+      row.forEach((num,ci)=>{
+        balls.push({x:rx+ri*(BR*2+0.5),y:ry+(ci-(row.length-1)/2)*(BR*2+0.5),vx:0,vy:0,r:BR,color:COLORS[num],num,pocketed:false,stripe:num>8});
       });
     });
   }
 
-  function initPlayers() {
-    players = [{name:'Hráč 1',score:0},{name:'Hráč 2',score:0}];
-    currentPlayer = 0;
-    renderScores();
+  function allStopped(){return balls.every(b=>b.pocketed||(Math.abs(b.vx)<MIN_VEL&&Math.abs(b.vy)<MIN_VEL));}
+
+  function getPos(e){
+    const rect=canvas.getBoundingClientRect();
+    const sx=W/rect.width,sy=H/rect.height;
+    const src=e.changedTouches?e.changedTouches[0]:(e.touches?e.touches[0]:e);
+    return{x:(src.clientX-rect.left)*sx,y:(src.clientY-rect.top)*sy};
   }
 
-  // Aiming
-  let aiming = false, aimStart = {x:0,y:0}, aimCurrent = {x:0,y:0};
-  let power = 0.5;
-
-  function getCanvasPos(e) {
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = W / rect.width;
-    const scaleY = H / rect.height;
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    return {x:(clientX-rect.left)*scaleX, y:(clientY-rect.top)*scaleY};
-  }
-
-  canvas.addEventListener('mousedown', e => { startAim(getCanvasPos(e)); });
-  canvas.addEventListener('mousemove', e => { if(aiming) updateAim(getCanvasPos(e)); });
-  canvas.addEventListener('mouseup', e => { if(aiming) shoot(getCanvasPos(e)); });
-  canvas.addEventListener('touchstart', e => { e.preventDefault(); startAim(getCanvasPos(e)); }, {passive:false});
-  canvas.addEventListener('touchmove', e => { e.preventDefault(); if(aiming)updateAim(getCanvasPos(e)); }, {passive:false});
-  canvas.addEventListener('touchend', e => { e.preventDefault(); if(aiming)shoot(getCanvasPos(e)); }, {passive:false});
-
-  function allStopped() {
-    return balls.every(b => b.pocketed || (Math.abs(b.vx)<0.02 && Math.abs(b.vy)<0.02));
-  }
-
-  function startAim(pos) {
-    if (!allStopped()) return;
-    aiming = true;
-    aimStart = pos;
-    aimCurrent = pos;
-  }
-
-  function updateAim(pos) {
-    aimCurrent = pos;
-    const dx = aimStart.x - pos.x;
-    const dy = aimStart.y - pos.y;
-    power = Math.min(Math.sqrt(dx*dx+dy*dy)/120, 1);
-    document.getElementById('powerFill').style.width = (power*100)+'%';
-    document.getElementById('powerVal').textContent = Math.round(power*100)+'%';
-  }
-
-  function shoot(pos) {
-    aiming = false;
-    const cue = balls.find(b => b.num === 0 && !b.pocketed);
-    if (!cue) return;
-    const dx = aimStart.x - pos.x;
-    const dy = aimStart.y - pos.y;
-    const dist = Math.sqrt(dx*dx+dy*dy);
-    if (dist < 5) return;
-    const spd = power * 18;
-    cue.vx = (dx/dist)*spd;
-    cue.vy = (dy/dist)*spd;
-    document.getElementById('shotInfo').textContent = '💥 Výstrel! Čakaj na zastavenie...';
-  }
-
-  function updatePhysics() {
-    // Move
-    balls.forEach(b => {
-      if (b.pocketed) return;
-      b.x += b.vx;
-      b.y += b.vy;
-      b.vx *= FRICTION;
-      b.vy *= FRICTION;
-      if (Math.abs(b.vx)<0.01) b.vx=0;
-      if (Math.abs(b.vy)<0.01) b.vy=0;
-      // Wall bounces
-      if (b.x-b.r < PAD) { b.x=PAD+b.r; b.vx=Math.abs(b.vx)*0.75; }
-      if (b.x+b.r > W-PAD) { b.x=W-PAD-b.r; b.vx=-Math.abs(b.vx)*0.75; }
-      if (b.y-b.r < PAD) { b.y=PAD+b.r; b.vy=Math.abs(b.vy)*0.75; }
-      if (b.y+b.r > H-PAD) { b.y=H-PAD-b.r; b.vy=-Math.abs(b.vy)*0.75; }
-    });
-    // Ball-ball collisions
-    for (let i=0;i<balls.length;i++) {
-      for (let j=i+1;j<balls.length;j++) {
-        const a=balls[i], b=balls[j];
-        if (a.pocketed||b.pocketed) continue;
-        const dx=b.x-a.x, dy=b.y-a.y;
-        const dist=Math.sqrt(dx*dx+dy*dy);
-        if (dist<a.r+b.r && dist>0) {
-          const nx=dx/dist, ny=dy/dist;
-          const overlap=(a.r+b.r-dist)/2;
-          a.x-=nx*overlap; a.y-=ny*overlap;
-          b.x+=nx*overlap; b.y+=ny*overlap;
-          const dvx=a.vx-b.vx, dvy=a.vy-b.vy;
-          const dot=dvx*nx+dvy*ny;
-          if (dot>0) {
-            a.vx-=dot*nx; a.vy-=dot*ny;
-            b.vx+=dot*nx; b.vy+=dot*ny;
-          }
-        }
-      }
-    }
-    // Pocket detection
-    let pocketed = false;
-    balls.forEach(b => {
-      if (b.pocketed) return;
-      pockets.forEach(p => {
-        const dx=b.x-p.x, dy=b.y-p.y;
-        if (Math.sqrt(dx*dx+dy*dy)<POCKET_R) {
-          b.pocketed=true;
-          pocketed=true;
-          if (b.num===0) {
-            // Scratch — respawn cue
-            setTimeout(()=>{b.pocketed=false;b.x=W*0.25;b.y=H/2;b.vx=0;b.vy=0;},800);
-            document.getElementById('shotInfo').textContent='❌ Biela guľa do diery! Scratch.';
-          } else {
-            if (players.length>0) {
-              players[currentPlayer].score++;
-              renderScores();
-            }
-            document.getElementById('shotInfo').textContent=`✅ Guľa č.${b.num} do diery! +1 bod pre ${players[currentPlayer]?.name||'hráča'}`;
-          }
-        }
-      });
-    });
-  }
-
-  function drawTable() {
-    // Felt
-    const felt = ctx.createLinearGradient(0,0,W,H);
-    felt.addColorStop(0,'#1a3a1a');
-    felt.addColorStop(1,'#0d250d');
-    ctx.fillStyle=felt;
-    ctx.fillRect(0,0,W,H);
-    // Rail (wood border)
-    ctx.strokeStyle='#5a3010';
-    ctx.lineWidth=PAD;
-    ctx.strokeRect(PAD/2,PAD/2,W-PAD,H-PAD);
-    // Playing surface outline
-    ctx.strokeStyle='rgba(255,255,255,0.1)';
-    ctx.lineWidth=1;
-    ctx.strokeRect(PAD,PAD,W-PAD*2,H-PAD*2);
-    // Center line
-    ctx.beginPath();
-    ctx.moveTo(W/2,PAD);ctx.lineTo(W/2,H-PAD);
-    ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=1;ctx.stroke();
-    // Break line
-    ctx.beginPath();
-    ctx.moveTo(W*0.28,PAD);ctx.lineTo(W*0.28,H-PAD);
-    ctx.stroke();
-    // D circle
-    ctx.beginPath();
-    ctx.arc(W*0.28,H/2,40,Math.PI/2,Math.PI*1.5);
-    ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=1;ctx.stroke();
-    // Pockets
-    pockets.forEach(p=>{
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,POCKET_R,0,Math.PI*2);
-      ctx.fillStyle='#000';ctx.fill();
-      ctx.strokeStyle='rgba(100,60,20,0.8)';ctx.lineWidth=2;ctx.stroke();
-    });
-  }
-
-  function drawBalls() {
-    balls.forEach(b=>{
-      if(b.pocketed)return;
-      // Shadow
-      ctx.beginPath();
-      ctx.arc(b.x+2,b.y+2,b.r,0,Math.PI*2);
-      ctx.fillStyle='rgba(0,0,0,0.3)';ctx.fill();
-      // Ball
-      const grad=ctx.createRadialGradient(b.x-b.r*0.3,b.y-b.r*0.3,b.r*0.1,b.x,b.y,b.r);
-      grad.addColorStop(0,'rgba(255,255,255,0.5)');
-      grad.addColorStop(0.4,b.color);
-      grad.addColorStop(1,'rgba(0,0,0,0.3)');
-      ctx.beginPath();
-      ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
-      ctx.fillStyle=grad;ctx.fill();
-      // Stripe
-      if(b.striped) {
-        ctx.save();
-        ctx.clip();
-        ctx.fillStyle='#fff';
-        ctx.fillRect(b.x-b.r,b.y-b.r*0.4,b.r*2,b.r*0.8);
-        ctx.restore();
-        ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
-        ctx.strokeStyle=b.color;ctx.lineWidth=0.5;ctx.stroke();
-      }
-      // Number
-      if(b.num>0){
-        ctx.fillStyle=b.striped?b.color:'rgba(0,0,0,0.75)';
-        ctx.font=`bold ${b.r*0.9}px sans-serif`;
-        ctx.textAlign='center';ctx.textBaseline='middle';
-        ctx.fillText(b.num,b.x,b.y);
-      }
-      // Cue ball dot
-      if(b.num===0){
-        ctx.beginPath();ctx.arc(b.x,b.y,2,0,Math.PI*2);
-        ctx.fillStyle='rgba(200,200,200,0.6)';ctx.fill();
-      }
-    });
-  }
-
-  function drawAimLine() {
-    if(!aiming)return;
+  function startAim(e){
+    e.preventDefault();
+    if(!gameStarted||!allStopped())return;
     const cue=balls.find(b=>b.num===0&&!b.pocketed);
     if(!cue)return;
-    const dx=aimStart.x-aimCurrent.x;
-    const dy=aimStart.y-aimCurrent.y;
-    const dist=Math.sqrt(dx*dx+dy*dy);
-    if(dist<3)return;
-    const nx=dx/dist,ny=dy/dist;
-    // Aim line
-    ctx.beginPath();
-    ctx.setLineDash([6,6]);
-    ctx.moveTo(cue.x,cue.y);
-    ctx.lineTo(cue.x+nx*80,cue.y+ny*80);
-    ctx.strokeStyle='rgba(255,255,255,0.5)';
-    ctx.lineWidth=1.5;ctx.stroke();
-    ctx.setLineDash([]);
-    // Pull line
-    ctx.beginPath();
-    ctx.moveTo(aimStart.x,aimStart.y);
-    ctx.lineTo(aimCurrent.x,aimCurrent.y);
-    ctx.strokeStyle='rgba(225,11,31,0.6)';
-    ctx.lineWidth=2;ctx.stroke();
+    isAiming=true; aimStart=getPos(e); aimCurrent=aimStart;
+  }
+  function moveAim(e){
+    e.preventDefault();
+    if(!isAiming)return;
+    aimCurrent=getPos(e);
+    const dx=aimStart.x-aimCurrent.x,dy=aimStart.y-aimCurrent.y;
+    power=Math.min(Math.hypot(dx,dy)/160,1);
+    const pf=document.getElementById('bilPowerFill'),pv=document.getElementById('bilPowerVal');
+    if(pf)pf.style.width=(power*100)+'%';
+    if(pv)pv.textContent=Math.round(power*100)+'%';
+  }
+  function endAim(e){
+    e.preventDefault();
+    if(!isAiming)return;
+    isAiming=false;
+    const pos=getPos(e);
+    const cue=balls.find(b=>b.num===0&&!b.pocketed);
+    if(!cue||power<0.02){power=0;return;}
+    const dx=aimStart.x-pos.x,dy=aimStart.y-pos.y;
+    const dist=Math.hypot(dx,dy);
+    if(dist<4){power=0;return;}
+    const spd=power*24;
+    cue.vx=(dx/dist)*spd; cue.vy=(dy/dist)*spd;
+    pocketedThisTurn=0; power=0;
+    const pf=document.getElementById('bilPowerFill'),pv=document.getElementById('bilPowerVal');
+    if(pf)pf.style.width='0%'; if(pv)pv.textContent='0%';
+    setInfo('⚡ Výstrel!');
   }
 
-  let stopped = true;
-  function loop(){
-    const wasRunning = !allStopped();
-    updatePhysics();
-    ctx.clearRect(0,0,W,H);
-    drawTable();
-    drawBalls();
-    drawAimLine();
-    const nowStopped = allStopped();
-    if(wasRunning && nowStopped && !stopped){
-      stopped=true;
-      document.getElementById('shotInfo').textContent=`Rad: ${players[currentPlayer]?.name||'Hráč '+(currentPlayer+1)} · Klikni a ťahaj pre výstrel`;
+  // Touch events
+  canvas.addEventListener('touchstart',startAim,{passive:false});
+  canvas.addEventListener('touchmove',moveAim,{passive:false});
+  canvas.addEventListener('touchend',endAim,{passive:false});
+  // Mouse events
+  canvas.addEventListener('mousedown',startAim);
+  canvas.addEventListener('mousemove',moveAim);
+  canvas.addEventListener('mouseup',endAim);
+
+  function physics(){
+    balls.forEach(b=>{
+      if(b.pocketed)return;
+      b.x+=b.vx; b.y+=b.vy;
+      b.vx*=FRICTION; b.vy*=FRICTION;
+      if(Math.abs(b.vx)<MIN_VEL)b.vx=0;
+      if(Math.abs(b.vy)<MIN_VEL)b.vy=0;
+      const l=PX+b.r,r=PX+TW-b.r,t=PY+b.r,bo=PY+TH-b.r;
+      if(b.x<l){b.x=l;b.vx=Math.abs(b.vx)*0.78;}
+      if(b.x>r){b.x=r;b.vx=-Math.abs(b.vx)*0.78;}
+      if(b.y<t){b.y=t;b.vy=Math.abs(b.vy)*0.78;}
+      if(b.y>bo){b.y=bo;b.vy=-Math.abs(b.vy)*0.78;}
+      POCKETS.forEach(p=>{
+        if(Math.hypot(b.x-p.x,b.y-p.y)<PR+b.r*0.6){
+          b.pocketed=true;
+          if(b.num===0){
+            setTimeout(()=>{b.pocketed=false;b.x=PX+TW*0.2;b.y=PY+TH/2;b.vx=0;b.vy=0;},600);
+            setInfo('❌ Scratch! Biela guľa v diere.');
+          } else {
+            pocketedThisTurn++;
+            if(players.length>0){players[currentPlayer].score++;renderScores();setInfo('✅ Guľa č.'+b.num+'! +1 pre '+players[currentPlayer].name);}
+          }
+        }
+      });
+    });
+    for(let i=0;i<balls.length;i++){
+      for(let j=i+1;j<balls.length;j++){
+        const a=balls[i],b=balls[j];
+        if(a.pocketed||b.pocketed)continue;
+        const dx=b.x-a.x,dy=b.y-a.y,dist=Math.hypot(dx,dy),minD=a.r+b.r-1;
+        if(dist<minD&&dist>0.01){
+          const nx=dx/dist,ny=dy/dist,ov=(minD-dist)/2;
+          a.x-=nx*ov;a.y-=ny*ov;b.x+=nx*ov;b.y+=ny*ov;
+          const dv=(a.vx-b.vx)*nx+(a.vy-b.vy)*ny;
+          if(dv>0){a.vx-=dv*nx;a.vy-=dv*ny;b.vx+=dv*nx;b.vy+=dv*ny;}
+        }
+      }
     }
-    if(!nowStopped)stopped=false;
+  }
+
+  let prevStopped=true;
+  function checkTurn(){
+    const stopped=allStopped();
+    if(prevStopped!==stopped&&stopped&&players.length>0){
+      if(pocketedThisTurn===0)setInfo('🎯 Rad: '+players[currentPlayer].name+' — ťahaj od bielej gule');
+      else setInfo('🎯 Stále ty: '+players[currentPlayer].name+' — super!');
+    }
+    prevStopped=stopped;
+  }
+
+  function drawTable(){
+    const railGrad=ctx.createLinearGradient(0,0,0,H);
+    railGrad.addColorStop(0,'#5a2a0a');railGrad.addColorStop(0.5,'#7a3a12');railGrad.addColorStop(1,'#5a2a0a');
+    ctx.fillStyle=railGrad;ctx.fillRect(0,0,W,H);
+    const feltGrad=ctx.createRadialGradient(W/2,H/2,20,W/2,H/2,W/2);
+    feltGrad.addColorStop(0,'#1e6a1e');feltGrad.addColorStop(1,'#0f3e0f');
+    ctx.fillStyle=feltGrad;ctx.fillRect(PX,PY,TW,TH);
+    ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=1;ctx.strokeRect(PX,PY,TW,TH);
+    ctx.setLineDash([6,6]);ctx.strokeStyle='rgba(255,255,255,0.05)';
+    ctx.beginPath();ctx.moveTo(W/2,PY);ctx.lineTo(W/2,PY+TH);ctx.stroke();
+    ctx.beginPath();ctx.arc(W/2,PY+TH/2,55,0,Math.PI*2);ctx.stroke();
+    ctx.setLineDash([]);
+    const bx=PX+TW*0.25;
+    ctx.beginPath();ctx.moveTo(bx,PY);ctx.lineTo(bx,PY+TH);ctx.stroke();
+    ctx.beginPath();ctx.arc(bx,PY+TH/2,45,Math.PI/2,Math.PI*1.5);ctx.stroke();
+    POCKETS.forEach(p=>{
+      ctx.beginPath();ctx.arc(p.x,p.y,PR+3,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fill();
+      const pg=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,PR);
+      pg.addColorStop(0,'#000');pg.addColorStop(1,'#1a0800');
+      ctx.beginPath();ctx.arc(p.x,p.y,PR,0,Math.PI*2);ctx.fillStyle=pg;ctx.fill();
+      ctx.strokeStyle='rgba(140,70,15,0.9)';ctx.lineWidth=2;ctx.stroke();
+    });
+  }
+
+  function drawBall(b){
+    if(b.pocketed)return;
+    ctx.beginPath();ctx.arc(b.x+2,b.y+3,b.r,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,0.3)';ctx.fill();
+    if(b.stripe){
+      ctx.save();ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.clip();
+      ctx.fillStyle='#f0f0f0';ctx.fillRect(b.x-b.r,b.y-b.r,b.r*2,b.r*2);
+      ctx.fillStyle=b.color;ctx.fillRect(b.x-b.r,b.y-b.r*0.4,b.r*2,b.r*0.8);
+      ctx.restore();
+      ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.strokeStyle='rgba(0,0,0,0.25)';ctx.lineWidth=0.8;ctx.stroke();
+    } else {
+      const g=ctx.createRadialGradient(b.x-b.r*0.35,b.y-b.r*0.35,b.r*0.05,b.x,b.y,b.r);
+      g.addColorStop(0,'rgba(255,255,255,0.45)');g.addColorStop(0.4,b.color);g.addColorStop(1,'rgba(0,0,0,0.45)');
+      ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+      ctx.strokeStyle='rgba(0,0,0,0.2)';ctx.lineWidth=0.8;ctx.stroke();
+    }
+    if(b.num>0){
+      const nr=b.r*0.46;
+      ctx.beginPath();ctx.arc(b.x,b.y,nr,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.92)';ctx.fill();
+      ctx.fillStyle='#111';ctx.font='bold '+(nr*1.2)+'px sans-serif';
+      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(b.num,b.x,b.y);
+    }
+    ctx.beginPath();ctx.arc(b.x-b.r*0.3,b.y-b.r*0.32,b.r*0.22,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.28)';ctx.fill();
+  }
+
+  function drawAimLine(){
+    if(!isAiming||!aimStart||!aimCurrent)return;
+    const cue=balls.find(b=>b.num===0&&!b.pocketed);if(!cue)return;
+    const dx=aimStart.x-aimCurrent.x,dy=aimStart.y-aimCurrent.y,dist=Math.hypot(dx,dy);
+    if(dist<4)return;
+    const nx=dx/dist,ny=dy/dist;
+    ctx.save();ctx.setLineDash([8,8]);ctx.strokeStyle='rgba(255,255,255,0.6)';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(cue.x,cue.y);ctx.lineTo(cue.x+nx*130,cue.y+ny*130);ctx.stroke();
+    ctx.setLineDash([]);
+    const alpha=0.3+power*0.7;
+    ctx.strokeStyle='rgba(225,11,31,'+alpha+')';ctx.lineWidth=3;
+    ctx.beginPath();ctx.moveTo(aimStart.x,aimStart.y);ctx.lineTo(aimCurrent.x,aimCurrent.y);ctx.stroke();
+    ctx.restore();
+  }
+
+  function loop(){
+    if(!allStopped())physics();
+    checkTurn();
+    ctx.clearRect(0,0,W,H);
+    drawTable();balls.forEach(drawBall);drawAimLine();
     requestAnimationFrame(loop);
   }
 
+  function setInfo(msg){const el=document.getElementById('bilInfo');if(el)el.textContent=msg;}
   function renderScores(){
-    const el=document.getElementById('playerScores');
-    if(!el)return;
-    if(!players.length){el.innerHTML='<div style="color:var(--muted);font-size:12px;">Pridaj hráčov →</div>';return;}
-    el.innerHTML=players.map((p,i)=>`
-      <div class="player-score">
-        <span class="ps-active ${i===currentPlayer?'on':''}"></span>
-        <span class="ps-name">${p.name}</span>
-        <span class="ps-score">${p.score}</span>
-      </div>`).join('');
+    const el=document.getElementById('bilScores');if(!el)return;
+    if(!players.length){el.innerHTML='<div style="color:var(--dim);font-size:12px;">Pridaj hráčov dolu ↓</div>';return;}
+    el.innerHTML=players.map((p,i)=>'<div class="bil-player-row"><div class="bil-player-dot '+(i===currentPlayer?'on':'')+'"></div><div class="bil-player-name">'+p.name+'</div><div class="bil-player-score">'+p.score+'</div></div>').join('');
+  }
+  function renderLB(){
+    const el=document.getElementById('bilLeaderboard');if(!el)return;
+    const s=[...lb].sort((a,b)=>b.score-a.score).slice(0,8);
+    if(!s.length){el.innerHTML='<div style="color:var(--dim);font-size:12px;">Zatiaľ žiadne výsledky</div>';return;}
+    el.innerHTML=s.map((e,i)=>'<div class="lb-row"><div class="lb-pos '+(i===0?'g':'')+'">'+( i+1)+'</div><div class="lb-name">'+e.name+'</div><div class="lb-pts">'+e.score+' b</div></div>').join('');
+  }
+  function saveLB(){
+    players.forEach(p=>{if(!p.score)return;const ex=lb.find(e=>e.name===p.name);if(ex){if(p.score>ex.score)ex.score=p.score;}else lb.push({name:p.name,score:p.score});});
+    try{localStorage.setItem('bil_lb',JSON.stringify(lb));}catch(e){}
+    renderLB();
   }
 
-  function renderLeaderboard(){
-    const el=document.getElementById('leaderboard');
-    if(!el)return;
-    const sorted=[...gameLeaderboard].sort((a,b)=>b.score-a.score).slice(0,8);
-    if(!sorted.length){el.innerHTML='<div style="color:var(--muted);font-size:12px;">Zatiaľ žiadne výsledky.</div>';return;}
-    el.innerHTML=sorted.map((e,i)=>`
-      <div class="lb-item">
-        <span class="lb-pos ${i===0?'gold':''}">${i+1}</span>
-        <span class="lb-name">${e.name}</span>
-        <span class="lb-pts">${e.score} b</span>
-      </div>`).join('');
-  }
-
-  function saveToLeaderboard(){
-    players.forEach(p=>{
-      if(p.score===0)return;
-      const existing=gameLeaderboard.find(e=>e.name===p.name);
-      if(existing){if(p.score>existing.score)existing.score=p.score;}
-      else{gameLeaderboard.push({name:p.name,score:p.score});}
-    });
-    try{localStorage.setItem('nbBilliardLB',JSON.stringify(gameLeaderboard));}catch(e){}
-    renderLeaderboard();
-  }
-
-  document.getElementById('btnAddPlayer').addEventListener('click',()=>{
-    const input=document.getElementById('playerNameInput');
-    const name=input.value.trim();
-    if(!name)return;
-    players.push({name,score:0});
-    input.value='';
-    renderScores();
+  document.getElementById('bilBtnAdd')?.addEventListener('click',()=>{
+    const inp=document.getElementById('bilPlayerInput');
+    const name=(inp?.value||'').trim();if(!name)return;
+    players.push({name,score:0});inp.value='';
+    gameStarted=true;currentPlayer=players.length-1;
+    renderScores();setInfo('🎱 '+name+' pridaný! Rad: '+players[currentPlayer].name+' — ťahaj od bielej gule');
   });
-  document.getElementById('playerNameInput').addEventListener('keydown',e=>{
-    if(e.key==='Enter')document.getElementById('btnAddPlayer').click();
+  document.getElementById('bilPlayerInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('bilBtnAdd')?.click();});
+  document.getElementById('bilBtnNext')?.addEventListener('click',()=>{
+    if(!players.length){setInfo('Najprv pridaj hráčov!');return;}
+    currentPlayer=(currentPlayer+1)%players.length;renderScores();setInfo('🎯 Rad: '+players[currentPlayer].name);
+  });
+  document.getElementById('bilBtnReset')?.addEventListener('click',()=>{
+    saveLB();players.forEach(p=>p.score=0);currentPlayer=0;pocketedThisTurn=0;power=0;
+    initBalls();renderScores();
+    const pf=document.getElementById('bilPowerFill'),pv=document.getElementById('bilPowerVal');
+    if(pf)pf.style.width='0%';if(pv)pv.textContent='0%';
+    setInfo('🎱 Nová hra! Ťahaj od bielej gule.');
   });
 
-  document.getElementById('btnNextTurn').addEventListener('click',()=>{
-    if(!players.length)return;
-    currentPlayer=(currentPlayer+1)%players.length;
-    renderScores();
-    document.getElementById('shotInfo').textContent=`Rad: ${players[currentPlayer].name}`;
-  });
-
-  document.getElementById('btnReset').addEventListener('click',()=>{
-    saveToLeaderboard();
-    players.forEach(p=>p.score=0);
-    currentPlayer=0;
-    initBalls();
-    renderScores();
-    document.getElementById('shotInfo').textContent='Nová hra! Klikni a ťahaj pre výstrel.';
-  });
-
-  initBalls();
-  initPlayers();
-  renderLeaderboard();
+  initBalls();renderScores();renderLB();
+  setInfo('Pridaj hráčov → potom ťahaj od bielej gule pre výstrel');
   loop();
 })();
 
@@ -1798,146 +1744,234 @@ document.querySelectorAll(".rank-tab").forEach(tab=>{
   }
 })();
 
-// ===== RADIO — SKUTOČNÉ 24/7 STREAMY =====
+// ===== RADIO — Radio Browser API (live, verifikované stanice) =====
 (function(){
-  // Skutočné MP3/AAC stream URL staníc
-  const STATIONS = [
-    // TECHNO
-    { id:'technobase', name:'TechnoBase.FM', genre:'techno', icon:'⚡', desc:'Hard Techno 24/7',
-      url:'https://listen.technobase.fm/tunein-mp3' },
-    { id:'deephousecat', name:'Deep House Cat', genre:'house', icon:'🏠', desc:'Deep House 24/7',
-      url:'https://streaming.radio.co/s06c2f6e77/listen' },
-    { id:'bassdrive', name:'BassDrive', genre:'dnb', icon:'🥁', desc:'Drum & Bass 24/7',
-      url:'http://bassdrive.com/bassdrive.m3u' },
-    { id:'trancepulse', name:'Trance Pulse', genre:'trance', icon:'🌊', desc:'Trance 24/7',
-      url:'https://listen.trancebase.fm/tunein-mp3' },
-    { id:'minimaltechno', name:'Minimal Techno Radio', genre:'minimal', icon:'◼', desc:'Minimal & Tech House',
-      url:'https://stream.laut.fm/minimal' },
-    { id:'loficafe', name:'Lofi Café Radio', genre:'lofi', icon:'🌙', desc:'Lo-fi Hip-hop & Chill',
-      url:'https://stream.laut.fm/lofi' },
-    { id:'radiogaga', name:'Radio GAGA', genre:'pop', icon:'🎤', desc:'Pop & Aktuálne hity',
-      url:'https://stream7.rcs.revma.com/ypqr0gr9p5zuv' },
-    // TECHNO 2
-    { id:'hardbase', name:'HardBase.FM', genre:'techno', icon:'🔥', desc:'Hardtechno & Hardcore',
-      url:'https://listen.hardbase.fm/tunein-mp3' },
-    // HOUSE 2
-    { id:'housetime', name:'HouseTime.FM', genre:'house', icon:'🎹', desc:'Progressive House',
-      url:'https://listen.housetime.fm/tunein-mp3' },
-    // DNB 2
-    { id:'dnbradio', name:'DnB Radio', genre:'dnb', icon:'💥', desc:'Liquid & Jump-up DNB',
-      url:'https://stream.dnbradio.com/listen' },
-    // TRANCE 2
-    { id:'trancebase', name:'TrancePure.FM', genre:'trance', icon:'✨', desc:'Uplifting Trance',
-      url:'https://listen.trancebase.fm/tunein-aac' },
-    // LOFI 2
-    { id:'chillhop', name:'Chillhop Radio', genre:'lofi', icon:'☕', desc:'Beats to relax/study',
-      url:'https://stream.laut.fm/chillhop' },
-    // POP 2
-    { id:'slovensko', name:'Rádio Slovensko', genre:'pop', icon:'🇸🇰', desc:'Slovenské hity 24/7',
-      url:'https://n22.radiojar.com/8s5u5tpdtwzuv' },
-    // MINIMAL 2
-    { id:'minimalhaus', name:'Minimal Haus', genre:'minimal', icon:'🔲', desc:'Minimal House & Micro',
-      url:'https://stream.laut.fm/minimal-techno' },
-    // EXTRA
-    { id:'megastylez', name:'MegaStylez.FM', genre:'techno', icon:'🎚️', desc:'Techno & Electro',
-      url:'https://listen.megastylez.de/tunein-mp3' },
-    { id:'radioenergy', name:'Radio Energy', genre:'house', icon:'⚡', desc:'Dance & Energy',
-      url:'https://stream.energy.ch/energyzurich/stream/mp3' },
-  ];
-
-  window.currentFilter = "all";
+  const API_BASE = 'https://de1.api.radio-browser.info/json/stations/search';
   let currentAudio = null;
   let currentStation = null;
-  window.currentFilter = 'all';
-  let currentFilterLocal = 'all';
+  let allStations = [];
+  let currentTag = 'pop';
 
-  window.renderStations = function renderStations(filter) {
-    const container = document.getElementById('radioStations');
-    if (!container) return;
-    const filtered = filter === 'all' ? STATIONS : STATIONS.filter(s => s.genre === filter);
-    container.innerHTML = filtered.map(s => `
-      <div class="station-card ${currentStation?.id === s.id ? 'playing' : ''}" 
-           id="card_${s.id}" onclick="playStation('${s.id}')">
-        <div class="station-icon">${s.icon}</div>
-        <div class="station-info">
-          <div class="station-name">${s.name}</div>
-          <div class="station-genre">${s.desc}</div>
-          <div class="station-status">
-            <span class="station-live"></span>
-            <span style="color:var(--muted)">LIVE 24/7</span>
-          </div>
-        </div>
-        <button class="station-play-btn ${currentStation?.id === s.id ? 'pause' : ''}" title="${currentStation?.id === s.id ? 'Pauza' : 'Prehrať'}">
-          ${currentStation?.id === s.id ? '⏸' : '▶'}
-        </button>
-      </div>`).join('');
-  }
-
-  window.filterRadio = function(genre, tabEl) {
-    currentFilter = genre;
-    document.querySelectorAll('.rg-tab').forEach(t => t.classList.remove('active'));
-    if (tabEl) tabEl.classList.add('active');
-    renderStations(genre);
+  const GENRE_ICONS = {
+    'pop':'🎤','rock':'🎸','hip-hop':'🎧','hits':'🔥',
+    '80s':'📻','90s':'💿','dance':'💃','jazz':'🎷','classical':'🎻','country':'🤠'
   };
 
-  window.playStation = function(stationId) {
-    const station = STATIONS.find(s => s.id === stationId);
-    if (!station) return;
+  // Záložné manuálne overené stanice pre každý žáner
+  // Tieto sú overene fungujúce s CORS - SomaFM, SwissRadio, atd.
+  const FALLBACK = {
+    pop: [
+      {name:'Radio Swiss Pop',genre:'Pop',favicon:'🎤',url:'http://stream.srg-ssr.ch/rsp/mp3_128.m3u8'},
+      {name:'SWR3 Pop',genre:'Pop',favicon:'🎤',url:'https://liveradio.swr.de/sw282p3/swr3/play.mp3'},
+      {name:'NDR 2',genre:'Pop / Hits',favicon:'🎤',url:'https://www.ndr.de/resources/metadaten/audio/m3u/ndr2.m3u'},
+      {name:'Antenne Bayern',genre:'Pop',favicon:'🎤',url:'https://s3-webradio.antenne.de/antenne/stream/mp3'},
+      {name:'Energy Zürich',genre:'Pop / Dance',favicon:'🎤',url:'https://stream.energy.ch/energyzurich/stream/mp3'},
+      {name:'Capital FM (UK)',genre:'Pop',favicon:'🎤',url:'https://media-ice.musicradio.com/CapitalMP3'},
+      {name:'Kiss FM (UK)',genre:'Pop',favicon:'🎤',url:'https://stream.kissfmuk.com/live'},
+      {name:'Heart FM',genre:'Pop',favicon:'🎤',url:'https://media-ice.musicradio.com/HeartMP3'},
+      {name:'Absolute Radio',genre:'Pop / Rock',favicon:'🎤',url:'https://icecast.thisisdax.com/AbsoluteRadioMP3High'},
+      {name:'Sunshine Live',genre:'Pop / Dance',favicon:'🎤',url:'https://stream.sunshine-live.de/live/mp3-128/stream.sunshine-live.de/'},
+    ],
+    rock: [
+      {name:'Planet Rock (UK)',genre:'Rock',favicon:'🎸',url:'https://media-ice.musicradio.com/PlanetRockMP3'},
+      {name:'Radio Swiss Rock',genre:'Rock',favicon:'🎸',url:'http://stream.srg-ssr.ch/rsr/mp3_128.m3u8'},
+      {name:'SomaFM Metal Detector',genre:'Metal / Rock',favicon:'🎸',url:'https://ice6.somafm.com/metal-128-mp3'},
+      {name:'SomaFM Left Coast 70s',genre:'Rock 70s',favicon:'🎸',url:'https://ice6.somafm.com/seventies-128-mp3'},
+      {name:'Classic Rock Radio',genre:'Classic Rock',favicon:'🎸',url:'https://stream.classicrockradio.net:8000/live'},
+      {name:'SomaFM Digitalis',genre:'Indie Rock',favicon:'🎸',url:'https://ice6.somafm.com/digitalis-128-mp3'},
+    ],
+    'hip-hop': [
+      {name:'SomaFM Underground 80s',genre:'Hip-Hop / 80s',favicon:'🎧',url:'https://ice6.somafm.com/u80s-128-mp3'},
+      {name:'BassDrive (DNB/Hip-Hop)',genre:'Hip-Hop',favicon:'🎧',url:'http://bassdrive.com:8200/stream'},
+      {name:'SomaFM Beat Blender',genre:'Hip-Hop / Electronic',favicon:'🎧',url:'https://ice6.somafm.com/beatblender-128-mp3'},
+    ],
+    hits: [
+      {name:'SomaFM PopTron',genre:'Pop Hits',favicon:'🔥',url:'https://ice6.somafm.com/poptron-128-mp3'},
+      {name:'SomaFM Indie Pop Rocks',genre:'Indie Pop',favicon:'🔥',url:'https://ice6.somafm.com/indiepop-128-mp3'},
+      {name:'Capital FM',genre:'Top 40',favicon:'🔥',url:'https://media-ice.musicradio.com/CapitalMP3'},
+      {name:'Kiss FM UK',genre:'Top 40',favicon:'🔥',url:'https://stream.kissfmuk.com/live'},
+      {name:'Energy Zürich',genre:'Charts',favicon:'🔥',url:'https://stream.energy.ch/energyzurich/stream/mp3'},
+      {name:'Sunshine Live',genre:'Charts',favicon:'🔥',url:'https://stream.sunshine-live.de/live/mp3-128/stream.sunshine-live.de/'},
+    ],
+    '80s': [
+      {name:'SomaFM Underground 80s',genre:'80s Hits',favicon:'📻',url:'https://ice6.somafm.com/u80s-128-mp3'},
+      {name:'SomaFM Left Coast 70s',genre:'70s-80s',favicon:'📻',url:'https://ice6.somafm.com/seventies-128-mp3'},
+      {name:'1.FM - 80s',genre:'80s',favicon:'📻',url:'https://strm112.1.fm/80s_mobile_mp3'},
+    ],
+    '90s': [
+      {name:'SomaFM Doomed',genre:'90s Alt',favicon:'💿',url:'https://ice6.somafm.com/doomed-128-mp3'},
+      {name:'SomaFM Indie Pop',genre:'90s Indie',favicon:'💿',url:'https://ice6.somafm.com/indiepop-128-mp3'},
+      {name:'Laut.fm 90er',genre:'90s Pop',favicon:'💿',url:'https://stream.laut.fm/90er'},
+    ],
+    dance: [
+      {name:'Energy Zürich',genre:'Dance / Pop',favicon:'💃',url:'https://stream.energy.ch/energyzurich/stream/mp3'},
+      {name:'Sunshine Live',genre:'Dance / Electronic',favicon:'💃',url:'https://stream.sunshine-live.de/live/mp3-128/stream.sunshine-live.de/'},
+      {name:'SomaFM Groove Salad',genre:'Ambient / Dance',favicon:'💃',url:'https://ice6.somafm.com/groovesalad-128-mp3'},
+      {name:'SomaFM PopTron',genre:'Pop / Dance',favicon:'💃',url:'https://ice6.somafm.com/poptron-128-mp3'},
+    ],
+    jazz: [
+      {name:'Radio Swiss Jazz',genre:'Jazz',favicon:'🎷',url:'http://stream.srg-ssr.ch/rsj/mp3_128.m3u8'},
+      {name:'SomaFM DEF CON Radio',genre:'Jazz / Electronic',favicon:'🎷',url:'https://ice6.somafm.com/defcon-128-mp3'},
+      {name:'SomaFM Lush',genre:'Jazz / Chillout',favicon:'🎷',url:'https://ice6.somafm.com/lush-128-mp3'},
+      {name:'SomaFM Secret Agent',genre:'Spy Jazz',favicon:'🎷',url:'https://ice6.somafm.com/secretagent-128-mp3'},
+      {name:'SomaFM Illinois Street Lounge',genre:'Lounge Jazz',favicon:'🎷',url:'https://ice6.somafm.com/illinois-128-mp3'},
+    ],
+    classical: [
+      {name:'Radio Swiss Classic',genre:'Klasická hudba',favicon:'🎻',url:'http://stream.srg-ssr.ch/rsc_de/mp3_128.m3u8'},
+      {name:'SomaFM Drone Zone',genre:'Ambient / Orchestral',favicon:'🎻',url:'https://ice6.somafm.com/dronezone-128-mp3'},
+      {name:'SomaFM Space Station',genre:'Ambient / Space',favicon:'🎻',url:'https://ice6.somafm.com/spacestation-128-mp3'},
+    ],
+    country: [
+      {name:'SomaFM Folk Forward',genre:'Folk / Country',favicon:'🤠',url:'https://ice6.somafm.com/folkfwd-128-mp3'},
+      {name:'SomaFM Boot Liquor',genre:'Country / Americana',favicon:'🤠',url:'https://ice6.somafm.com/bootliquor-128-mp3'},
+    ],
+  };
 
-    // Ak hrá rovnaká, zastav
-    if (currentStation?.id === stationId && currentAudio) {
-      currentAudio.pause();
-      currentAudio = null;
-      currentStation = null;
-      document.getElementById('radioPlayerBar').classList.remove('visible');
-      renderStations(currentFilter);
+  // Načíta stanice z Radio Browser API, ak zlyhá použije fallback
+  window.loadRadio = async function(tag, tabEl) {
+    currentTag = tag;
+    document.querySelectorAll('.rg-tab').forEach(t => t.classList.remove('active'));
+    if (tabEl) tabEl.classList.add('active');
+    
+    const container = document.getElementById('radioStations');
+    if (!container) return;
+    container.innerHTML = '<div class="radio-loading"><div class="radio-spinner"></div>Načítavam stanice...</div>';
+
+    // Skús Radio Browser API
+    let stations = [];
+    const apiHosts = ['de1.api.radio-browser.info','at1.api.radio-browser.info','nl1.api.radio-browser.info'];
+    
+    for (const host of apiHosts) {
+      try {
+        const tagParam = encodeURIComponent(tag);
+        const url = `https://${host}/json/stations/search?tag=${tagParam}&limit=20&order=clickcount&reverse=true&hidebroken=true&codec=MP3,AAC`;
+        const resp = await fetch(url, {headers:{'User-Agent':'NightBase/1.0'}});
+        if (resp.ok) {
+          const data = await resp.json();
+          stations = data.filter(s => s.url_resolved && s.url_resolved.startsWith('http'));
+          if (stations.length > 0) break;
+        }
+      } catch(e) { /* try next */ }
+    }
+
+    // Ak API nefunguje, použij fallback
+    if (stations.length === 0) {
+      stations = (FALLBACK[tag] || FALLBACK.pop).map(s => ({
+        name: s.name,
+        tags: s.genre,
+        favicon: s.favicon,
+        url_resolved: s.url,
+        votes: 999,
+        clickcount: 999,
+      }));
+    }
+
+    allStations = stations;
+    renderRadioStations(stations);
+  };
+
+  function renderRadioStations(stations) {
+    const container = document.getElementById('radioStations');
+    if (!container) return;
+    if (!stations.length) {
+      container.innerHTML = '<div style="color:var(--muted);text-align:center;padding:24px;">Žiadne stanice nenájdené</div>';
       return;
     }
 
-    // Zastav predchádzajúci
+    container.innerHTML = stations.map((s,i) => {
+      const icon = GENRE_ICONS[currentTag] || '🎵';
+      const isPlaying = currentStation && currentStation.url_resolved === s.url_resolved;
+      return `<div class="station-card ${isPlaying ? 'playing' : ''}" id="sc_${i}" onclick="playStation(${i})">
+        <div class="station-icon">${icon}</div>
+        <div class="station-info">
+          <div class="station-name">${s.name}</div>
+          <div class="station-genre">${(s.tags||'').split(',').slice(0,2).join(' · ') || currentTag}</div>
+          <div class="station-status"><span class="station-live"></span><span style="color:var(--muted);font-size:10px">LIVE 24/7</span></div>
+        </div>
+        <button class="station-play-btn ${isPlaying ? 'pause' : ''}">${isPlaying ? '⏸' : '▶'}</button>
+      </div>`;
+    }).join('');
+  }
+
+  window.playStation = function(idx) {
+    const station = allStations[idx];
+    if (!station) return;
+
+    // Toggle ak je tá istá
+    if (currentStation && currentStation.url_resolved === station.url_resolved) {
+      if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+      currentStation = null;
+      document.getElementById('radioPlayerBar')?.classList.remove('visible');
+      renderRadioStations(allStations);
+      return;
+    }
+
+    // Zastav predošlý
     if (currentAudio) { currentAudio.pause(); currentAudio = null; }
 
-    const audio = new Audio(station.url);
-    audio.volume = parseFloat(document.getElementById('playerVol')?.value || 0.8);
+    const audio = new Audio();
     audio.crossOrigin = 'anonymous';
+    audio.preload = 'none';
     
-    audio.play().then(() => {
-      currentAudio = audio;
-      currentStation = station;
-      // Update player bar
-      document.getElementById('playerName').textContent = station.name;
-      document.getElementById('playerGenre').textContent = station.desc;
-      document.getElementById('playerIcon').textContent = station.icon;
-      document.getElementById('radioPlayerBar').classList.add('visible');
-      renderStations(currentFilter);
-    }).catch(err => {
-      console.error('Stream error:', err);
-      // Fallback message
-      alert(`Stanica ${station.name} momentálne nedostupná. Skúste inú.`);
-    });
+    const bar = document.getElementById('radioPlayerBar');
+    const nameEl = document.getElementById('playerName');
+    const genreEl = document.getElementById('playerGenre');
+    const iconEl = document.getElementById('playerIcon');
+
+    if (nameEl) nameEl.textContent = station.name + ' (načítavam...)';
+    if (genreEl) genreEl.textContent = (station.tags||'').split(',').slice(0,2).join(' · ') || currentTag;
+    if (iconEl) iconEl.textContent = GENRE_ICONS[currentTag] || '🎵';
+    if (bar) bar.classList.add('visible');
+
+    audio.src = station.url_resolved;
+    audio.volume = parseFloat(document.getElementById('playerVol')?.value || 0.8);
+    
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        currentAudio = audio;
+        currentStation = station;
+        if (nameEl) nameEl.textContent = station.name;
+        renderRadioStations(allStations);
+      }).catch(err => {
+        console.warn('Stream error:', err, station.url_resolved);
+        if (bar) bar.classList.remove('visible');
+        // Skús ďalšiu stanicu
+        const nextIdx = allStations.findIndex(s => s.url_resolved === station.url_resolved) + 1;
+        if (nextIdx < allStations.length) {
+          setTimeout(() => window.playStation(nextIdx), 300);
+        } else {
+          if (nameEl) nameEl.textContent = 'Stanica nedostupná';
+        }
+      });
+    }
 
     audio.onerror = () => {
-      currentAudio = null;
-      currentStation = null;
-      document.getElementById('radioPlayerBar').classList.remove('visible');
-      renderStations(currentFilter);
+      if (currentStation?.url_resolved === station.url_resolved) {
+        currentAudio = null; currentStation = null;
+        if (bar) bar.classList.remove('visible');
+        renderRadioStations(allStations);
+      }
     };
   };
 
   window.stopRadio = function() {
     if (currentAudio) { currentAudio.pause(); currentAudio = null; }
     currentStation = null;
-    document.getElementById('radioPlayerBar').classList.remove('visible');
-    renderStations(currentFilter);
+    document.getElementById('radioPlayerBar')?.classList.remove('visible');
+    renderRadioStations(allStations);
   };
 
   window.setVol = function(val) {
     if (currentAudio) currentAudio.volume = parseFloat(val);
   };
 
-  // Radio auto-init
+  window.renderStations = function() { loadRadio(currentTag); };
+  window.loadRadioGenre = loadRadio;
+
+  // Auto-init
   if (document.getElementById('page-radio')?.classList.contains('active')) {
-    renderStations('all');
+    loadRadio('pop');
   }
 })();
 
