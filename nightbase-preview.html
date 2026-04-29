@@ -7,20 +7,20 @@
     <style>
       :root {
         color-scheme: dark;
-        --bg: #07090d;
-        --panel: #11161f;
-        --panel-2: #171e2a;
-        --panel-3: #202838;
-        --line: #2a3344;
+        --bg: #08090f;
+        --panel: #12131a;
+        --panel-2: #191823;
+        --panel-3: #222130;
+        --line: #303143;
         --text: #f6f8fb;
-        --muted: #aeb8c8;
-        --dim: #738095;
-        --mint: #30d59b;
-        --cyan: #57c7ff;
-        --coral: #ff5f7d;
-        --amber: #f7c948;
-        --violet: #9b7bff;
-        --lime: #b6e95f;
+        --muted: #b7bdcb;
+        --dim: #7e8798;
+        --mint: #2fe6a3;
+        --cyan: #6ad7ff;
+        --coral: #ff6b87;
+        --amber: #ffc857;
+        --violet: #b08cff;
+        --lime: #abe866;
         --shadow: 0 18px 55px rgba(0, 0, 0, 0.35);
       }
 
@@ -30,12 +30,34 @@
 
       body {
         margin: 0;
-        background:
-          radial-gradient(circle at 18% 0%, rgba(48, 213, 155, 0.13), transparent 30%),
-          radial-gradient(circle at 82% 10%, rgba(87, 199, 255, 0.12), transparent 34%),
-          var(--bg);
+        background: linear-gradient(135deg, #08090f 0%, #111018 46%, #090a0e 100%);
         color: var(--text);
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        min-height: 100vh;
+        position: relative;
+      }
+
+      body::before {
+        background:
+          linear-gradient(180deg, rgba(8, 9, 15, 0.44), rgba(8, 9, 15, 0.92)),
+          url("party-bg.svg") center / cover no-repeat;
+        content: "";
+        inset: 0;
+        opacity: 0.62;
+        position: fixed;
+        z-index: -2;
+      }
+
+      body::after {
+        background:
+          linear-gradient(115deg, rgba(47, 230, 163, 0.12), transparent 34%),
+          linear-gradient(245deg, rgba(255, 107, 135, 0.12), transparent 38%),
+          linear-gradient(90deg, rgba(8, 9, 15, 0.82), rgba(8, 9, 15, 0.62));
+        content: "";
+        inset: 0;
+        pointer-events: none;
+        position: fixed;
+        z-index: -1;
       }
 
       button,
@@ -61,6 +83,7 @@
         max-width: 1180px;
         min-height: 100vh;
         padding: 18px;
+        position: relative;
       }
 
       .topbar {
@@ -88,14 +111,53 @@
 
       .brand-mark {
         align-items: center;
-        background: linear-gradient(135deg, var(--mint), var(--cyan));
-        border-radius: 8px;
-        color: #06100d;
+        background: #090c12;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 12px;
+        box-shadow: inset 0 0 0 1px rgba(47, 230, 163, 0.16), 0 12px 28px rgba(0, 0, 0, 0.38);
+        color: var(--text);
         display: flex;
         font-weight: 950;
-        height: 40px;
+        height: 44px;
         justify-content: center;
-        width: 40px;
+        overflow: hidden;
+        position: relative;
+        width: 44px;
+      }
+
+      .brand-mark::before {
+        background: linear-gradient(135deg, transparent 28%, var(--mint) 29%, var(--cyan) 54%, transparent 55%);
+        border-radius: 50%;
+        content: "";
+        height: 52px;
+        left: -16px;
+        opacity: 0.95;
+        position: absolute;
+        top: -4px;
+        transform: rotate(-18deg);
+        width: 52px;
+      }
+
+      .brand-mark::after {
+        background: linear-gradient(180deg, var(--coral), var(--amber));
+        border-radius: 999px;
+        content: "";
+        height: 28px;
+        position: absolute;
+        right: 10px;
+        top: 8px;
+        width: 5px;
+      }
+
+      .brand-pulse {
+        background: var(--mint);
+        border-radius: 999px;
+        bottom: 10px;
+        box-shadow: 9px -7px 0 var(--cyan), 18px -1px 0 var(--coral);
+        height: 5px;
+        left: 10px;
+        position: absolute;
+        width: 5px;
       }
 
       .brand h1 {
@@ -138,13 +200,17 @@
       }
 
       .primary {
+        align-items: center;
         background: linear-gradient(135deg, var(--mint), #74e4bb);
         border: 0;
         border-radius: 8px;
         color: #06100d;
+        display: inline-flex;
         font-weight: 900;
+        justify-content: center;
         min-height: 40px;
         padding: 0 15px;
+        text-decoration: none;
       }
 
       .primary:hover {
@@ -254,31 +320,42 @@
 
       .map-wrap {
         background:
-          linear-gradient(180deg, rgba(32, 40, 56, 0.9), rgba(11, 14, 20, 0.85));
+          linear-gradient(180deg, rgba(25, 24, 35, 0.96), rgba(12, 13, 19, 0.92));
         border: 1px solid var(--line);
         border-radius: 10px;
+        overflow: hidden;
         padding: 14px;
       }
 
-      svg {
+      .map-image-wrap {
+        background: #050609;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .map-image {
         display: block;
         height: auto;
         width: 100%;
       }
 
-      .region {
-        cursor: pointer;
-        filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.28));
-        transition: opacity 160ms ease, transform 160ms ease;
+      .region-hotspot {
+        background: rgba(47, 230, 163, 0);
+        border: 1px solid transparent;
+        border-radius: 12px;
+        color: transparent;
+        position: absolute;
+        transition: background 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
       }
 
-      .region:hover {
-        opacity: 0.9;
-      }
-
-      .region-label {
-        pointer-events: none;
-        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+      .region-hotspot:hover,
+      .region-hotspot:focus-visible {
+        background: rgba(47, 230, 163, 0.12);
+        border-color: rgba(47, 230, 163, 0.8);
+        box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.08), 0 0 0 2px rgba(47, 230, 163, 0.18);
+        outline: none;
       }
 
       .legend {
@@ -407,6 +484,180 @@
         font-size: 12px;
         font-weight: 900;
         text-align: right;
+      }
+
+      .content-grid {
+        display: grid;
+        gap: 18px;
+        grid-template-columns: minmax(0, 1fr) 360px;
+      }
+
+      .business-grid,
+      .rank-grid,
+      .plans-grid {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .business-card,
+      .rank-card,
+      .plan-card,
+      .comment-card,
+      .account-card,
+      .ad-slot,
+      .owner-update {
+        background: rgba(255, 255, 255, 0.045);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 14px;
+      }
+
+      .business-card {
+        display: grid;
+        gap: 10px;
+        min-height: 210px;
+        text-align: left;
+        width: 100%;
+      }
+
+      .business-card:hover,
+      .rank-card:hover {
+        background: rgba(255, 255, 255, 0.075);
+      }
+
+      .rating {
+        color: var(--amber);
+        font-size: 13px;
+        font-weight: 950;
+      }
+
+      .media-strip {
+        display: grid;
+        gap: 7px;
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .media-tile {
+        align-items: end;
+        aspect-ratio: 1.35;
+        background:
+          linear-gradient(135deg, rgba(47, 230, 163, 0.22), rgba(255, 107, 135, 0.18)),
+          #171923;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        color: rgba(255, 255, 255, 0.78);
+        display: flex;
+        font-size: 11px;
+        font-weight: 850;
+        padding: 8px;
+      }
+
+      .mini-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .mini-actions a,
+      .mini-actions button {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--text);
+        min-height: 34px;
+        padding: 0 11px;
+        text-decoration: none;
+      }
+
+      .mini-actions .primary {
+        background: linear-gradient(135deg, var(--mint), #74e4bb);
+        border: 0;
+        color: #06100d;
+      }
+
+      .video-box {
+        align-items: center;
+        background:
+          linear-gradient(135deg, rgba(255, 107, 135, 0.22), rgba(47, 230, 163, 0.14)),
+          #090c12;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        display: flex;
+        gap: 14px;
+        min-height: 128px;
+        padding: 16px;
+      }
+
+      .play-mark {
+        align-items: center;
+        background: var(--mint);
+        border-radius: 50%;
+        color: #06100d;
+        display: flex;
+        flex: 0 0 auto;
+        font-size: 22px;
+        font-weight: 950;
+        height: 54px;
+        justify-content: center;
+        width: 54px;
+      }
+
+      .comment-list {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .comment-card {
+        display: grid;
+        gap: 6px;
+      }
+
+      .comment-card strong {
+        font-size: 13px;
+      }
+
+      .review-form {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .ad-slot {
+        border-color: rgba(255, 200, 87, 0.3);
+      }
+
+      .rank-card {
+        display: grid;
+        gap: 8px;
+        text-align: left;
+        width: 100%;
+      }
+
+      .rank-number {
+        color: var(--mint);
+        font-size: 12px;
+        font-weight: 950;
+        text-transform: uppercase;
+      }
+
+      .plan-card {
+        display: grid;
+        gap: 10px;
+      }
+
+      .plan-card.featured-plan {
+        border-color: rgba(47, 230, 163, 0.5);
+        box-shadow: inset 0 0 0 1px rgba(47, 230, 163, 0.12);
+      }
+
+      .account-state {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: space-between;
       }
 
       .flow {
@@ -573,6 +824,28 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      .radio-genres {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+
+      .radio-genre {
+        background: rgba(255, 255, 255, 0.055);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 999px;
+        color: var(--muted);
+        min-height: 34px;
+        padding: 0 12px;
+      }
+
+      .radio-genre.active {
+        background: rgba(47, 230, 163, 0.15);
+        border-color: rgba(47, 230, 163, 0.65);
+        color: var(--text);
+      }
+
       .station {
         background: rgba(255, 255, 255, 0.045);
         border: 1px solid rgba(255, 255, 255, 0.08);
@@ -600,6 +873,11 @@
         line-height: 1.35;
       }
 
+      .station small {
+        color: var(--dim);
+        font-size: 11px;
+      }
+
       .radio-note {
         color: var(--dim);
         font-size: 12px;
@@ -624,6 +902,7 @@
         }
 
         .home-grid,
+        .content-grid,
         .hero-panel,
         .radio-layout {
           grid-template-columns: 1fr;
@@ -666,6 +945,9 @@
         .stats,
         .legend,
         .station-grid,
+        .business-grid,
+        .rank-grid,
+        .plans-grid,
         .form-grid,
         .detail-grid {
           grid-template-columns: 1fr;
@@ -681,7 +963,7 @@
     <div class="shell">
       <header class="topbar">
         <div class="brand">
-          <div class="brand-mark">NB</div>
+          <div class="brand-mark" aria-hidden="true"><span class="brand-pulse"></span></div>
           <div>
             <h1>NightBase</h1>
             <p id="screenSubtitle">Mapa akcií na Slovensku</p>
@@ -690,11 +972,14 @@
 
         <nav class="nav" aria-label="Hlavná navigácia">
           <button class="active" data-nav="home" type="button">Mapa</button>
+          <button data-nav="food" type="button">Gastro</button>
+          <button data-nav="rankings" type="button">Rebríčky</button>
           <button data-nav="radio" type="button">Rádio</button>
+          <button data-nav="account" type="button">Účet</button>
           <button data-nav="admin" type="button">Schvaľovanie</button>
         </nav>
 
-        <button class="primary" id="submitTop" type="button">Pridať akciu</button>
+        <button class="primary" id="submitTop" type="button">Pridať</button>
       </header>
 
       <main class="screen active" id="homeScreen">
@@ -718,8 +1003,8 @@
                 <span>krajov Slovenska</span>
               </div>
               <div class="stat">
-                <strong>20</strong>
-                <span>rádio staníc</span>
+                <strong>20+</strong>
+                <span>žánrov rádia</span>
               </div>
             </div>
           </section>
@@ -744,35 +1029,44 @@
           </div>
 
           <div class="map-wrap">
-            <svg viewBox="0 0 760 330" role="img" aria-label="Mapa Slovenska rozdelená na kraje">
-              <path
-                d="M44 178 L75 144 L132 136 L152 102 L215 91 L249 56 L330 50 L382 70 L448 60 L498 84 L586 79 L668 112 L720 150 L688 200 L612 230 L520 238 L438 222 L352 245 L272 227 L204 246 L132 226 L74 218 Z"
-                fill="#0b1018"
-                stroke="#384256"
-                stroke-width="8"
-                stroke-linejoin="round"
-              />
-
-              <polygon class="region" data-region="bratislavsky" points="44,178 75,144 118,153 114,199 74,218" fill="#30d59b" stroke="#0b1018" stroke-width="4"></polygon>
-              <polygon class="region" data-region="trnavsky" points="75,144 132,136 172,155 158,211 114,199 118,153" fill="#f7c948" stroke="#0b1018" stroke-width="4"></polygon>
-              <polygon class="region" data-region="trenciansky" points="132,136 152,102 215,91 249,56 304,78 280,122 226,138 172,155" fill="#57c7ff" stroke="#0b1018" stroke-width="4"></polygon>
-              <polygon class="region" data-region="nitriansky" points="114,199 158,211 172,155 226,138 272,166 260,224 204,246 132,226" fill="#ff5f7d" stroke="#0b1018" stroke-width="4"></polygon>
-              <polygon class="region" data-region="zilinsky" points="249,56 330,50 382,70 400,118 340,138 280,122 304,78" fill="#9b7bff" stroke="#0b1018" stroke-width="4"></polygon>
-              <polygon class="region" data-region="banskobystricky" points="226,138 280,122 340,138 400,118 465,145 438,222 352,245 260,224 272,166" fill="#e86bb0" stroke="#0b1018" stroke-width="4"></polygon>
-              <polygon class="region" data-region="presovsky" points="400,118 382,70 448,60 498,84 586,79 668,112 630,160 535,150 465,145" fill="#5bd0d7" stroke="#0b1018" stroke-width="4"></polygon>
-              <polygon class="region" data-region="kosicky" points="465,145 535,150 630,160 720,150 688,200 612,230 520,238 438,222" fill="#b6e95f" stroke="#0b1018" stroke-width="4"></polygon>
-
-              <text class="region-label" x="83" y="184" fill="#06100d" font-size="22" font-weight="950" text-anchor="middle">BA</text>
-              <text class="region-label" x="137" y="177" fill="#171008" font-size="22" font-weight="950" text-anchor="middle">TT</text>
-              <text class="region-label" x="224" y="116" fill="#06100d" font-size="22" font-weight="950" text-anchor="middle">TN</text>
-              <text class="region-label" x="203" y="198" fill="#fff" font-size="22" font-weight="950" text-anchor="middle">NR</text>
-              <text class="region-label" x="334" y="98" fill="#fff" font-size="22" font-weight="950" text-anchor="middle">ZA</text>
-              <text class="region-label" x="359" y="176" fill="#fff" font-size="22" font-weight="950" text-anchor="middle">BB</text>
-              <text class="region-label" x="548" y="118" fill="#06100d" font-size="22" font-weight="950" text-anchor="middle">PO</text>
-              <text class="region-label" x="585" y="194" fill="#06100d" font-size="22" font-weight="950" text-anchor="middle">KE</text>
-            </svg>
+            <div class="map-image-wrap" aria-label="Mapa Slovenskej republiky rozdelená na kraje">
+              <img class="map-image" src="kraje-slovenska.png" alt="Mapa Slovenska rozdelená na kraje" />
+              <button class="region-hotspot" style="left:0.5%;top:34%;width:15%;height:36%" data-region="bratislavsky" type="button" aria-label="Bratislavský kraj"></button>
+              <button class="region-hotspot" style="left:8.5%;top:43%;width:17%;height:52%" data-region="trnavsky" type="button" aria-label="Trnavský kraj"></button>
+              <button class="region-hotspot" style="left:17%;top:15%;width:21%;height:40%" data-region="trenciansky" type="button" aria-label="Trenčiansky kraj"></button>
+              <button class="region-hotspot" style="left:20%;top:48%;width:24%;height:46%" data-region="nitriansky" type="button" aria-label="Nitriansky kraj"></button>
+              <button class="region-hotspot" style="left:31%;top:0%;width:27%;height:40%" data-region="zilinsky" type="button" aria-label="Žilinský kraj"></button>
+              <button class="region-hotspot" style="left:35%;top:38%;width:29%;height:48%" data-region="banskobystricky" type="button" aria-label="Banskobystrický kraj"></button>
+              <button class="region-hotspot" style="left:54%;top:12%;width:43%;height:33%" data-region="presovsky" type="button" aria-label="Prešovský kraj"></button>
+              <button class="region-hotspot" style="left:60%;top:42%;width:37%;height:35%" data-region="kosicky" type="button" aria-label="Košický kraj"></button>
+            </div>
             <div class="legend" id="legend"></div>
           </div>
+        </section>
+
+        <section class="content-grid" style="margin-top:18px">
+          <div class="panel screen-panel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Pred akciou</p>
+                <h2>Kam sa ísť najesť</h2>
+                <p>Podniky v krajoch môžu mať platené zvýhodnenie, viac obrázkov, reklamu a kontakt.</p>
+              </div>
+              <button class="ghost" type="button" data-nav-jump="food">Otvoriť gastro</button>
+            </div>
+            <div class="business-grid" id="homeFoodList"></div>
+          </div>
+
+          <aside class="panel screen-panel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Komunita</p>
+                <h2>Účet a recenzie</h2>
+                <p>Registrovaný človek môže písať komentáre, hodnotiť akcie, kluby aj reštaurácie.</p>
+              </div>
+            </div>
+            <div class="account-state" id="homeAccountState"></div>
+          </aside>
         </section>
       </main>
 
@@ -795,11 +1089,124 @@
           </section>
 
           <section class="event-list" id="regionList"></section>
+
+          <section class="panel screen-panel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Pred akciou</p>
+                <h2>Najlepšie jedlo v kraji</h2>
+                <p>Odporúčané podniky pri večernom programe, zoradené podľa paušálu a recenzií.</p>
+              </div>
+            </div>
+            <div class="business-grid" id="regionFoodList"></div>
+          </section>
         </div>
       </main>
 
       <main class="screen" id="detailScreen">
         <div class="flow" id="detailContent"></div>
+      </main>
+
+      <main class="screen" id="foodScreen">
+        <div class="flow">
+          <section class="panel screen-panel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Gastro pred akciou</p>
+                <h2>Kam sa najlepšie najesť pred akciou</h2>
+                <p>Reštaurácie, bary a street food v každom kraji. Platené profily získajú lepšiu pozíciu, viac obrázkov, reklamu a kontakt.</p>
+              </div>
+              <button class="primary" type="button" data-open-submit="business">Pridať podnik</button>
+            </div>
+            <div class="chips" id="foodRegionChips"></div>
+          </section>
+
+          <section class="content-grid">
+            <div class="panel screen-panel">
+              <div class="section-head">
+                <div>
+                  <h2 id="foodRegionTitle">Podniky</h2>
+                  <p id="foodRegionMeta">Zoradené podľa paušálu a hodnotenia</p>
+                </div>
+              </div>
+              <div class="business-grid" id="foodList"></div>
+            </div>
+
+            <aside class="panel screen-panel">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Reklama</p>
+                  <h2>Priestor pre partnerov</h2>
+                  <p>Premium podnik môže mať reklamný blok pri kraji alebo konkrétnej akcii.</p>
+                </div>
+              </div>
+              <div class="ad-slot">
+                <span class="badge">Premium</span>
+                <h3 style="margin-top:10px">Večera + drink pred eventom</h3>
+                <p class="meta" style="margin-top:8px">Ukážkový reklamný priestor pre podniky s vyšším paušálom.</p>
+              </div>
+            </aside>
+          </section>
+        </div>
+      </main>
+
+      <main class="screen" id="rankingsScreen">
+        <div class="flow">
+          <section class="panel screen-panel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Rebríčky</p>
+                <h2>Najlepšie značky eventov, kluby a podniky</h2>
+                <p>Poradie vzniká z hodnotení ľudí a platené profily môžu dostať extra promo pozície označené ako reklama.</p>
+              </div>
+            </div>
+            <div class="rank-grid" id="brandRanking"></div>
+          </section>
+
+          <section class="panel screen-panel">
+            <div class="section-head">
+              <div>
+                <h2>Top kluby a reštaurácie</h2>
+                <p>Miesta, ktoré ľudia hodnotia najlepšie pred alebo po akcii.</p>
+              </div>
+            </div>
+            <div class="rank-grid" id="placeRanking"></div>
+          </section>
+
+          <section class="panel screen-panel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Monetizácia</p>
+                <h2>Balíky pre kluby, promotérov a podniky</h2>
+                <p>Takto je vidno, za čo by platili a čo dostanú navyše.</p>
+              </div>
+            </div>
+            <div class="plans-grid" id="planCards"></div>
+          </section>
+        </div>
+      </main>
+
+      <main class="screen" id="accountScreen">
+        <div class="flow">
+          <section class="panel screen-panel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Registrácia</p>
+                <h2>Účet pre komentáre a recenzie</h2>
+                <p>V prototype stačí meno a email. V reálnej appke by tu bolo prihlásenie, overenie emailu a ochrana proti spamu.</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <label>Meno <input id="accountName" placeholder="Tvoje meno" /></label>
+              <label>Email <input id="accountEmail" placeholder="meno@email.sk" /></label>
+              <button class="primary full" id="saveAccount" type="button">Vytvoriť / prihlásiť účet</button>
+            </div>
+          </section>
+
+          <section class="panel screen-panel">
+            <div class="account-card" id="accountPreview"></div>
+          </section>
+        </div>
       </main>
 
       <main class="screen" id="submitScreen">
@@ -809,8 +1216,14 @@
             <div class="section-head" style="margin-top:12px">
               <div>
                 <p class="eyebrow">Promotérsky vstup</p>
-                <h2>Pridať akciu na schválenie</h2>
-                <p>Po odoslaní ide akcia do admin fronty a zobrazí sa až po potvrdení.</p>
+                <h2>Pridať akciu alebo podnik na schválenie</h2>
+                <p>Akcie aj gastro podniky idú najprv do admin fronty. Zobrazia sa až po potvrdení.</p>
+              </div>
+            </div>
+            <div class="section-head">
+              <div>
+                <h2>Akcia</h2>
+                <p>Pre klub, promotéra alebo event značku.</p>
               </div>
             </div>
             <div class="form-grid">
@@ -822,6 +1235,8 @@
               <label>Čas <input id="newTime" value="22:00" /></label>
               <label>Cena <input id="newPrice" placeholder="10 EUR / vstup voľný" /></label>
               <label>Predpredaj <input id="newTicket" placeholder="https://..." /></label>
+              <label>Email kontakt <input id="newEmail" placeholder="booking@klub.sk" /></label>
+              <label>Video URL <input id="newVideo" placeholder="https://youtube.com/..." /></label>
               <label class="full">Popis <textarea id="newDescription" placeholder="Krátky popis akcie"></textarea></label>
               <label>Promotér alebo klub <input id="newPromoter" placeholder="Názov organizátora" /></label>
               <label>Profil
@@ -833,6 +1248,32 @@
                 </select>
               </label>
               <button class="primary full" id="saveEvent" type="button">Odoslať na schválenie</button>
+            </div>
+
+            <div class="section-head" style="margin-top:24px">
+              <div>
+                <h2>Podnik / reštaurácia</h2>
+                <p>Pre miesta, kde sa ľudia najedia pred akciou.</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <label>Názov podniku <input id="newBusinessName" placeholder="Bistro Nočná stanica" /></label>
+              <label>Typ <input id="newBusinessType" placeholder="Reštaurácia / bar / street food" /></label>
+              <label>Mesto <input id="newBusinessCity" placeholder="Bratislava" /></label>
+              <label>Kraj <select id="newBusinessRegion"></select></label>
+              <label>Kuchyňa <input id="newBusinessCuisine" placeholder="burger, pizza, vegan, ramen..." /></label>
+              <label>Email <input id="newBusinessEmail" placeholder="kontakt@podnik.sk" /></label>
+              <label>Profil
+                <select id="newBusinessPlan">
+                  <option value="free">Free</option>
+                  <option value="club">Club</option>
+                  <option value="promoter">Promoter</option>
+                  <option value="premium">Premium</option>
+                </select>
+              </label>
+              <label>Obrázky <input id="newBusinessImages" value="1" /></label>
+              <label class="full">Popis <textarea id="newBusinessDescription" placeholder="Čím je podnik dobrý pred akciou"></textarea></label>
+              <button class="primary full" id="saveBusiness" type="button">Odoslať podnik na schválenie</button>
             </div>
           </section>
         </div>
@@ -859,26 +1300,27 @@
             <div class="panel player">
               <div class="live-row">
                 <span class="live-dot"></span>
-                <p class="eyebrow">Live rádio</p>
+                <p class="eyebrow">Existujúce rádiá</p>
               </div>
-              <h2 id="stationTitle">NightBase House</h2>
-              <p class="meta" id="stationMeta">Deep house a downtempo stream</p>
+              <h2 id="stationTitle">Vyber žáner</h2>
+              <p class="meta" id="stationMeta">Načítam verejné online stanice podľa žánru.</p>
               <audio id="radioAudio" controls preload="none"></audio>
               <p class="radio-note" id="radioStatus">
-                Vyber stanicu a stlač prehrávanie. Streamy v tomto prototype používajú verejné demo zdroje.
+                Vyber žáner, potom stanicu a stlač prehrávanie.
               </p>
               <p class="radio-note">
-                Produkčná verzia potrebuje vlastné licencované streamy pre NightBase.
+                Produkčná verzia má používať oficiálne streamy alebo súhlas staníc, aby bol App Store aj Play Store pokojný.
               </p>
             </div>
 
             <section class="panel screen-panel">
               <div class="section-head">
                 <div>
-                  <h2>Stanice</h2>
-                  <p>20 žánrových kanálov pre prototyp prehrávača.</p>
+                  <h2>Stanice podľa žánru</h2>
+                  <p>Najprv Slovensko, potom najpočúvanejšie dostupné streamy podľa kategórie.</p>
                 </div>
               </div>
+              <div class="radio-genres" id="radioGenreGrid"></div>
               <div class="station-grid" id="stationGrid"></div>
             </section>
           </section>
@@ -1059,38 +1501,227 @@
         },
       ];
 
-      const stations = [
-        { id: "house", name: "NightBase House", genre: "House", mood: "Deep house / downtempo", stream: "https://ice.somafm.com/beatblender" },
-        { id: "techno", name: "NightBase Techno", genre: "Techno", mood: "Electronic / hacker club", stream: "https://ice.somafm.com/defcon" },
-        { id: "dnb", name: "NightBase Bass", genre: "Bass", mood: "Dubstep / deep bass", stream: "https://ice.somafm.com/dubstep" },
-        { id: "hiphop", name: "NightBase Hip-Hop", genre: "Hip-Hop", mood: "Instrumental hiphop / trap", stream: "https://ice.somafm.com/fluid" },
-        { id: "pop", name: "NightBase Pop", genre: "Pop", mood: "Electropop / indie dance", stream: "https://ice.somafm.com/poptron" },
-        { id: "rock", name: "NightBase Rock", genre: "Rock", mood: "Indie rock", stream: "https://ice.somafm.com/indiepop" },
-        { id: "metal", name: "NightBase Metal", genre: "Metal", mood: "Metal detector", stream: "https://ice.somafm.com/metal" },
-        { id: "latin", name: "NightBase Global", genre: "World", mood: "Asian and global beats", stream: "https://ice.somafm.com/suburbsofgoa" },
-        { id: "jazz", name: "NightBase Jazz", genre: "Jazz", mood: "Eclectic jazz", stream: "https://ice.somafm.com/sonicuniverse" },
-        { id: "festival", name: "NightBase Festival", genre: "Festival", mood: "Black Rock FM", stream: "https://ice.somafm.com/brfm" },
-        { id: "trance", name: "NightBase Trance", genre: "Trance", mood: "Progressive house / trance", stream: "https://ice.somafm.com/thetrip" },
-        { id: "chill", name: "NightBase Chill", genre: "Chill", mood: "Groove Salad", stream: "https://ice.somafm.com/groovesalad" },
-        { id: "ambient", name: "NightBase Ambient", genre: "Ambient", mood: "Drone Zone", stream: "https://ice.somafm.com/dronezone" },
-        { id: "space", name: "NightBase Space", genre: "Space", mood: "Deep Space One", stream: "https://ice.somafm.com/deepspaceone" },
-        { id: "synth", name: "NightBase Synth", genre: "Synth", mood: "Underground 80s", stream: "https://ice.somafm.com/u80s" },
-        { id: "soul", name: "NightBase Soul", genre: "Soul", mood: "Seven Inch Soul", stream: "https://ice.somafm.com/7soul" },
-        { id: "reggae", name: "NightBase Reggae", genre: "Reggae", mood: "Ska / rocksteady", stream: "https://ice.somafm.com/reggae" },
-        { id: "vapor", name: "NightBase Vapor", genre: "Vaporwave", mood: "Vaporwaves", stream: "https://ice.somafm.com/vaporwaves" },
-        { id: "classic", name: "NightBase Classic", genre: "Classics", mood: "Groove Salad Classic", stream: "https://ice.somafm.com/gsclassic" },
-        { id: "live", name: "NightBase Live", genre: "Live", mood: "Live events", stream: "https://ice.somafm.com/live" },
+      events.forEach((event, index) => {
+        event.ticketLink = event.ticketLink || `https://tickets.example/nightbase-${index + 1}`;
+        event.contactEmail = event.contactEmail || `${event.promoter.toLowerCase().replaceAll(" ", ".")}@nightbase.demo`;
+        event.videoUrl = event.videoUrl || (event.plan === "premium" ? "https://video.example/teaser" : "");
+        event.updates = event.updates || [
+          "Line-up a časový harmonogram bude priebežne doplnený.",
+          event.plan === "premium" ? "Premium profil: video teaser, viac fotiek a zvýraznenie v kraji." : "Základné info od organizátora.",
+        ];
+      });
+
+      const planFeatures = {
+        free: { name: "Free", weight: 0, images: 1, ads: "Základný zápis", video: false },
+        club: { name: "Club", weight: 8, images: 3, ads: "Vyššie v kraji", video: false },
+        promoter: { name: "Promoter", weight: 14, images: 5, ads: "Promo bloky pri žánroch", video: true },
+        premium: { name: "Premium", weight: 22, images: 8, ads: "Top pozície, reklamy a video", video: true },
+      };
+
+      const businesses = [
+        {
+          id: "biz-001",
+          name: "Midnight Burger",
+          type: "Burger bar",
+          city: "Bratislava",
+          regionId: "bratislavsky",
+          cuisine: "burgre, hranolky, drinky",
+          plan: "premium",
+          sponsored: true,
+          rating: 4.8,
+          email: "rezervacie@midnightburger.sk",
+          description: "Rýchle jedlo pred klubom, otvorené do noci a vhodné pre skupiny pred techno eventom.",
+          images: 7,
+          status: "approved",
+        },
+        {
+          id: "biz-002",
+          name: "Ramen Stage",
+          type: "Bistro",
+          city: "Košice",
+          regionId: "kosicky",
+          cuisine: "ramen, bao, vegan",
+          plan: "promoter",
+          sponsored: true,
+          rating: 4.7,
+          email: "hello@ramenstage.sk",
+          description: "Teplé jedlo pred koncertom v centre, rýchla obsluha a rezervácie cez email.",
+          images: 5,
+          status: "approved",
+        },
+        {
+          id: "biz-003",
+          name: "Pizza Backstage",
+          type: "Pizza",
+          city: "Žilina",
+          regionId: "zilinsky",
+          cuisine: "pizza, craft beer",
+          plan: "club",
+          sponsored: false,
+          rating: 4.4,
+          email: "pizza@backstageza.sk",
+          description: "Jednoduchá voľba pred DNB nocou, pár minút od centra.",
+          images: 3,
+          status: "approved",
+        },
+        {
+          id: "biz-004",
+          name: "Garden Tapas",
+          type: "Reštaurácia",
+          city: "Banská Bystrica",
+          regionId: "banskobystricky",
+          cuisine: "tapas, víno, lokálne suroviny",
+          plan: "premium",
+          sponsored: true,
+          rating: 4.9,
+          email: "book@gardentapas.sk",
+          description: "Pokojnejšia večera pred jazzom, vhodné aj na menšie oslavy.",
+          images: 8,
+          status: "approved",
+        },
+        {
+          id: "biz-005",
+          name: "Nitra Noodle Bar",
+          type: "Street food",
+          city: "Nitra",
+          regionId: "nitriansky",
+          cuisine: "noodles, vegan, spicy",
+          plan: "free",
+          sponsored: false,
+          rating: 4.1,
+          email: "info@noodlebar.sk",
+          description: "Rýchle jedlo pred latin párty bez nutnosti rezervácie.",
+          images: 1,
+          status: "approved",
+        },
+        {
+          id: "biz-006",
+          name: "Aftertaste Trnava",
+          type: "Bistro & bar",
+          city: "Trnava",
+          regionId: "trnavsky",
+          cuisine: "sendviče, víno, nealko",
+          plan: "club",
+          sponsored: false,
+          rating: 4.3,
+          email: "trnava@aftertaste.sk",
+          description: "Pred koncertom aj po ňom, blízko kultúrneho programu.",
+          images: 3,
+          status: "approved",
+        },
+        {
+          id: "biz-007",
+          name: "Prešov Grill Point",
+          type: "Grill",
+          city: "Prešov",
+          regionId: "presovsky",
+          cuisine: "grill, wrapy, lokálne pivo",
+          plan: "promoter",
+          sponsored: true,
+          rating: 4.5,
+          email: "grill@pointpo.sk",
+          description: "Vhodné pred open-air eventom, možnosť väčšej rezervácie.",
+          images: 5,
+          status: "approved",
+        },
+        {
+          id: "biz-008",
+          name: "Trenčín Late Bite",
+          type: "Snack bar",
+          city: "Trenčín",
+          regionId: "trenciansky",
+          cuisine: "hot dog, tacos, nealko",
+          plan: "free",
+          sponsored: false,
+          rating: 4.0,
+          email: "latebite@tn.sk",
+          description: "Jedlo do ruky pred tvrdším koncertom.",
+          images: 1,
+          status: "approved",
+        },
+        {
+          id: "biz-009",
+          name: "Nové Bistro Martin",
+          type: "Bistro",
+          city: "Martin",
+          regionId: "zilinsky",
+          cuisine: "burgre, šaláty",
+          plan: "club",
+          sponsored: false,
+          rating: 0,
+          email: "kontakt@novemartin.sk",
+          description: "Ukážkový podnik čakajúci na schválenie.",
+          images: 2,
+          status: "pending",
+        },
+      ];
+
+      const reviews = [
+        { targetType: "event", targetId: "evt-001", user: "Marek", rating: 5, text: "Zvuk, priestor aj atmosféra výborné." },
+        { targetType: "event", targetId: "evt-002", user: "Sima", rating: 5, text: "Super bass večer, rada pôjdem znova." },
+        { targetType: "event", targetId: "evt-004", user: "Noro", rating: 4, text: "Cypher mal energiu, ocenil by som viac sedenia." },
+        { targetType: "business", targetId: "biz-001", user: "Ela", rating: 5, text: "Najlepšia voľba pred klubom, rýchla obsluha." },
+        { targetType: "business", targetId: "biz-004", user: "Peter", rating: 5, text: "Výborné jedlo pred jazzom, pekný podnik." },
+      ];
+
+      const comments = [
+        { targetType: "event", targetId: "evt-001", user: "Lukáš", text: "Dá sa prísť aj po polnoci?", date: "dnes" },
+        { targetType: "event", targetId: "evt-006", user: "Mia", text: "Bude aj gastro zóna?", date: "včera" },
+        { targetType: "business", targetId: "biz-001", user: "Tina", text: "Odporúčam rezervovať dopredu, býva plno.", date: "dnes" },
+      ];
+
+      const radioApiBase = "https://de1.api.radio-browser.info";
+      const radioGenres = [
+        { id: "slovakia", label: "Slovensko", countrycode: "SK" },
+        { id: "pop", label: "Pop", tag: "pop" },
+        { id: "dance", label: "Dance", tag: "dance" },
+        { id: "house", label: "House", tag: "house" },
+        { id: "techno", label: "Techno", tag: "techno" },
+        { id: "dnb", label: "Drum & Bass", tag: "drum and bass" },
+        { id: "hiphop", label: "Hip-Hop", tag: "hip hop" },
+        { id: "rock", label: "Rock", tag: "rock" },
+        { id: "metal", label: "Metal", tag: "metal" },
+        { id: "jazz", label: "Jazz", tag: "jazz" },
+        { id: "chill", label: "Chill", tag: "chillout" },
+        { id: "trance", label: "Trance", tag: "trance" },
+        { id: "classical", label: "Klasika", tag: "classical" },
+        { id: "news", label: "Správy", tag: "news" },
+        { id: "folk", label: "Folk", tag: "folk" },
+        { id: "latin", label: "Latin", tag: "latin" },
+        { id: "reggae", label: "Reggae", tag: "reggae" },
+        { id: "country", label: "Country", tag: "country" },
+        { id: "ambient", label: "Ambient", tag: "ambient" },
+        { id: "electronic", label: "Elektronika", tag: "electronic" },
+      ];
+
+      const fallbackStations = [
+        { id: "fallback-pop", name: "SomaFM PopTron", genre: "Pop", mood: "Záložný verejný stream", stream: "https://ice.somafm.com/poptron" },
+        { id: "fallback-house", name: "SomaFM Beat Blender", genre: "House", mood: "Záložný verejný stream", stream: "https://ice.somafm.com/beatblender" },
+        { id: "fallback-techno", name: "SomaFM DEF CON Radio", genre: "Techno", mood: "Záložný verejný stream", stream: "https://ice.somafm.com/defcon" },
+        { id: "fallback-dnb", name: "SomaFM Dub Step Beyond", genre: "Bass", mood: "Záložný verejný stream", stream: "https://ice.somafm.com/dubstep" },
+        { id: "fallback-rock", name: "SomaFM Indie Pop Rocks", genre: "Rock", mood: "Záložný verejný stream", stream: "https://ice.somafm.com/indiepop" },
+        { id: "fallback-metal", name: "SomaFM Metal Detector", genre: "Metal", mood: "Záložný verejný stream", stream: "https://ice.somafm.com/metal" },
+        { id: "fallback-jazz", name: "SomaFM Sonic Universe", genre: "Jazz", mood: "Záložný verejný stream", stream: "https://ice.somafm.com/sonicuniverse" },
+        { id: "fallback-chill", name: "SomaFM Groove Salad", genre: "Chill", mood: "Záložný verejný stream", stream: "https://ice.somafm.com/groovesalad" },
       ];
 
       let currentRegion = "bratislavsky";
+      let currentFoodRegion = "bratislavsky";
       let currentGenre = "all";
       let previousScreen = "home";
-      let activeStation = stations[0].id;
+      let currentUser = null;
+      let activeRadioGenre = "slovakia";
+      let activeStation = "";
+      let radioStations = [];
+      const stationCache = new Map();
 
       const screens = {
         home: document.querySelector("#homeScreen"),
         region: document.querySelector("#regionScreen"),
         detail: document.querySelector("#detailScreen"),
+        food: document.querySelector("#foodScreen"),
+        rankings: document.querySelector("#rankingsScreen"),
+        account: document.querySelector("#accountScreen"),
         submit: document.querySelector("#submitScreen"),
         admin: document.querySelector("#adminScreen"),
         radio: document.querySelector("#radioScreen"),
@@ -1104,6 +1735,44 @@
         return events.filter((event) => event.status === "approved");
       }
 
+      function approvedBusinesses() {
+        return businesses.filter((business) => business.status === "approved");
+      }
+
+      function targetReviews(type, id) {
+        return reviews.filter((review) => review.targetType === type && review.targetId === id);
+      }
+
+      function targetComments(type, id) {
+        return comments.filter((comment) => comment.targetType === type && comment.targetId === id);
+      }
+
+      function averageRating(type, id, fallback = 0) {
+        const list = targetReviews(type, id);
+        if (!list.length) return fallback;
+        return list.reduce((sum, review) => sum + Number(review.rating), 0) / list.length;
+      }
+
+      function ratingText(type, id, fallback = 0) {
+        const count = targetReviews(type, id).length;
+        const value = averageRating(type, id, fallback);
+        return value ? `${value.toFixed(1)} / 5 (${count || "profil"} rec.)` : "Nový profil";
+      }
+
+      function planById(plan) {
+        return planFeatures[plan] || planFeatures.free;
+      }
+
+      function scoreFor(item, type) {
+        return planById(item.plan).weight + averageRating(type, item.id, item.rating || 0) * 10 + (item.sponsored ? 8 : 0);
+      }
+
+      function sortedBusinesses(regionId) {
+        return approvedBusinesses()
+          .filter((business) => !regionId || business.regionId === regionId)
+          .sort((a, b) => scoreFor(b, "business") - scoreFor(a, "business"));
+      }
+
       function showScreen(name) {
         Object.entries(screens).forEach(([key, element]) => {
           element.classList.toggle("active", key === name);
@@ -1115,11 +1784,14 @@
 
         const subtitle = document.querySelector("#screenSubtitle");
         document.querySelector("#submitTop").style.display = name === "submit" ? "none" : "";
-        subtitle.textContent = name === "radio"
-          ? "Live audio prototyp"
-          : name === "admin"
-            ? "Admin schvaľovanie"
-            : "Mapa akcií na Slovensku";
+        subtitle.textContent = {
+          radio: "Live audio prototyp",
+          admin: "Admin schvaľovanie",
+          food: "Gastro pred akciou",
+          rankings: "Rebríčky a recenzie",
+          account: "Účet komunity",
+          submit: "Pridanie obsahu",
+        }[name] || "Mapa akcií na Slovensku";
       }
 
       function eventCard(event) {
@@ -1132,6 +1804,7 @@
             <h3>${event.title}</h3>
             <p class="meta">${event.venue} · ${event.city} · ${regionById(event.regionId).name}</p>
             <p class="desc">${event.description}</p>
+            <p class="rating">★ ${ratingText("event", event.id, event.rating || 0)} · ${planById(event.plan).name}</p>
             <span class="event-foot">
               <span class="pills">${event.genres.map((genre) => `<span class="pill">${genreLabels[genre]}</span>`).join("")}</span>
               <span class="price">${event.price}</span>
@@ -1146,12 +1819,47 @@
         });
       }
 
+      function businessCard(business) {
+        const plan = planById(business.plan);
+        const visibleImages = Math.min(Number(business.images || 1), plan.images);
+        return `
+          <button class="business-card" type="button" data-business="${business.id}">
+            <span class="event-top">
+              <span class="date">${regionById(business.regionId).name}</span>
+              ${business.sponsored ? '<span class="badge">Promo</span>' : ""}
+            </span>
+            <h3>${business.name}</h3>
+            <p class="meta">${business.type} · ${business.city} · ${business.cuisine}</p>
+            <p class="rating">★ ${ratingText("business", business.id, business.rating)} · ${plan.name}</p>
+            <div class="media-strip">
+              ${Array.from({ length: Math.min(visibleImages, 3) }).map((_, index) => `<span class="media-tile">foto ${index + 1}</span>`).join("")}
+            </div>
+            <p class="desc">${business.description}</p>
+          </button>
+        `;
+      }
+
+      function bindBusinessCards() {
+        document.querySelectorAll("[data-business]").forEach((card) => {
+          card.addEventListener("click", () => openBusiness(card.dataset.business));
+        });
+      }
+
       function renderHome() {
         document.querySelector("#approvedStat").textContent = approvedEvents().length;
         document.querySelector("#featuredList").innerHTML = approvedEvents()
           .filter((event) => event.sponsored)
           .map(eventCard)
           .join("");
+
+        document.querySelector("#homeFoodList").innerHTML = sortedBusinesses()
+          .slice(0, 3)
+          .map(businessCard)
+          .join("");
+
+        document.querySelector("#homeAccountState").innerHTML = currentUser
+          ? `<div><strong>${currentUser.name}</strong><p class="meta">${currentUser.email}</p></div><button class="ghost" type="button" data-nav-jump="account">Upraviť účet</button>`
+          : `<div><strong>Nie si prihlásený</strong><p class="meta">Komentáre a recenzie budú viazané na účet.</p></div><button class="primary" type="button" data-nav-jump="account">Vytvoriť účet</button>`;
 
         document.querySelector("#legend").innerHTML = regions.map((region) => `
           <button type="button" data-region="${region.id}">
@@ -1165,6 +1873,8 @@
         });
 
         bindEventCards();
+        bindBusinessCards();
+        bindNavJumps();
       }
 
       function renderGenreChips() {
@@ -1185,6 +1895,7 @@
 
       function openRegion(regionId) {
         currentRegion = regionId;
+        currentFoodRegion = regionId;
         const region = regionById(regionId);
         const list = approvedEvents()
           .filter((event) => event.regionId === regionId)
@@ -1205,14 +1916,90 @@
         document.querySelector("#regionList").innerHTML = list.length
           ? list.map(eventCard).join("")
           : '<div class="panel empty">V tomto žánri zatiaľ nie je žiadna schválená akcia.</div>';
+        document.querySelector("#regionFoodList").innerHTML = sortedBusinesses(regionId).length
+          ? sortedBusinesses(regionId).map(businessCard).join("")
+          : '<div class="empty">Zatiaľ tu nie je odporúčaný podnik.</div>';
         bindEventCards();
+        bindBusinessCards();
         previousScreen = "home";
         showScreen("region");
+      }
+
+      function commentsHTML(type, id) {
+        const list = targetComments(type, id);
+        return list.length
+          ? list.map((comment) => `
+              <article class="comment-card">
+                <strong>${comment.user} <span class="meta">· ${comment.date}</span></strong>
+                <p class="meta">${comment.text}</p>
+              </article>
+            `).join("")
+          : '<div class="empty">Zatiaľ bez komentárov.</div>';
+      }
+
+      function reviewsHTML(type, id, fallback = 0) {
+        const list = targetReviews(type, id);
+        return `
+          <p class="rating">★ ${ratingText(type, id, fallback)}</p>
+          <div class="comment-list">
+            ${list.length ? list.map((review) => `
+              <article class="comment-card">
+                <strong>${review.user} · ${review.rating}/5</strong>
+                <p class="meta">${review.text}</p>
+              </article>
+            `).join("") : '<div class="empty">Zatiaľ bez recenzií.</div>'}
+          </div>
+        `;
+      }
+
+      function interactionPanel(type, id, fallbackRating = 0) {
+        const loginNote = currentUser
+          ? `<p class="meta">Píšeš ako ${currentUser.name}.</p>`
+          : '<p class="meta">Na komentár alebo recenziu si najprv vytvor účet.</p>';
+        return `
+          <section class="content-grid">
+            <div class="panel screen-panel">
+              <div class="section-head">
+                <div>
+                  <h2>Komentáre</h2>
+                  ${loginNote}
+                </div>
+              </div>
+              <div class="comment-list">${commentsHTML(type, id)}</div>
+              <div class="review-form">
+                <textarea data-comment-text placeholder="Napíš komentár"></textarea>
+                <button class="primary" type="button" data-add-comment="${type}:${id}">Pridať komentár</button>
+              </div>
+            </div>
+            <div class="panel screen-panel">
+              <div class="section-head">
+                <div>
+                  <h2>Recenzie</h2>
+                  <p>Hodnotenia tvoria rebríčky.</p>
+                </div>
+              </div>
+              ${reviewsHTML(type, id, fallbackRating)}
+              <div class="review-form">
+                <select data-review-rating>
+                  <option value="5">5 - výborné</option>
+                  <option value="4">4 - dobré</option>
+                  <option value="3">3 - priemer</option>
+                  <option value="2">2 - slabé</option>
+                  <option value="1">1 - zlé</option>
+                </select>
+                <textarea data-review-text placeholder="Napíš krátku recenziu"></textarea>
+                <button class="primary" type="button" data-add-review="${type}:${id}">Pridať recenziu</button>
+              </div>
+            </div>
+          </section>
+        `;
       }
 
       function openEvent(eventId) {
         const event = events.find((item) => item.id === eventId);
         if (!event) return;
+        const plan = planById(event.plan);
+        const nearbyFood = sortedBusinesses(event.regionId).slice(0, 3);
 
         document.querySelector("#detailContent").innerHTML = `
           <section class="panel screen-panel">
@@ -1230,23 +2017,252 @@
             <div class="tile"><small>Cena</small><strong>${event.price}</strong></div>
             <div class="tile"><small>Promotér</small><strong>${event.promoter}</strong></div>
             <div class="tile"><small>Kraj</small><strong>${regionById(event.regionId).name}</strong></div>
-            <div class="tile"><small>Profil</small><strong>${event.plan.toUpperCase()}</strong></div>
+            <div class="tile"><small>Profil</small><strong>${plan.name} · ${plan.ads}</strong></div>
           </section>
           <section class="panel screen-panel">
             <h2>Popis</h2>
             <p class="meta" style="margin-top:8px">${event.description}</p>
             <div class="pills" style="margin-top:14px">${event.genres.map((genre) => `<span class="pill">${genreLabels[genre]}</span>`).join("")}</div>
+            <div class="mini-actions" style="margin-top:14px">
+              <a class="primary" href="${event.ticketLink}" target="_blank" rel="noreferrer">Otvoriť predpredaj</a>
+              <a href="mailto:${event.contactEmail}">Napísať organizátorovi</a>
+            </div>
           </section>
-          <button class="primary" type="button">Otvoriť predpredaj</button>
+          ${plan.video ? `
+            <section class="video-box">
+              <span class="play-mark">▶</span>
+              <div>
+                <p class="eyebrow">Video eventu</p>
+                <h2>Teaser alebo aftermovie</h2>
+                <p class="meta">Video je dostupné pri vyššom platenom profile. Link: ${event.videoUrl || "doplní organizátor"}</p>
+              </div>
+            </section>
+          ` : ""}
+          <section class="panel screen-panel">
+            <div class="section-head">
+              <div>
+                <h2>Info od organizátora</h2>
+                <p>Majiteľ klubu alebo promotér môže dopĺňať zmeny, line-up, dress code alebo časový harmonogram.</p>
+              </div>
+            </div>
+            <div class="comment-list">
+              ${event.updates.map((update) => `<article class="owner-update"><p class="meta">${update}</p></article>`).join("")}
+            </div>
+            <div class="review-form">
+              <textarea data-owner-update placeholder="Majiteľ pridá nové info k udalosti"></textarea>
+              <button class="ghost" type="button" data-add-update="${event.id}">Pridať info od organizátora</button>
+            </div>
+          </section>
+          <section class="panel screen-panel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Pred akciou</p>
+                <h2>Najedz sa v okolí</h2>
+                <p>Gastro odporúčania v rovnakom kraji.</p>
+              </div>
+            </div>
+            <div class="business-grid">${nearbyFood.map(businessCard).join("")}</div>
+          </section>
+          ${interactionPanel("event", event.id, event.rating || 0)}
         `;
         bindBackButtons();
+        bindBusinessCards();
+        bindDetailActions();
         previousScreen = "region";
         showScreen("detail");
       }
 
+      function openBusiness(businessId) {
+        const business = businesses.find((item) => item.id === businessId);
+        if (!business) return;
+        const plan = planById(business.plan);
+        const imageCount = Math.min(Number(business.images || 1), plan.images);
+
+        document.querySelector("#detailContent").innerHTML = `
+          <section class="panel screen-panel">
+            <button class="back-btn" type="button" data-back>Späť</button>
+            <div class="section-head" style="margin-top:12px">
+              <div>
+                <p class="eyebrow">${regionById(business.regionId).name}</p>
+                <h2>${business.name}</h2>
+                <p>${business.type} · ${business.city} · ${business.cuisine}</p>
+              </div>
+              ${business.sponsored ? '<span class="badge">Promovaný podnik</span>' : ""}
+            </div>
+          </section>
+          <section class="detail-grid">
+            <div class="tile"><small>Hodnotenie</small><strong>★ ${ratingText("business", business.id, business.rating)}</strong></div>
+            <div class="tile"><small>Profil</small><strong>${plan.name}</strong></div>
+            <div class="tile"><small>Obrázky</small><strong>${imageCount} z ${plan.images} podľa paušálu</strong></div>
+            <div class="tile"><small>Reklama</small><strong>${plan.ads}</strong></div>
+          </section>
+          <section class="panel screen-panel">
+            <h2>Prečo sem ísť</h2>
+            <p class="meta" style="margin-top:8px">${business.description}</p>
+            <div class="media-strip" style="margin-top:14px">
+              ${Array.from({ length: Math.min(imageCount, 6) }).map((_, index) => `<span class="media-tile">foto ${index + 1}</span>`).join("")}
+            </div>
+            <div class="mini-actions" style="margin-top:14px">
+              <a class="primary" href="mailto:${business.email}">Napísať podniku</a>
+              <button type="button" data-open-submit="business">Upraviť / pridať podnik</button>
+            </div>
+          </section>
+          ${plan.video ? `
+            <section class="video-box">
+              <span class="play-mark">▶</span>
+              <div>
+                <p class="eyebrow">Premium obsah</p>
+                <h2>Video alebo promo spot podniku</h2>
+                <p class="meta">Vyšší paušál môže pridať video, viac fotiek a reklamné umiestnenia.</p>
+              </div>
+            </section>
+          ` : ""}
+          ${interactionPanel("business", business.id, business.rating)}
+        `;
+        bindBackButtons();
+        bindDetailActions();
+        previousScreen = "food";
+        showScreen("detail");
+      }
+
+      function renderFood() {
+        const region = regionById(currentFoodRegion);
+        document.querySelector("#foodRegionTitle").textContent = `Podniky: ${region.name}`;
+        document.querySelector("#foodRegionMeta").textContent = "Premium a Promoter profily sú vyššie, ale vždy označené ako promo.";
+        document.querySelector("#foodRegionChips").innerHTML = regions.map((regionItem) => `
+          <button class="chip ${regionItem.id === currentFoodRegion ? "active" : ""}" type="button" data-food-region="${regionItem.id}">
+            ${regionItem.name}
+          </button>
+        `).join("");
+        document.querySelector("#foodList").innerHTML = sortedBusinesses(currentFoodRegion).length
+          ? sortedBusinesses(currentFoodRegion).map(businessCard).join("")
+          : '<div class="empty">V tomto kraji ešte nie je schválený podnik.</div>';
+
+        document.querySelectorAll("[data-food-region]").forEach((chip) => {
+          chip.addEventListener("click", () => {
+            currentFoodRegion = chip.dataset.foodRegion;
+            renderFood();
+          });
+        });
+        bindBusinessCards();
+        bindNavJumps();
+      }
+
+      function renderRankings() {
+        const brands = Object.values(approvedEvents().reduce((acc, event) => {
+          if (!acc[event.promoter]) acc[event.promoter] = { name: event.promoter, events: 0, score: 0, premium: false };
+          acc[event.promoter].events += 1;
+          acc[event.promoter].score += averageRating("event", event.id, 4.1) + planById(event.plan).weight / 20;
+          acc[event.promoter].premium ||= event.sponsored;
+          return acc;
+        }, {})).sort((a, b) => b.score - a.score);
+
+        document.querySelector("#brandRanking").innerHTML = brands.map((brand, index) => `
+          <article class="rank-card">
+            <span class="rank-number">#${index + 1} event značka</span>
+            <h3>${brand.name}</h3>
+            <p class="rating">★ ${(brand.score / brand.events).toFixed(1)} · ${brand.events} akcií</p>
+            <p class="meta">${brand.premium ? "Má platené promo umiestnenie." : "Organické poradie podľa recenzií."}</p>
+          </article>
+        `).join("");
+
+        document.querySelector("#placeRanking").innerHTML = sortedBusinesses().slice(0, 6).map((business, index) => `
+          <button class="rank-card" type="button" data-business="${business.id}">
+            <span class="rank-number">#${index + 1} miesto</span>
+            <h3>${business.name}</h3>
+            <p class="rating">★ ${ratingText("business", business.id, business.rating)}</p>
+            <p class="meta">${business.city} · ${planById(business.plan).name}</p>
+          </button>
+        `).join("");
+
+        document.querySelector("#planCards").innerHTML = Object.values(planFeatures).map((plan) => `
+          <article class="plan-card ${plan.name === "Premium" ? "featured-plan" : ""}">
+            <span class="badge">${plan.name}</span>
+            <h3>${plan.ads}</h3>
+            <p class="meta">${plan.images} obrázkov · ${plan.video ? "video povolené" : "bez videa"} · váha v poradí ${plan.weight}</p>
+          </article>
+        `).join("");
+        bindBusinessCards();
+      }
+
+      function renderAccount() {
+        document.querySelector("#accountPreview").innerHTML = currentUser
+          ? `<h3>Prihlásený používateľ</h3><p class="meta" style="margin-top:8px">${currentUser.name} · ${currentUser.email}</p><p class="meta" style="margin-top:8px">Teraz môžeš písať komentáre a recenzie k akciám, klubom aj podnikom.</p>`
+          : '<h3>Účet ešte nie je vytvorený</h3><p class="meta" style="margin-top:8px">Vyplň meno a email vyššie. Toto je zatiaľ prototyp, v ostrej appke bude bezpečné prihlásenie.</p>';
+      }
+
+      function saveAccount() {
+        const name = document.querySelector("#accountName").value || "NightBase používateľ";
+        const email = document.querySelector("#accountEmail").value || "user@nightbase.sk";
+        currentUser = { name, email };
+        renderAccount();
+        renderHome();
+      }
+
+      function bindNavJumps() {
+        document.querySelectorAll("[data-nav-jump]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const target = button.dataset.navJump;
+            if (target === "food") renderFood();
+            if (target === "rankings") renderRankings();
+            if (target === "account") renderAccount();
+            showScreen(target);
+          });
+        });
+
+        document.querySelectorAll("[data-open-submit]").forEach((button) => {
+          button.addEventListener("click", () => openSubmit());
+        });
+      }
+
+      function bindDetailActions() {
+        bindNavJumps();
+        document.querySelectorAll("[data-add-comment]").forEach((button) => {
+          button.addEventListener("click", () => {
+            if (!currentUser) {
+              renderAccount();
+              showScreen("account");
+              return;
+            }
+            const [type, id] = button.dataset.addComment.split(":");
+            const text = document.querySelector("[data-comment-text]")?.value || "";
+            if (!text.trim()) return;
+            comments.push({ targetType: type, targetId: id, user: currentUser.name, text, date: "teraz" });
+            type === "event" ? openEvent(id) : openBusiness(id);
+          });
+        });
+
+        document.querySelectorAll("[data-add-review]").forEach((button) => {
+          button.addEventListener("click", () => {
+            if (!currentUser) {
+              renderAccount();
+              showScreen("account");
+              return;
+            }
+            const [type, id] = button.dataset.addReview.split(":");
+            const rating = Number(document.querySelector("[data-review-rating]")?.value || 5);
+            const text = document.querySelector("[data-review-text]")?.value || "";
+            if (!text.trim()) return;
+            reviews.push({ targetType: type, targetId: id, user: currentUser.name, rating, text });
+            type === "event" ? openEvent(id) : openBusiness(id);
+          });
+        });
+
+        document.querySelectorAll("[data-add-update]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const event = events.find((item) => item.id === button.dataset.addUpdate);
+            const text = document.querySelector("[data-owner-update]")?.value || "";
+            if (!event || !text.trim()) return;
+            event.updates.unshift(text);
+            openEvent(event.id);
+          });
+        });
+      }
+
       function renderAdmin() {
         const pending = events.filter((event) => event.status === "pending");
-        document.querySelector("#adminList").innerHTML = pending.length
+        const pendingBusinesses = businesses.filter((business) => business.status === "pending");
+        const pendingEventHTML = pending.length
           ? pending.map((event) => `
               <article class="event-card">
                 <span class="date">${event.date} ${event.time}</span>
@@ -1260,6 +2276,28 @@
               </article>
             `).join("")
           : '<div class="empty">Žiadne čakajúce akcie.</div>';
+
+        const pendingBusinessHTML = pendingBusinesses.length
+          ? pendingBusinesses.map((business) => `
+              <article class="event-card">
+                <span class="date">${business.city} · ${regionById(business.regionId).name}</span>
+                <h3>${business.name}</h3>
+                <p class="meta">${business.type} · ${business.cuisine} · ${planById(business.plan).name}</p>
+                <p class="desc">${business.description}</p>
+                <span class="row">
+                  <button class="ghost" type="button" data-reject-business="${business.id}">Zamietnuť</button>
+                  <button class="primary" type="button" data-approve-business="${business.id}">Schváliť</button>
+                </span>
+              </article>
+            `).join("")
+          : '<div class="empty">Žiadne čakajúce podniky.</div>';
+
+        document.querySelector("#adminList").innerHTML = `
+          <h3>Akcie</h3>
+          ${pendingEventHTML}
+          <h3 style="margin-top:18px">Podniky a reštaurácie</h3>
+          ${pendingBusinessHTML}
+        `;
 
         document.querySelectorAll("[data-approve]").forEach((button) => {
           button.addEventListener("click", () => {
@@ -1277,13 +2315,146 @@
             renderAdmin();
           });
         });
+
+        document.querySelectorAll("[data-approve-business]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const business = businesses.find((item) => item.id === button.dataset.approveBusiness);
+            if (business) business.status = "approved";
+            renderHome();
+            renderAdmin();
+          });
+        });
+
+        document.querySelectorAll("[data-reject-business]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const business = businesses.find((item) => item.id === button.dataset.rejectBusiness);
+            if (business) business.status = "rejected";
+            renderAdmin();
+          });
+        });
+      }
+
+      function escapeHTML(value) {
+        return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#039;",
+        }[char]));
+      }
+
+      function radioGenreById(id) {
+        return radioGenres.find((genre) => genre.id === id) || radioGenres[0];
+      }
+
+      function renderRadioGenres() {
+        document.querySelector("#radioGenreGrid").innerHTML = radioGenres.map((genre) => `
+          <button class="radio-genre ${genre.id === activeRadioGenre ? "active" : ""}" type="button" data-radio-genre="${genre.id}">
+            ${genre.label}
+          </button>
+        `).join("");
+
+        document.querySelectorAll("[data-radio-genre]").forEach((button) => {
+          button.addEventListener("click", () => loadStations(button.dataset.radioGenre));
+        });
+      }
+
+      function normalizeStation(station) {
+        const stream = station.url_resolved || station.url || station.stream || "";
+        return {
+          id: station.stationuuid || station.id,
+          uuid: station.stationuuid || "",
+          name: station.name || "Bez názvu",
+          genre: station.tags || station.genre || radioGenreById(activeRadioGenre).label,
+          mood: station.country || station.mood || "Online rádio",
+          countrycode: station.countrycode || "",
+          codec: station.codec || "",
+          bitrate: station.bitrate || "",
+          clickcount: station.clickcount || 0,
+          lastcheckok: station.lastcheckok,
+          secure: stream.startsWith("https://"),
+          stream,
+        };
+      }
+
+      function stationMeta(station) {
+        const parts = [
+          station.mood,
+          station.countrycode,
+          station.codec,
+          station.bitrate ? `${station.bitrate} kbps` : "",
+          station.clickcount ? `${station.clickcount} klikov` : "",
+          station.secure ? "HTTPS" : "",
+        ];
+        return parts.filter(Boolean).join(" · ");
+      }
+
+      function fallbackForGenre(genreId) {
+        const genre = radioGenreById(genreId).label.toLowerCase();
+        const filtered = fallbackStations.filter((station) => station.genre.toLowerCase().includes(genre));
+        return (filtered.length ? filtered : fallbackStations).map(normalizeStation);
+      }
+
+      function radioSearchUrl(genre) {
+        const params = new URLSearchParams({
+          hidebroken: "true",
+          order: "clickcount",
+          reverse: "true",
+          limit: "40",
+        });
+        if (genre.countrycode) params.set("countrycode", genre.countrycode);
+        if (genre.tag) params.set("tag", genre.tag);
+        return `${radioApiBase}/json/stations/search?${params.toString()}`;
+      }
+
+      async function loadStations(genreId = activeRadioGenre) {
+        activeRadioGenre = genreId;
+        activeStation = "";
+        renderRadioGenres();
+        document.querySelector("#stationGrid").innerHTML = '<div class="empty">Načítavam stanice...</div>';
+        document.querySelector("#radioStatus").textContent = `Načítavam: ${radioGenreById(genreId).label}`;
+
+        if (stationCache.has(genreId)) {
+          radioStations = stationCache.get(genreId);
+          renderStations();
+          selectStation(radioStations[0]?.id, false);
+          return;
+        }
+
+        try {
+          const response = await fetch(radioSearchUrl(radioGenreById(genreId)));
+          if (!response.ok) throw new Error("Radio Browser nedostupný");
+          const data = await response.json();
+          radioStations = data
+            .map(normalizeStation)
+            .filter((station) => station.stream && station.lastcheckok !== 0)
+            .sort((a, b) => Number(b.secure) - Number(a.secure))
+            .slice(0, 20);
+
+          if (!radioStations.length) radioStations = fallbackForGenre(genreId);
+          stationCache.set(genreId, radioStations);
+          renderStations();
+          selectStation(radioStations[0]?.id, false);
+        } catch {
+          radioStations = fallbackForGenre(genreId);
+          renderStations();
+          selectStation(radioStations[0]?.id, false);
+          document.querySelector("#radioStatus").textContent = "Katalóg rádií teraz neodpovedá, ukazujem záložné verejné streamy.";
+        }
       }
 
       function renderStations() {
-        document.querySelector("#stationGrid").innerHTML = stations.map((station) => `
-          <button class="station ${station.id === activeStation ? "active" : ""}" type="button" data-station="${station.id}">
-            <strong>${station.name}</strong>
-            <span>${station.genre} · ${station.mood}</span>
+        if (!radioStations.length) {
+          document.querySelector("#stationGrid").innerHTML = '<div class="empty">Nenašiel som funkčné stanice pre tento filter.</div>';
+          return;
+        }
+
+        document.querySelector("#stationGrid").innerHTML = radioStations.map((station) => `
+          <button class="station ${station.id === activeStation ? "active" : ""}" type="button" data-station="${escapeHTML(station.id)}">
+            <strong>${escapeHTML(station.name)}</strong>
+            <span>${escapeHTML(stationMeta(station))}</span>
+            <small>${escapeHTML(String(station.genre).split(",").slice(0, 4).join(" · "))}</small>
           </button>
         `).join("");
 
@@ -1293,25 +2464,31 @@
       }
 
       function selectStation(stationId, autoplay) {
-        const station = stations.find((item) => item.id === stationId) || stations[0];
+        const station = radioStations.find((item) => item.id === stationId) || radioStations[0];
         const audio = document.querySelector("#radioAudio");
+        if (!station) return;
+
         activeStation = station.id;
         document.querySelector("#stationTitle").textContent = station.name;
-        document.querySelector("#stationMeta").textContent = `${station.genre} · ${station.mood}`;
-        document.querySelector("#radioStatus").textContent = "Pripájam stream...";
+        document.querySelector("#stationMeta").textContent = stationMeta(station);
         audio.src = station.stream;
         audio.load();
         renderStations();
 
-        if (autoplay) {
-          audio.play()
-            .then(() => {
-              document.querySelector("#radioStatus").textContent = "Stream hrá. Ak nepočuješ zvuk, skontroluj hlasitosť zariadenia.";
-            })
-            .catch(() => {
-              document.querySelector("#radioStatus").textContent = "Prehliadač zablokoval autoplay. Stlač play priamo na prehrávači.";
-            });
+        if (!autoplay) {
+          document.querySelector("#radioStatus").textContent = "Stanica je pripravená. Stlač play.";
+          return;
         }
+
+        if (station.uuid) fetch(`${radioApiBase}/json/url/${station.uuid}`).catch(() => {});
+        document.querySelector("#radioStatus").textContent = "Pripájam stream...";
+        audio.play()
+          .then(() => {
+            document.querySelector("#radioStatus").textContent = "Stream hrá. Ak nepočuješ zvuk, skontroluj hlasitosť zariadenia.";
+          })
+          .catch(() => {
+            document.querySelector("#radioStatus").textContent = "Prehliadač prehrávanie zastavil alebo stanica odmietla stream. Skús inú stanicu v zozname.";
+          });
       }
 
       function openSubmit() {
@@ -1333,8 +2510,33 @@
           price: document.querySelector("#newPrice").value || "Cena neuvedená",
           description: document.querySelector("#newDescription").value || "Popis bude doplnený.",
           promoter: document.querySelector("#newPromoter").value || "Nový promotér",
+          ticketLink: document.querySelector("#newTicket").value || "https://tickets.example/nightbase",
+          contactEmail: document.querySelector("#newEmail").value || "info@nightbase.sk",
+          videoUrl: document.querySelector("#newVideo").value || "",
+          updates: ["Nová akcia čaká na doplnenie detailov organizátorom."],
           plan,
           sponsored: plan === "premium",
+          status: "pending",
+        });
+        renderAdmin();
+        showScreen("admin");
+      }
+
+      function saveBusiness() {
+        const plan = document.querySelector("#newBusinessPlan").value;
+        businesses.unshift({
+          id: `biz-${Date.now()}`,
+          name: document.querySelector("#newBusinessName").value || "Nový podnik",
+          type: document.querySelector("#newBusinessType").value || "Reštaurácia",
+          city: document.querySelector("#newBusinessCity").value || "Mesto neuvedené",
+          regionId: document.querySelector("#newBusinessRegion").value,
+          cuisine: document.querySelector("#newBusinessCuisine").value || "jedlo pred akciou",
+          email: document.querySelector("#newBusinessEmail").value || "kontakt@podnik.sk",
+          description: document.querySelector("#newBusinessDescription").value || "Popis bude doplnený.",
+          images: Number(document.querySelector("#newBusinessImages").value || 1),
+          plan,
+          sponsored: plan === "premium" || plan === "promoter",
+          rating: 0,
           status: "pending",
         });
         renderAdmin();
@@ -1357,20 +2559,30 @@
         button.addEventListener("click", () => {
           const target = button.dataset.nav;
           if (target === "admin") renderAdmin();
-          if (target === "radio") renderStations();
+          if (target === "food") renderFood();
+          if (target === "rankings") renderRankings();
+          if (target === "account") renderAccount();
+          if (target === "radio" && !radioStations.length) loadStations(activeRadioGenre);
           showScreen(target);
         });
       });
 
       document.querySelector("#submitTop").addEventListener("click", openSubmit);
       document.querySelector("#saveEvent").addEventListener("click", saveEvent);
+      document.querySelector("#saveBusiness").addEventListener("click", saveBusiness);
+      document.querySelector("#saveAccount").addEventListener("click", saveAccount);
       document.querySelector("#newRegion").innerHTML = regions.map((region) => `<option value="${region.id}">${region.name}</option>`).join("");
+      document.querySelector("#newBusinessRegion").innerHTML = regions.map((region) => `<option value="${region.id}">${region.name}</option>`).join("");
 
       bindBackButtons();
+      bindNavJumps();
       renderHome();
       renderAdmin();
-      renderStations();
-      selectStation(activeStation, false);
+      renderFood();
+      renderRankings();
+      renderAccount();
+      renderRadioGenres();
+      loadStations(activeRadioGenre);
     </script>
   </body>
 </html>
