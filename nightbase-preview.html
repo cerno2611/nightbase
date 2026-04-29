@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NightBase Preview</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b0e14;
+        --surface: #141925;
+        --surface-2: #1c2230;
+        --border: #2b3245;
+        --text: #f7f8fc;
+        --muted: #a7afbf;
+        --dim: #727b8e;
+        --green: #35e0a1;
+        --pink: #ff4f88;
+        --yellow: #ffc857;
+        --blue: #5da9ff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+      }
+
+      .app {
+        margin: 0 auto;
+        max-width: 520px;
+        min-height: 100vh;
+        background: var(--bg);
+      }
+
+      header {
+        align-items: center;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+        padding: 14px 16px;
+        position: sticky;
+        top: 0;
+        background: rgba(11, 14, 20, 0.96);
+        z-index: 5;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      header h1 {
+        font-size: 21px;
+        font-weight: 900;
+      }
+
+      header p {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 2px;
+      }
+
+      .icon-btn {
+        align-items: center;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        cursor: pointer;
+        display: inline-flex;
+        height: 40px;
+        justify-content: center;
+        min-width: 40px;
+      }
+
+      main {
+        display: grid;
+        gap: 16px;
+        padding: 16px;
+      }
+
+      .hero {
+        display: flex;
+        gap: 14px;
+        justify-content: space-between;
+      }
+
+      .kicker {
+        color: var(--green);
+        font-size: 12px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .headline {
+        font-size: 28px;
+        font-weight: 900;
+        line-height: 1.08;
+        margin-top: 5px;
+      }
+
+      .primary-btn {
+        align-items: center;
+        background: var(--green);
+        border: 0;
+        border-radius: 8px;
+        color: #08110d;
+        cursor: pointer;
+        display: inline-flex;
+        font-weight: 900;
+        gap: 8px;
+        justify-content: center;
+        min-height: 46px;
+        padding: 0 14px;
+      }
+
+      .map-card,
+      .card,
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+      }
+
+      .map-card {
+        padding: 12px;
+      }
+
+      svg {
+        display: block;
+        height: auto;
+        width: 100%;
+      }
+
+      polygon,
+      text.region-label {
+        cursor: pointer;
+      }
+
+      .legend {
+        display: grid;
+        gap: 6px;
+        grid-template-columns: 1fr 1fr;
+        margin-top: 10px;
+      }
+
+      .legend button {
+        align-items: center;
+        background: var(--surface-2);
+        border: 1px solid transparent;
+        border-radius: 7px;
+        color: var(--muted);
+        cursor: pointer;
+        display: flex;
+        gap: 6px;
+        min-height: 32px;
+        padding: 0 8px;
+        text-align: left;
+      }
+
+      .dot {
+        border-radius: 999px;
+        display: inline-block;
+        height: 8px;
+        width: 8px;
+      }
+
+      .actions {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .actions button,
+      .chip,
+      .secondary-btn {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        cursor: pointer;
+        font-weight: 800;
+        min-height: 42px;
+        padding: 0 8px;
+      }
+
+      .section-title {
+        display: grid;
+        gap: 3px;
+      }
+
+      .section-title h2 {
+        font-size: 18px;
+        font-weight: 900;
+      }
+
+      .section-title p {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .card {
+        cursor: pointer;
+        display: grid;
+        gap: 9px;
+        padding: 14px;
+      }
+
+      .card-top,
+      .card-footer,
+      .row {
+        align-items: center;
+        display: flex;
+        gap: 8px;
+        justify-content: space-between;
+      }
+
+      .date {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .badge {
+        background: var(--yellow);
+        border-radius: 6px;
+        color: #11130f;
+        font-size: 11px;
+        font-weight: 900;
+        padding: 4px 7px;
+        text-transform: uppercase;
+      }
+
+      .card h3 {
+        font-size: 18px;
+        font-weight: 900;
+      }
+
+      .meta,
+      .desc {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .desc {
+        color: var(--dim);
+      }
+
+      .genres {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .pill {
+        background: var(--surface-2);
+        border-radius: 6px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 800;
+        padding: 5px 7px;
+      }
+
+      .price {
+        color: var(--text);
+        font-size: 12px;
+        font-weight: 900;
+        text-align: right;
+      }
+
+      .chips {
+        display: flex;
+        gap: 7px;
+        margin: 0 -16px;
+        overflow-x: auto;
+        padding: 0 16px;
+      }
+
+      .chip {
+        color: var(--muted);
+        flex: 0 0 auto;
+        padding: 0 13px;
+      }
+
+      .chip.active {
+        background: var(--green);
+        border-color: var(--green);
+        color: #08110d;
+      }
+
+      .region-band {
+        align-items: center;
+        display: flex;
+        gap: 14px;
+        padding: 16px;
+      }
+
+      .region-code {
+        font-size: 34px;
+        font-weight: 900;
+        width: 58px;
+      }
+
+      .back {
+        margin-right: 8px;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .detail-hero,
+      .form {
+        display: grid;
+        gap: 12px;
+        padding: 18px;
+      }
+
+      .detail-hero h2 {
+        font-size: 29px;
+        line-height: 1.12;
+      }
+
+      .grid {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .tile {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        display: grid;
+        gap: 5px;
+        min-height: 94px;
+        padding: 13px;
+      }
+
+      .tile small {
+        color: var(--dim);
+        font-size: 11px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .tile strong {
+        font-size: 14px;
+        line-height: 1.3;
+      }
+
+      label {
+        color: var(--muted);
+        display: grid;
+        font-size: 12px;
+        font-weight: 900;
+        gap: 6px;
+        text-transform: uppercase;
+      }
+
+      input,
+      textarea,
+      select {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        min-height: 46px;
+        padding: 10px 12px;
+      }
+
+      textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .radio-grid {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .radio-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        display: grid;
+        gap: 6px;
+        min-height: 96px;
+        padding: 12px;
+      }
+
+      .radio-card strong {
+        font-size: 14px;
+      }
+
+      .radio-card span {
+        color: var(--dim);
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <div class="row">
+          <button class="icon-btn back hidden" id="backBtn" type="button">‹</button>
+          <div>
+            <h1 id="screenTitle">NightBase</h1>
+            <p id="screenSubtitle">Akcie na Slovensku podľa krajov</p>
+          </div>
+        </div>
+        <button class="icon-btn" id="radioBtn" type="button">♫</button>
+      </header>
+
+      <main id="homeScreen">
+        <section class="hero">
+          <div>
+            <p class="kicker">Dnes začínaš mapou</p>
+            <h2 class="headline">Klikni na kraj a nájdi najbližšie akcie.</h2>
+          </div>
+          <button class="primary-btn" id="quickSubmitBtn" type="button">+</button>
+        </section>
+
+        <section class="map-card">
+          <svg viewBox="0 0 560 245" aria-label="Mapa Slovenska">
+            <polygon data-region="bratislavsky" points="28,146 74,132 94,158 70,194 30,188" fill="#0f8f68" stroke="#0b0e14" stroke-width="3"></polygon>
+            <polygon data-region="trnavsky" points="74,132 143,114 171,141 139,178 94,158" fill="#b06f00" stroke="#0b0e14" stroke-width="3"></polygon>
+            <polygon data-region="trenciansky" points="123,69 188,50 224,82 206,123 171,141 143,114" fill="#1f5e9b" stroke="#0b0e14" stroke-width="3"></polygon>
+            <polygon data-region="nitriansky" points="139,178 171,141 206,123 237,153 225,203 167,220" fill="#a73838" stroke="#0b0e14" stroke-width="3"></polygon>
+            <polygon data-region="zilinsky" points="224,82 242,39 307,25 356,61 327,104 268,111" fill="#6941b2" stroke="#0b0e14" stroke-width="3"></polygon>
+            <polygon data-region="banskobystricky" points="206,123 268,111 327,104 376,136 349,191 278,213 225,203 237,153" fill="#a3356d" stroke="#0b0e14" stroke-width="3"></polygon>
+            <polygon data-region="presovsky" points="356,61 415,36 492,57 532,91 503,132 430,119 376,136 327,104" fill="#1689b0" stroke="#0b0e14" stroke-width="3"></polygon>
+            <polygon data-region="kosicky" points="376,136 430,119 503,132 526,177 484,214 410,215 349,191" fill="#839a18" stroke="#0b0e14" stroke-width="3"></polygon>
+            <text class="region-label" data-region="bratislavsky" x="49" y="168" fill="#fff" font-size="19" font-weight="800" text-anchor="middle">BA</text>
+            <text class="region-label" data-region="trnavsky" x="116" y="145" fill="#fff" font-size="19" font-weight="800" text-anchor="middle">TT</text>
+            <text class="region-label" data-region="trenciansky" x="163" y="95" fill="#fff" font-size="19" font-weight="800" text-anchor="middle">TN</text>
+            <text class="region-label" data-region="nitriansky" x="174" y="180" fill="#fff" font-size="19" font-weight="800" text-anchor="middle">NR</text>
+            <text class="region-label" data-region="zilinsky" x="267" y="71" fill="#fff" font-size="19" font-weight="800" text-anchor="middle">ZA</text>
+            <text class="region-label" data-region="banskobystricky" x="293" y="162" fill="#fff" font-size="19" font-weight="800" text-anchor="middle">BB</text>
+            <text class="region-label" data-region="presovsky" x="418" y="87" fill="#fff" font-size="19" font-weight="800" text-anchor="middle">PO</text>
+            <text class="region-label" data-region="kosicky" x="431" y="170" fill="#fff" font-size="19" font-weight="800" text-anchor="middle">KE</text>
+          </svg>
+          <div class="legend" id="legend"></div>
+        </section>
+
+        <section class="actions">
+          <button id="submitBtn" type="button">Pridať</button>
+          <button id="adminBtn" type="button">Schváliť</button>
+          <button id="radioBtn2" type="button">Rádio</button>
+        </section>
+
+        <section class="section-title">
+          <h2>Promované akcie</h2>
+          <p>Top výbery pre tento týždeň</p>
+        </section>
+        <section class="list" id="featuredList"></section>
+      </main>
+
+      <main class="hidden" id="regionScreen">
+        <div class="chips" id="genreChips"></div>
+        <section class="panel region-band" id="regionBand"></section>
+        <section class="list" id="regionList"></section>
+      </main>
+
+      <main class="hidden" id="detailScreen"></main>
+
+      <main class="hidden" id="submitScreen">
+        <section class="form panel">
+          <label>Názov akcie <input id="newTitle" placeholder="Techno Friday" /></label>
+          <label>Miesto <input id="newVenue" placeholder="Klub alebo venue" /></label>
+          <label>Mesto <input id="newCity" placeholder="Bratislava" /></label>
+          <label>Kraj <select id="newRegion"></select></label>
+          <label>Dátum <input id="newDate" value="2026-05-30" /></label>
+          <label>Čas <input id="newTime" value="22:00" /></label>
+          <label>Cena <input id="newPrice" placeholder="10 EUR" /></label>
+          <label>Popis <textarea id="newDescription" placeholder="Krátky popis akcie"></textarea></label>
+          <label>Promotér <input id="newPromoter" placeholder="Názov organizátora" /></label>
+          <button class="primary-btn" id="saveEvent" type="button">Odoslať na schválenie</button>
+        </section>
+      </main>
+
+      <main class="hidden" id="adminScreen">
+        <section class="list" id="adminList"></section>
+      </main>
+
+      <main class="hidden" id="radioScreen">
+        <section class="panel detail-hero">
+          <p class="kicker">LIVE 24/7</p>
+          <h2>NightBase Rádio</h2>
+          <p class="meta">20 žánrových staníc ako základ pre budúci audio modul.</p>
+          <button class="primary-btn" type="button">▶ Prehrať ukážku</button>
+        </section>
+        <section class="radio-grid" id="radioGrid"></section>
+      </main>
+    </div>
+
+    <script>
+      const regions = [
+        ["bratislavsky", "Bratislavský kraj", "BA", "#35e0a1"],
+        ["trnavsky", "Trnavský kraj", "TT", "#ffb84d"],
+        ["trenciansky", "Trenčiansky kraj", "TN", "#5da9ff"],
+        ["nitriansky", "Nitriansky kraj", "NR", "#ff6b6b"],
+        ["zilinsky", "Žilinský kraj", "ZA", "#a879ff"],
+        ["banskobystricky", "Banskobystrický kraj", "BB", "#f06ba8"],
+        ["presovsky", "Prešovský kraj", "PO", "#63d2ff"],
+        ["kosicky", "Košický kraj", "KE", "#d8f36a"],
+      ];
+
+      const genreLabels = {
+        all: "Všetko",
+        house: "House",
+        techno: "Techno",
+        dnb: "Drum & Bass",
+        hiphop: "Hip-Hop",
+        pop: "Pop",
+        rock: "Rock",
+        latin: "Latin",
+        metal: "Metal",
+        jazz: "Jazz",
+        festival: "Festival",
+      };
+
+      const events = [
+        ["evt-001", "NightBase Opening: Techno Warehouse", "Subdeck", "Bratislava", "bratislavsky", "2026-05-08", "22:00", ["techno", "house"], "12 EUR predpredaj / 16 EUR na mieste", "Temná klubová noc so slovenskými a českými DJmi. Kapacita je limitovaná, vstup 18+.", "Base Collective", "premium", true, "approved"],
+        ["evt-002", "DNB Session Žilina", "Smer Klub 77", "Žilina", "zilinsky", "2026-05-10", "21:30", ["dnb"], "9 EUR", "Rýchly drum & bass večer s lokálnou crew, MC hostingom a vizuálmi.", "BassLine ZA", "promoter", true, "approved"],
+        ["evt-003", "Latin Friday", "Havana Club", "Nitra", "nitriansky", "2026-05-15", "20:00", ["latin", "pop"], "Vstup voľný do 21:00, potom 6 EUR", "Salsa, bachata a reggaeton pre ľudí, ktorí chcú piatok rozbehnúť skôr.", "Havana Club NR", "club", false, "approved"],
+        ["evt-004", "Košice Hip-Hop Cypher", "Tabačka Kulturfabrik", "Košice", "kosicky", "2026-05-17", "19:30", ["hiphop"], "8 EUR", "Open mic, beat showcase a afterparty. Promotéri môžu pridať aj predpredaj link.", "East Flow", "free", false, "approved"],
+        ["evt-005", "Trnava Indie Night", "Malý Berlín", "Trnava", "trnavsky", "2026-05-22", "20:30", ["rock", "pop"], "10 EUR", "Tri klubové kapely, DJ set po koncerte a limitované lístky v predpredaji.", "TT Live", "promoter", false, "approved"],
+        ["evt-006", "Prešov Open Air", "Delňa", "Prešov", "presovsky", "2026-06-01", "16:00", ["festival", "house", "pop"], "24 EUR denný lístok", "Letný open-air event s dvoma pódiami, gastro zónou a rodinným denným programom.", "PO Events", "premium", true, "approved"],
+        ["evt-007", "Banská Bystrica Jazz Lounge", "Záhrada CNK", "Banská Bystrica", "banskobystricky", "2026-05-12", "19:00", ["jazz"], "Dobrovoľné vstupné", "Komorný jazzový večer s lokálnou kapelou a hosťami z konzervatória.", "BB Jazz", "club", false, "approved"],
+        ["evt-008", "Trenčín Metal Ritual", "Lúč Klub", "Trenčín", "trenciansky", "2026-05-25", "20:00", ["metal", "rock"], "13 EUR", "Tvrdší večer s troma kapelami, merch zónou a afterparty DJ setom.", "TN Heavy", "free", false, "approved"],
+        ["evt-009", "Pending Club Launch", "Nový Klub", "Martin", "zilinsky", "2026-05-18", "22:00", ["house", "techno"], "TBA", "Ukážková akcia v čakárni na schválenie.", "Nový Klub MT", "club", false, "pending"],
+      ].map(([id, title, venue, city, regionId, date, time, genres, price, description, promoter, plan, sponsored, status]) => ({
+        id, title, venue, city, regionId, date, time, genres, price, description, promoter, plan, sponsored, status
+      }));
+
+      const radios = ["House", "Techno", "Drum & Bass", "Hip-Hop", "Pop", "Rock", "Metal", "Latin", "Jazz", "Festival", "Trance", "R&B", "Indie", "Chill", "EDM", "90s", "SK/CZ", "Hardstyle", "Afro House", "Classics"];
+      let currentRegion = null;
+      let currentGenre = "all";
+
+      const screens = ["homeScreen", "regionScreen", "detailScreen", "submitScreen", "adminScreen", "radioScreen"];
+      const title = document.querySelector("#screenTitle");
+      const subtitle = document.querySelector("#screenSubtitle");
+      const backBtn = document.querySelector("#backBtn");
+
+      function regionName(id) {
+        return regions.find(([regionId]) => regionId === id)?.[1] || "Neznámy kraj";
+      }
+
+      function regionShort(id) {
+        return regions.find(([regionId]) => regionId === id)?.[2] || "";
+      }
+
+      function showScreen(id, nextTitle, nextSubtitle) {
+        screens.forEach((screen) => document.querySelector(`#${screen}`).classList.toggle("hidden", screen !== id));
+        title.textContent = nextTitle;
+        subtitle.textContent = nextSubtitle || "";
+        backBtn.classList.toggle("hidden", id === "homeScreen");
+      }
+
+      function eventCard(event) {
+        return `
+          <article class="card" data-event="${event.id}">
+            <div class="card-top">
+              <span class="date">${event.date} ${event.time}</span>
+              ${event.sponsored ? '<span class="badge">Top</span>' : ""}
+            </div>
+            <h3>${event.title}</h3>
+            <p class="meta">${event.venue} · ${event.city} · ${regionName(event.regionId)}</p>
+            <p class="desc">${event.description}</p>
+            <div class="card-footer">
+              <div class="genres">${event.genres.map((genre) => `<span class="pill">${genreLabels[genre]}</span>`).join("")}</div>
+              <span class="price">${event.price}</span>
+            </div>
+          </article>
+        `;
+      }
+
+      function bindEventCards() {
+        document.querySelectorAll("[data-event]").forEach((card) => {
+          card.addEventListener("click", () => openEvent(card.dataset.event));
+        });
+      }
+
+      function renderHome() {
+        document.querySelector("#legend").innerHTML = regions.map(([id, name, , color]) => `
+          <button type="button" data-region="${id}"><span class="dot" style="background:${color}"></span>${name}</button>
+        `).join("");
+        document.querySelector("#featuredList").innerHTML = events.filter((event) => event.status === "approved" && event.sponsored).map(eventCard).join("");
+        document.querySelectorAll("[data-region]").forEach((item) => item.addEventListener("click", () => openRegion(item.dataset.region)));
+        bindEventCards();
+      }
+
+      function renderGenres() {
+        const genres = ["all", "house", "techno", "dnb", "hiphop", "pop", "rock", "latin", "metal", "jazz", "festival"];
+        document.querySelector("#genreChips").innerHTML = genres.map((genre) => `
+          <button type="button" class="chip ${currentGenre === genre ? "active" : ""}" data-genre="${genre}">${genreLabels[genre]}</button>
+        `).join("");
+        document.querySelectorAll("[data-genre]").forEach((chip) => {
+          chip.addEventListener("click", () => {
+            currentGenre = chip.dataset.genre;
+            openRegion(currentRegion);
+          });
+        });
+      }
+
+      function openRegion(regionId) {
+        currentRegion = regionId;
+        const list = events.filter((event) => event.status === "approved" && event.regionId === regionId && (currentGenre === "all" || event.genres.includes(currentGenre)));
+        showScreen("regionScreen", regionName(regionId), "Najbližšie schválené akcie");
+        renderGenres();
+        document.querySelector("#regionBand").innerHTML = `
+          <strong class="region-code">${regionShort(regionId)}</strong>
+          <div><h2>${regionName(regionId)}</h2><p class="meta">${list.length} akcií v kraji</p></div>
+        `;
+        document.querySelector("#regionList").innerHTML = list.length ? list.map(eventCard).join("") : '<section class="panel detail-hero"><h2>Zatiaľ nič v tomto filtri</h2><p class="meta">Skús iný žáner alebo sa vráť neskôr.</p></section>';
+        bindEventCards();
+      }
+
+      function openEvent(id) {
+        const event = events.find((item) => item.id === id);
+        if (!event) return;
+        showScreen("detailScreen", "Detail akcie", regionName(event.regionId));
+        document.querySelector("#detailScreen").innerHTML = `
+          <section class="panel detail-hero">
+            ${event.sponsored ? '<span class="badge">Promovaná akcia</span>' : ""}
+            <h2>${event.title}</h2>
+            <p class="meta">${event.venue} · ${event.city} · ${event.date} ${event.time}</p>
+          </section>
+          <section class="grid">
+            <div class="tile"><small>Cena</small><strong>${event.price}</strong></div>
+            <div class="tile"><small>Promotér</small><strong>${event.promoter}</strong></div>
+            <div class="tile"><small>Kraj</small><strong>${regionName(event.regionId)}</strong></div>
+            <div class="tile"><small>Profil</small><strong>${event.plan.toUpperCase()}</strong></div>
+          </section>
+          <section class="panel detail-hero"><h2>Popis</h2><p class="meta">${event.description}</p></section>
+          <button class="primary-btn" type="button">Otvoriť predpredaj</button>
+        `;
+      }
+
+      function openSubmit() {
+        showScreen("submitScreen", "Pridať akciu", "Nová akcia");
+      }
+
+      function openAdmin() {
+        showScreen("adminScreen", "Schvaľovanie", "Admin NightBase");
+        const pending = events.filter((event) => event.status === "pending");
+        document.querySelector("#adminList").innerHTML = pending.length ? pending.map((event) => `
+          <article class="card">
+            <span class="date">${event.date} ${event.time}</span>
+            <h3>${event.title}</h3>
+            <p class="meta">${event.venue} · ${event.city} · ${regionName(event.regionId)}</p>
+            <p class="desc">${event.description}</p>
+            <button class="primary-btn" data-approve="${event.id}" type="button">Schváliť</button>
+          </article>
+        `).join("") : '<section class="panel detail-hero"><h2>Žiadne čakajúce akcie</h2></section>';
+        document.querySelectorAll("[data-approve]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const event = events.find((item) => item.id === button.dataset.approve);
+            if (event) event.status = "approved";
+            openAdmin();
+          });
+        });
+      }
+
+      function openRadio() {
+        showScreen("radioScreen", "NightBase Rádio", "20 žánrových staníc");
+      }
+
+      backBtn.addEventListener("click", () => showScreen("homeScreen", "NightBase", "Akcie na Slovensku podľa krajov"));
+      document.querySelector("#submitBtn").addEventListener("click", openSubmit);
+      document.querySelector("#quickSubmitBtn").addEventListener("click", openSubmit);
+      document.querySelector("#adminBtn").addEventListener("click", openAdmin);
+      document.querySelector("#radioBtn").addEventListener("click", openRadio);
+      document.querySelector("#radioBtn2").addEventListener("click", openRadio);
+      document.querySelector("#newRegion").innerHTML = regions.map(([id, name]) => `<option value="${id}">${name}</option>`).join("");
+      document.querySelector("#radioGrid").innerHTML = radios.map((genre) => `<article class="radio-card"><strong>NightBase ${genre}</strong><span>LIVE 24/7</span></article>`).join("");
+      document.querySelector("#saveEvent").addEventListener("click", () => {
+        events.unshift({
+          id: `evt-${Date.now()}`,
+          title: document.querySelector("#newTitle").value || "Nová akcia",
+          venue: document.querySelector("#newVenue").value || "Miesto neuvedené",
+          city: document.querySelector("#newCity").value || "Mesto neuvedené",
+          regionId: document.querySelector("#newRegion").value,
+          date: document.querySelector("#newDate").value || "2026-05-30",
+          time: document.querySelector("#newTime").value || "22:00",
+          genres: ["house"],
+          price: document.querySelector("#newPrice").value || "Cena neuvedená",
+          description: document.querySelector("#newDescription").value || "Popis bude doplnený.",
+          promoter: document.querySelector("#newPromoter").value || "Nový promotér",
+          plan: "free",
+          sponsored: false,
+          status: "pending",
+        });
+        openAdmin();
+      });
+
+      renderHome();
+    </script>
+  </body>
+</html>
