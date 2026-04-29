@@ -8,20 +8,21 @@
       :root {
         color-scheme: dark;
         --bg: #08090f;
-        --panel: #12131a;
-        --panel-2: #191823;
-        --panel-3: #222130;
-        --line: #303143;
+        --panel: rgba(16, 18, 28, 0.82);
+        --panel-2: rgba(31, 28, 44, 0.86);
+        --panel-3: rgba(40, 41, 58, 0.9);
+        --line: rgba(255, 255, 255, 0.13);
         --text: #f6f8fb;
         --muted: #b7bdcb;
         --dim: #7e8798;
-        --mint: #2fe6a3;
-        --cyan: #6ad7ff;
-        --coral: #ff6b87;
-        --amber: #ffc857;
-        --violet: #b08cff;
-        --lime: #abe866;
-        --shadow: 0 18px 55px rgba(0, 0, 0, 0.35);
+        --mint: #35f2b2;
+        --cyan: #63d9ff;
+        --coral: #ff355f;
+        --amber: #ffd166;
+        --violet: #a77cff;
+        --lime: #b9f56a;
+        --hot: #ff2bd6;
+        --shadow: 0 22px 70px rgba(0, 0, 0, 0.46);
       }
 
       * {
@@ -84,9 +85,9 @@
 
       .topbar {
         align-items: center;
-        background: rgba(17, 22, 31, 0.86);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 10px;
+        background: rgba(10, 12, 20, 0.78);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 16px;
         box-shadow: var(--shadow);
         display: flex;
         gap: 18px;
@@ -95,7 +96,7 @@
         position: sticky;
         top: 12px;
         z-index: 10;
-        backdrop-filter: blur(18px);
+        backdrop-filter: blur(22px);
       }
 
       .brand-actions,
@@ -152,9 +153,9 @@
       .nav button,
       .ghost,
       .back-btn {
-        background: transparent;
-        border: 1px solid transparent;
-        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.045);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 999px;
         color: var(--muted);
         min-height: 38px;
         padding: 0 12px;
@@ -165,8 +166,8 @@
       .nav button:hover,
       .ghost:hover,
       .back-btn:hover {
-        background: var(--panel-2);
-        border-color: var(--line);
+        background: linear-gradient(135deg, rgba(53, 242, 178, 0.18), rgba(255, 43, 214, 0.16));
+        border-color: rgba(53, 242, 178, 0.4);
         color: var(--text);
       }
 
@@ -176,9 +177,9 @@
 
       .primary {
         align-items: center;
-        background: linear-gradient(135deg, var(--mint), #74e4bb);
+        background: linear-gradient(135deg, var(--mint), var(--cyan) 52%, #f7ff7a);
         border: 0;
-        border-radius: 8px;
+        border-radius: 999px;
         color: #06100d;
         display: inline-flex;
         font-weight: 900;
@@ -208,21 +209,24 @@
       }
 
       .panel {
-        background: linear-gradient(180deg, rgba(23, 30, 42, 0.98), rgba(14, 18, 26, 0.98));
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 10px;
+        background:
+          linear-gradient(180deg, rgba(24, 25, 38, 0.9), rgba(10, 12, 19, 0.86));
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
         box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
       }
 
       .hero-panel {
         background:
-          linear-gradient(90deg, rgba(8, 9, 15, 0.9), rgba(8, 9, 15, 0.45)),
+          linear-gradient(90deg, rgba(8, 9, 15, 0.92), rgba(8, 9, 15, 0.42)),
           linear-gradient(180deg, rgba(8, 9, 15, 0.12), rgba(8, 9, 15, 0.78)),
           url("party-people-bg.png") center / cover no-repeat;
+        border-color: rgba(255, 53, 95, 0.28);
         display: grid;
         gap: 18px;
         grid-template-columns: minmax(0, 1fr) 248px;
-        min-height: 360px;
+        min-height: 410px;
         overflow: hidden;
         padding: 22px;
       }
@@ -236,7 +240,7 @@
       }
 
       .hero-panel h2 {
-        font-size: clamp(32px, 5vw, 56px);
+        font-size: clamp(36px, 6vw, 68px);
         font-weight: 950;
         letter-spacing: 0;
         line-height: 0.96;
@@ -258,9 +262,9 @@
       }
 
       .stat {
-        background: rgba(255, 255, 255, 0.045);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 14px;
         padding: 14px;
       }
 
@@ -475,13 +479,15 @@
 
       .business-grid,
       .rank-grid,
-      .plans-grid {
+      .plans-grid,
+      .artist-grid {
         display: grid;
         gap: 12px;
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
 
       .business-card,
+      .artist-card,
       .rank-card,
       .plan-card,
       .comment-card,
@@ -490,11 +496,12 @@
       .owner-update {
         background: rgba(255, 255, 255, 0.045);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 10px;
+        border-radius: 14px;
         padding: 14px;
       }
 
-      .business-card {
+      .business-card,
+      .artist-card {
         display: grid;
         gap: 10px;
         min-height: 210px;
@@ -503,8 +510,72 @@
       }
 
       .business-card:hover,
+      .artist-card:hover,
       .rank-card:hover {
-        background: rgba(255, 255, 255, 0.075);
+        background: rgba(255, 255, 255, 0.095);
+      }
+
+      .artist-card {
+        background:
+          linear-gradient(145deg, rgba(255, 53, 95, 0.15), rgba(99, 217, 255, 0.08)),
+          rgba(255, 255, 255, 0.045);
+        min-height: 238px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .artist-card::after {
+        background: linear-gradient(135deg, rgba(53, 242, 178, 0.36), transparent);
+        content: "";
+        height: 86px;
+        position: absolute;
+        right: -34px;
+        top: -42px;
+        transform: rotate(28deg);
+        width: 128px;
+      }
+
+      .artist-head {
+        align-items: center;
+        display: flex;
+        gap: 12px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .artist-avatar {
+        align-items: center;
+        background: linear-gradient(135deg, var(--coral), var(--hot), var(--cyan));
+        border-radius: 16px;
+        color: #fff;
+        display: flex;
+        flex: 0 0 auto;
+        font-size: 20px;
+        font-weight: 950;
+        height: 54px;
+        justify-content: center;
+        width: 54px;
+      }
+
+      .locked {
+        border-color: rgba(255, 209, 102, 0.32);
+      }
+
+      .subscription-strip {
+        background:
+          linear-gradient(135deg, rgba(255, 53, 95, 0.2), rgba(53, 242, 178, 0.12)),
+          rgba(255, 255, 255, 0.045);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        display: grid;
+        gap: 14px;
+        grid-template-columns: minmax(0, 1fr) auto;
+        padding: 16px;
+      }
+
+      .booking-panel {
+        display: grid;
+        gap: 12px;
       }
 
       .rating {
@@ -532,6 +603,22 @@
         font-size: 11px;
         font-weight: 850;
         padding: 8px;
+      }
+
+      .set-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .set-item {
+        align-items: center;
+        background: rgba(255, 255, 255, 0.055);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        min-height: 44px;
+        padding: 0 12px;
       }
 
       .mini-actions {
@@ -934,13 +1021,18 @@
         .business-grid,
         .rank-grid,
         .plans-grid,
+        .artist-grid,
         .form-grid,
         .detail-grid {
           grid-template-columns: 1fr;
         }
 
+        .subscription-strip {
+          grid-template-columns: 1fr;
+        }
+
         .hero-panel h2 {
-          font-size: 36px;
+          font-size: 42px;
         }
       }
     </style>
@@ -962,6 +1054,7 @@
         <nav class="nav" aria-label="Hlavná navigácia">
           <button class="active" data-nav="home" type="button">Mapa</button>
           <button data-nav="food" type="button">Gastro</button>
+          <button data-nav="artists" type="button">Interpreti</button>
           <button data-nav="rankings" type="button">Rebríčky</button>
           <button data-nav="radio" type="button">Rádio</button>
         </nav>
@@ -995,6 +1088,10 @@
               <div class="stat">
                 <strong>20+</strong>
                 <span>žánrov rádia</span>
+              </div>
+              <div class="stat">
+                <strong id="artistStat">0</strong>
+                <span>interpretov</span>
               </div>
             </div>
           </section>
@@ -1057,6 +1154,18 @@
             </div>
             <div class="account-state" id="homeAccountState"></div>
           </aside>
+        </section>
+
+        <section class="panel screen-panel" style="margin-top:18px">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Booking agent</p>
+              <h2>Interpreti na bookovanie</h2>
+              <p>DJs, kapely a performeri podľa žánru. Free profil má max 2 sety/videá, platený profil ukáže kontakt a Instagram.</p>
+            </div>
+            <button class="primary" type="button" data-nav-jump="artists">Otvoriť interpretov</button>
+          </div>
+          <div class="artist-grid" id="homeArtistList"></div>
         </section>
       </main>
 
@@ -1134,6 +1243,58 @@
                 <span class="badge">Premium</span>
                 <h3 style="margin-top:10px">Večera + drink pred eventom</h3>
                 <p class="meta" style="margin-top:8px">Ukážkový reklamný priestor pre podniky s vyšším paušálom.</p>
+              </div>
+            </aside>
+          </section>
+        </div>
+      </main>
+
+      <main class="screen" id="artistsScreen">
+        <div class="flow">
+          <section class="panel screen-panel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Booking agent</p>
+                <h2>Register interpretov</h2>
+                <p>Interpreti sa registrujú podľa žánru, pridajú max 2 sety alebo 2 videá zdarma a promotéri ich môžu bookovať.</p>
+              </div>
+              <button class="primary" type="button" data-open-submit="artist">Registrovať interpreta</button>
+            </div>
+            <div class="chips" id="artistGenreChips"></div>
+          </section>
+
+          <section class="subscription-strip">
+            <div>
+              <p class="eyebrow">Mesačné výhody</p>
+              <h2>Artist Pro odomkne kontakt, Instagram a priame booking ponuky</h2>
+              <p class="meta">Bez plateného profilu príde booking dopyt najprv na NightBase email. Platený profil môže ukázať priame kontakty a mať vyššie umiestnenie.</p>
+            </div>
+            <button class="primary" type="button" data-nav-jump="rankings">Pozrieť predplatné</button>
+          </section>
+
+          <section class="content-grid">
+            <div class="panel screen-panel">
+              <div class="section-head">
+                <div>
+                  <h2 id="artistListTitle">Interpreti</h2>
+                  <p id="artistListMeta">Zoradené podľa plateného profilu, aktivity a recenzií.</p>
+                </div>
+              </div>
+              <div class="artist-grid" id="artistList"></div>
+            </div>
+
+            <aside class="panel screen-panel">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Ponuky</p>
+                  <h2>Booking cez NightBase</h2>
+                  <p>Free interpreti dostávajú dopyty sprostredkovane. Ty vieš ponuku skontrolovať, pýtať províziu alebo predať Pro profil.</p>
+                </div>
+              </div>
+              <div class="ad-slot">
+                <span class="badge">Model</span>
+                <h3 style="margin-top:10px">Promotér napíše interpretovi</h3>
+                <p class="meta" style="margin-top:8px">Ak nemá platený kontakt, správa ide najprv na tvoj email. Po zaplatení sa zobrazí Instagram/email interpreta.</p>
               </div>
             </aside>
           </section>
@@ -1265,6 +1426,32 @@
               <label class="full">Popis <textarea id="newBusinessDescription" placeholder="Čím je podnik dobrý pred akciou"></textarea></label>
               <button class="primary full" id="saveBusiness" type="button">Odoslať podnik na schválenie</button>
             </div>
+
+            <div class="section-head" style="margin-top:24px">
+              <div>
+                <h2>Interpret</h2>
+                <p>DJs, kapely, speváci alebo performeri. Free profil má max 2 sety/videá.</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <label>Meno / stage name <input id="newArtistName" placeholder="DJ Nightline" /></label>
+              <label>Žáner <select id="newArtistGenre"></select></label>
+              <label>Mesto <input id="newArtistCity" placeholder="Bratislava" /></label>
+              <label>Kraj <select id="newArtistRegion"></select></label>
+              <label>Email pre booking <input id="newArtistEmail" placeholder="booking@artist.sk" /></label>
+              <label>Instagram <input id="newArtistInstagram" placeholder="@artist" /></label>
+              <label>Set alebo video 1 <input id="newArtistMedia1" placeholder="https://soundcloud.com/... alebo YouTube" /></label>
+              <label>Set alebo video 2 <input id="newArtistMedia2" placeholder="https://youtube.com/..." /></label>
+              <label>Profil
+                <select id="newArtistPlan">
+                  <option value="free">Free - booking cez NightBase</option>
+                  <option value="artist_pro">Artist Pro - kontakt a Instagram</option>
+                  <option value="artist_premium">Artist Premium - top pozície</option>
+                </select>
+              </label>
+              <label class="full">Bio <textarea id="newArtistBio" placeholder="Krátke bio, kde hráva, čo hrá, booking info"></textarea></label>
+              <button class="primary full" id="saveArtist" type="button">Registrovať interpreta</button>
+            </div>
           </section>
         </div>
       </main>
@@ -1342,6 +1529,21 @@
         metal: "Metal",
         jazz: "Jazz",
         festival: "Festival",
+      };
+
+      const artistGenreLabels = {
+        all: "Všetko",
+        dj: "DJ",
+        techno: "Techno",
+        house: "House",
+        dnb: "Drum & Bass",
+        hiphop: "Hip-Hop",
+        pop: "Pop",
+        rock: "Rock",
+        metal: "Metal",
+        jazz: "Jazz",
+        live: "Live band",
+        vocalist: "Spev",
       };
 
       const events = [
@@ -1508,6 +1710,41 @@
         premium: { name: "Premium", weight: 22, images: 8, ads: "Top pozície, reklamy a video", video: true },
       };
 
+      const artistPlans = {
+        free: {
+          name: "Artist Free",
+          weight: 0,
+          media: 2,
+          contactPublic: false,
+          price: "0 EUR",
+          benefit: "2 sety/videá, booking dopyty idú cez NightBase",
+        },
+        artist_pro: {
+          name: "Artist Pro",
+          weight: 12,
+          media: 2,
+          contactPublic: true,
+          price: "9 EUR / mesiac",
+          benefit: "verejný Instagram, email, booking tlačidlo",
+        },
+        artist_premium: {
+          name: "Artist Premium",
+          weight: 22,
+          media: 2,
+          contactPublic: true,
+          price: "19 EUR / mesiac",
+          benefit: "top pozície v žánroch, zvýraznenie pre promotérov",
+        },
+      };
+
+      const subscriptionPlans = [
+        { id: "club", name: "Club", price: "19 EUR / mesiac", target: "kluby a gastro", perks: "vyššie poradie, 3 fotky, kontakt" },
+        { id: "promoter", name: "Promoter", price: "39 EUR / mesiac", target: "promotéri", perks: "promo bloky, video, viac akcií" },
+        { id: "premium", name: "Premium", price: "79 EUR / mesiac", target: "top partneri", perks: "top pozície, reklamy, video, viac obrázkov" },
+        { id: "artist_pro", name: "Artist Pro", price: "9 EUR / mesiac", target: "interpreti", perks: "Instagram/email verejne, booking priamo" },
+        { id: "artist_premium", name: "Artist Premium", price: "19 EUR / mesiac", target: "interpreti", perks: "top pozície v žánroch a booking zvýraznenie" },
+      ];
+
       const businesses = [
         {
           id: "biz-001",
@@ -1660,6 +1897,95 @@
         { targetType: "business", targetId: "biz-001", user: "Tina", text: "Odporúčam rezervovať dopredu, býva plno.", date: "dnes" },
       ];
 
+      const artists = [
+        {
+          id: "art-001",
+          name: "DJ Nightline",
+          genre: "techno",
+          city: "Bratislava",
+          regionId: "bratislavsky",
+          plan: "artist_premium",
+          rating: 4.9,
+          instagram: "@djnightline",
+          email: "booking@djnightline.sk",
+          bio: "Peak-time techno, warehouse sety a klubové noci. Hráva 90 až 120 minút.",
+          media: ["Warehouse live set", "Aftermovie 2026"],
+          status: "approved",
+        },
+        {
+          id: "art-002",
+          name: "Bassline Nora",
+          genre: "dnb",
+          city: "Žilina",
+          regionId: "zilinsky",
+          plan: "artist_pro",
+          rating: 4.7,
+          instagram: "@basslinenora",
+          email: "nora.booking@example.sk",
+          bio: "Liquid a dancefloor drum & bass, vhodné pre kluby aj open air.",
+          media: ["Liquid DNB mix", "Festival warmup video"],
+          status: "approved",
+        },
+        {
+          id: "art-003",
+          name: "East Flow MC",
+          genre: "hiphop",
+          city: "Košice",
+          regionId: "kosicky",
+          plan: "free",
+          rating: 4.3,
+          instagram: "@eastflowmc",
+          email: "eastflow@example.sk",
+          bio: "MC hosting, open mic a hip-hop showcase. Booking zatiaľ cez NightBase.",
+          media: ["Cypher freestyle", "Live showcase"],
+          status: "approved",
+        },
+        {
+          id: "art-004",
+          name: "Velvet Pulse",
+          genre: "live",
+          city: "Trnava",
+          regionId: "trnavsky",
+          plan: "free",
+          rating: 4.2,
+          instagram: "@velvetpulse",
+          email: "velvet@example.sk",
+          bio: "Indie-pop live band vhodná na kluby, festivaly a mestské akcie.",
+          media: ["Live session", "Single video"],
+          status: "approved",
+        },
+        {
+          id: "art-005",
+          name: "Mira Vox",
+          genre: "vocalist",
+          city: "Nitra",
+          regionId: "nitriansky",
+          plan: "artist_pro",
+          rating: 4.6,
+          instagram: "@miravox",
+          email: "mira.vox@example.sk",
+          bio: "Speváčka pre house, pop a live projekty, možnosť hosťovania v DJ sete.",
+          media: ["Live vocal reel", "Studio session"],
+          status: "approved",
+        },
+        {
+          id: "art-006",
+          name: "Pending Techno Duo",
+          genre: "techno",
+          city: "Prešov",
+          regionId: "presovsky",
+          plan: "free",
+          rating: 0,
+          instagram: "@pendingduo",
+          email: "pending@example.sk",
+          bio: "Ukážkový interpret čakajúci na schválenie.",
+          media: ["Demo set"],
+          status: "pending",
+        },
+      ];
+
+      const bookings = [];
+
       const radioApiBase = "https://de1.api.radio-browser.info";
       const radioGenres = [
         { id: "slovakia", label: "Slovensko", countrycode: "SK" },
@@ -1698,6 +2024,7 @@
       let currentRegion = "bratislavsky";
       let currentFoodRegion = "bratislavsky";
       let currentGenre = "all";
+      let currentArtistGenre = "all";
       let previousScreen = "home";
       let currentUser = null;
       let isAdmin = false;
@@ -1711,6 +2038,7 @@
         region: document.querySelector("#regionScreen"),
         detail: document.querySelector("#detailScreen"),
         food: document.querySelector("#foodScreen"),
+        artists: document.querySelector("#artistsScreen"),
         rankings: document.querySelector("#rankingsScreen"),
         account: document.querySelector("#accountScreen"),
         submit: document.querySelector("#submitScreen"),
@@ -1728,6 +2056,10 @@
 
       function approvedBusinesses() {
         return businesses.filter((business) => business.status === "approved");
+      }
+
+      function approvedArtists() {
+        return artists.filter((artist) => artist.status === "approved");
       }
 
       function targetReviews(type, id) {
@@ -1754,6 +2086,10 @@
         return planFeatures[plan] || planFeatures.free;
       }
 
+      function artistPlanById(plan) {
+        return artistPlans[plan] || artistPlans.free;
+      }
+
       function scoreFor(item, type) {
         return planById(item.plan).weight + averageRating(type, item.id, item.rating || 0) * 10 + (item.sponsored ? 8 : 0);
       }
@@ -1762,6 +2098,12 @@
         return approvedBusinesses()
           .filter((business) => !regionId || business.regionId === regionId)
           .sort((a, b) => scoreFor(b, "business") - scoreFor(a, "business"));
+      }
+
+      function sortedArtists(genre = "all") {
+        return approvedArtists()
+          .filter((artist) => genre === "all" || artist.genre === genre)
+          .sort((a, b) => (artistPlanById(b.plan).weight + b.rating * 10) - (artistPlanById(a.plan).weight + a.rating * 10));
       }
 
       function showScreen(name) {
@@ -1781,6 +2123,7 @@
           radio: "Live audio prototyp",
           admin: "Admin schvaľovanie",
           food: "Gastro pred akciou",
+          artists: "Booking interpretov",
           rankings: "Rebríčky a recenzie",
           account: "Účet komunity",
           submit: "Pridanie obsahu",
@@ -1838,8 +2181,37 @@
         });
       }
 
+      function artistCard(artist) {
+        const plan = artistPlanById(artist.plan);
+        const locked = !plan.contactPublic;
+        return `
+          <button class="artist-card ${locked ? "locked" : ""}" type="button" data-artist="${artist.id}">
+            <div class="artist-head">
+              <span class="artist-avatar">${artist.name.slice(0, 2).toUpperCase()}</span>
+              <div>
+                <h3>${artist.name}</h3>
+                <p class="meta">${artistGenreLabels[artist.genre]} · ${artist.city}</p>
+              </div>
+            </div>
+            <p class="rating">★ ${artist.rating ? artist.rating.toFixed(1) : "nový"} · ${plan.name}</p>
+            <p class="desc">${artist.bio}</p>
+            <div class="set-list">
+              ${artist.media.slice(0, plan.media).map((item) => `<span class="set-item"><span>${item}</span><small>play</small></span>`).join("")}
+            </div>
+            <p class="meta">${locked ? "Kontakt skrytý, booking ide cez NightBase." : `${artist.instagram} · priamy booking`}</p>
+          </button>
+        `;
+      }
+
+      function bindArtistCards() {
+        document.querySelectorAll("[data-artist]").forEach((card) => {
+          card.addEventListener("click", () => openArtist(card.dataset.artist));
+        });
+      }
+
       function renderHome() {
         document.querySelector("#approvedStat").textContent = approvedEvents().length;
+        document.querySelector("#artistStat").textContent = approvedArtists().length;
         document.querySelector("#featuredList").innerHTML = approvedEvents()
           .filter((event) => event.sponsored)
           .map(eventCard)
@@ -1848,6 +2220,11 @@
         document.querySelector("#homeFoodList").innerHTML = sortedBusinesses()
           .slice(0, 3)
           .map(businessCard)
+          .join("");
+
+        document.querySelector("#homeArtistList").innerHTML = sortedArtists()
+          .slice(0, 3)
+          .map(artistCard)
           .join("");
 
         document.querySelector("#homeAccountState").innerHTML = currentUser
@@ -1867,6 +2244,7 @@
 
         bindEventCards();
         bindBusinessCards();
+        bindArtistCards();
         bindNavJumps();
       }
 
@@ -2118,6 +2496,89 @@
         showScreen("detail");
       }
 
+      function renderArtistGenres() {
+        const genres = Object.keys(artistGenreLabels);
+        document.querySelector("#artistGenreChips").innerHTML = genres.map((genre) => `
+          <button class="chip ${currentArtistGenre === genre ? "active" : ""}" type="button" data-artist-genre="${genre}">
+            ${artistGenreLabels[genre]}
+          </button>
+        `).join("");
+
+        document.querySelectorAll("[data-artist-genre]").forEach((chip) => {
+          chip.addEventListener("click", () => {
+            currentArtistGenre = chip.dataset.artistGenre;
+            renderArtists();
+          });
+        });
+      }
+
+      function renderArtists() {
+        renderArtistGenres();
+        const list = sortedArtists(currentArtistGenre);
+        document.querySelector("#artistListTitle").textContent = currentArtistGenre === "all"
+          ? "Všetci interpreti"
+          : `Interpreti: ${artistGenreLabels[currentArtistGenre]}`;
+        document.querySelector("#artistListMeta").textContent = `${list.length} schválených profilov v tomto filtri`;
+        document.querySelector("#artistList").innerHTML = list.length
+          ? list.map(artistCard).join("")
+          : '<div class="empty">V tomto žánri zatiaľ nie je interpret.</div>';
+        bindArtistCards();
+        bindNavJumps();
+      }
+
+      function openArtist(artistId) {
+        const artist = artists.find((item) => item.id === artistId);
+        if (!artist) return;
+        const plan = artistPlanById(artist.plan);
+        const isPublic = plan.contactPublic;
+
+        document.querySelector("#detailContent").innerHTML = `
+          <section class="panel screen-panel">
+            <button class="back-btn" type="button" data-back>Späť</button>
+            <div class="section-head" style="margin-top:12px">
+              <div>
+                <p class="eyebrow">${artistGenreLabels[artist.genre]} · ${regionById(artist.regionId).name}</p>
+                <h2>${artist.name}</h2>
+                <p>${artist.city} · ${plan.name}</p>
+              </div>
+              <span class="badge">${isPublic ? "Kontakt verejný" : "Booking cez NightBase"}</span>
+            </div>
+          </section>
+          <section class="detail-grid">
+            <div class="tile"><small>Žáner</small><strong>${artistGenreLabels[artist.genre]}</strong></div>
+            <div class="tile"><small>Rating</small><strong>★ ${artist.rating || "nový"}</strong></div>
+            <div class="tile"><small>Médiá</small><strong>${artist.media.length} / ${plan.media}</strong></div>
+            <div class="tile"><small>Kontakt</small><strong>${isPublic ? artist.instagram : "skrytý"}</strong></div>
+          </section>
+          <section class="content-grid">
+            <div class="panel screen-panel">
+              <h2>Profil interpreta</h2>
+              <p class="meta" style="margin-top:8px">${artist.bio}</p>
+              <div class="set-list" style="margin-top:14px">
+                ${artist.media.slice(0, plan.media).map((item) => `<span class="set-item"><span>${item}</span><small>set/video</small></span>`).join("")}
+              </div>
+              <div class="mini-actions" style="margin-top:14px">
+                ${isPublic ? `<a class="primary" href="mailto:${artist.email}">Napísať interpretovi</a><a href="https://instagram.com/${artist.instagram.replace("@", "")}" target="_blank" rel="noreferrer">Instagram</a>` : `<button class="primary" type="button" data-book-artist="${artist.id}">Poslať booking cez NightBase</button>`}
+              </div>
+            </div>
+            <aside class="panel screen-panel booking-panel">
+              <div>
+                <p class="eyebrow">Booking</p>
+                <h2>${isPublic ? "Priamy kontakt" : "Sprostredkovaný dopyt"}</h2>
+                <p class="meta">${isPublic ? "Platený profil ukazuje email a Instagram." : "Free profil skryje kontakt, dopyt príde tebe na email a vieš ho posunúť ďalej."}</p>
+              </div>
+              <textarea data-booking-message placeholder="Ahoj, mám záujem o booking na dátum..."></textarea>
+              <button class="primary" type="button" data-book-artist="${artist.id}">Odoslať booking dopyt</button>
+            </aside>
+          </section>
+          ${interactionPanel("artist", artist.id, artist.rating)}
+        `;
+        bindBackButtons();
+        bindDetailActions();
+        previousScreen = "artists";
+        showScreen("detail");
+      }
+
       function renderFood() {
         const region = regionById(currentFoodRegion);
         document.querySelector("#foodRegionTitle").textContent = `Podniky: ${region.name}`;
@@ -2174,8 +2635,20 @@
             <h3>${plan.ads}</h3>
             <p class="meta">${plan.images} obrázkov · ${plan.video ? "video povolené" : "bez videa"} · váha v poradí ${plan.weight}</p>
           </article>
+        `).join("") + subscriptionPlans.map((plan) => `
+          <article class="plan-card ${plan.id.includes("premium") ? "featured-plan" : ""}">
+            <span class="badge">Mesačne</span>
+            <h3>${plan.name} · ${plan.price}</h3>
+            <p class="meta">${plan.target} · ${plan.perks}</p>
+            <button class="ghost" type="button" data-subscribe="${plan.id}">Simulovať predplatné</button>
+          </article>
         `).join("");
         bindBusinessCards();
+        document.querySelectorAll("[data-subscribe]").forEach((button) => {
+          button.addEventListener("click", () => {
+            button.textContent = "V ostrej verzii otvorí platbu";
+          });
+        });
       }
 
       function renderAccount() {
@@ -2218,6 +2691,7 @@
           button.addEventListener("click", () => {
             const target = button.dataset.navJump;
             if (target === "food") renderFood();
+            if (target === "artists") renderArtists();
             if (target === "rankings") renderRankings();
             if (target === "account") renderAccount();
             showScreen(target);
@@ -2231,6 +2705,12 @@
 
       function bindDetailActions() {
         bindNavJumps();
+        const reopenDetail = (type, id) => {
+          if (type === "event") openEvent(id);
+          if (type === "business") openBusiness(id);
+          if (type === "artist") openArtist(id);
+        };
+
         document.querySelectorAll("[data-add-comment]").forEach((button) => {
           button.addEventListener("click", () => {
             if (!currentUser) {
@@ -2242,7 +2722,7 @@
             const text = document.querySelector("[data-comment-text]")?.value || "";
             if (!text.trim()) return;
             comments.push({ targetType: type, targetId: id, user: currentUser.name, text, date: "teraz" });
-            type === "event" ? openEvent(id) : openBusiness(id);
+            reopenDetail(type, id);
           });
         });
 
@@ -2258,7 +2738,7 @@
             const text = document.querySelector("[data-review-text]")?.value || "";
             if (!text.trim()) return;
             reviews.push({ targetType: type, targetId: id, user: currentUser.name, rating, text });
-            type === "event" ? openEvent(id) : openBusiness(id);
+            reopenDetail(type, id);
           });
         });
 
@@ -2269,6 +2749,25 @@
             if (!event || !text.trim()) return;
             event.updates.unshift(text);
             openEvent(event.id);
+          });
+        });
+
+        document.querySelectorAll("[data-book-artist]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const artist = artists.find((item) => item.id === button.dataset.bookArtist);
+            if (!artist) return;
+            const plan = artistPlanById(artist.plan);
+            const message = document.querySelector("[data-booking-message]")?.value || "Promotér má záujem o booking.";
+            bookings.push({
+              artistId: artist.id,
+              artist: artist.name,
+              route: plan.contactPublic ? artist.email : "booking@nightbase.sk",
+              message,
+              created: "teraz",
+            });
+            document.querySelectorAll("[data-book-artist]").forEach((item) => {
+              item.textContent = plan.contactPublic ? "Booking poslaný interpretovi" : "Booking pôjde cez NightBase";
+            });
           });
         });
       }
@@ -2285,6 +2784,7 @@
 
         const pending = events.filter((event) => event.status === "pending");
         const pendingBusinesses = businesses.filter((business) => business.status === "pending");
+        const pendingArtists = artists.filter((artist) => artist.status === "pending");
         const pendingEventHTML = pending.length
           ? pending.map((event) => `
               <article class="event-card">
@@ -2315,11 +2815,28 @@
             `).join("")
           : '<div class="empty">Žiadne čakajúce podniky.</div>';
 
+        const pendingArtistHTML = pendingArtists.length
+          ? pendingArtists.map((artist) => `
+              <article class="event-card">
+                <span class="date">${artist.city} · ${regionById(artist.regionId).name}</span>
+                <h3>${artist.name}</h3>
+                <p class="meta">${artistGenreLabels[artist.genre]} · ${artistPlanById(artist.plan).name}</p>
+                <p class="desc">${artist.bio}</p>
+                <span class="row">
+                  <button class="ghost" type="button" data-reject-artist="${artist.id}">Zamietnuť</button>
+                  <button class="primary" type="button" data-approve-artist="${artist.id}">Schváliť</button>
+                </span>
+              </article>
+            `).join("")
+          : '<div class="empty">Žiadni čakajúci interpreti.</div>';
+
         document.querySelector("#adminList").innerHTML = `
           <h3>Akcie</h3>
           ${pendingEventHTML}
           <h3 style="margin-top:18px">Podniky a reštaurácie</h3>
           ${pendingBusinessHTML}
+          <h3 style="margin-top:18px">Interpreti</h3>
+          ${pendingArtistHTML}
         `;
 
         document.querySelectorAll("[data-approve]").forEach((button) => {
@@ -2352,6 +2869,23 @@
           button.addEventListener("click", () => {
             const business = businesses.find((item) => item.id === button.dataset.rejectBusiness);
             if (business) business.status = "rejected";
+            renderAdmin();
+          });
+        });
+
+        document.querySelectorAll("[data-approve-artist]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const artist = artists.find((item) => item.id === button.dataset.approveArtist);
+            if (artist) artist.status = "approved";
+            renderHome();
+            renderAdmin();
+          });
+        });
+
+        document.querySelectorAll("[data-reject-artist]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const artist = artists.find((item) => item.id === button.dataset.rejectArtist);
+            if (artist) artist.status = "rejected";
             renderAdmin();
           });
         });
@@ -2566,11 +3100,42 @@
         showScreen("admin");
       }
 
+      function saveArtist() {
+        const plan = document.querySelector("#newArtistPlan").value;
+        const media = [
+          document.querySelector("#newArtistMedia1").value,
+          document.querySelector("#newArtistMedia2").value,
+        ].filter(Boolean).slice(0, 2);
+
+        artists.unshift({
+          id: `art-${Date.now()}`,
+          name: document.querySelector("#newArtistName").value || "Nový interpret",
+          genre: document.querySelector("#newArtistGenre").value,
+          city: document.querySelector("#newArtistCity").value || "Mesto neuvedené",
+          regionId: document.querySelector("#newArtistRegion").value,
+          email: document.querySelector("#newArtistEmail").value || "booking@nightbase.sk",
+          instagram: document.querySelector("#newArtistInstagram").value || "@artist",
+          bio: document.querySelector("#newArtistBio").value || "Bio bude doplnené.",
+          media: media.length ? media : ["Demo set"],
+          plan,
+          rating: 0,
+          status: "pending",
+        });
+        renderAdmin();
+        showScreen("admin");
+      }
+
       function bindBackButtons() {
         document.querySelectorAll("[data-back]").forEach((button) => {
           button.addEventListener("click", () => {
             if (previousScreen === "region") {
               openRegion(currentRegion);
+            } else if (previousScreen === "artists") {
+              renderArtists();
+              showScreen("artists");
+            } else if (previousScreen === "food") {
+              renderFood();
+              showScreen("food");
             } else {
               showScreen("home");
             }
@@ -2583,6 +3148,7 @@
           const target = button.dataset.nav;
           if (target === "admin") renderAdmin();
           if (target === "food") renderFood();
+          if (target === "artists") renderArtists();
           if (target === "rankings") renderRankings();
           if (target === "account") renderAccount();
           if (target === "radio" && !radioStations.length) loadStations(activeRadioGenre);
@@ -2607,9 +3173,15 @@
       });
       document.querySelector("#saveEvent").addEventListener("click", saveEvent);
       document.querySelector("#saveBusiness").addEventListener("click", saveBusiness);
+      document.querySelector("#saveArtist").addEventListener("click", saveArtist);
       document.querySelector("#saveAccount").addEventListener("click", saveAccount);
       document.querySelector("#newRegion").innerHTML = regions.map((region) => `<option value="${region.id}">${region.name}</option>`).join("");
       document.querySelector("#newBusinessRegion").innerHTML = regions.map((region) => `<option value="${region.id}">${region.name}</option>`).join("");
+      document.querySelector("#newArtistRegion").innerHTML = regions.map((region) => `<option value="${region.id}">${region.name}</option>`).join("");
+      document.querySelector("#newArtistGenre").innerHTML = Object.entries(artistGenreLabels)
+        .filter(([id]) => id !== "all")
+        .map(([id, label]) => `<option value="${id}">${label}</option>`)
+        .join("");
 
       bindBackButtons();
       bindNavJumps();
@@ -2618,6 +3190,7 @@
       renderHome();
       renderAdmin();
       renderFood();
+      renderArtists();
       renderRankings();
       renderAccount();
       renderRadioGenres();
