@@ -146,9 +146,9 @@ h1,h2,h3,h4,p{margin:0;}
 .city-label{fill:rgba(255,255,255,0.9);font-family:var(--sans);font-size:9px;font-weight:700;pointer-events:none;}
 .region-label{fill:rgba(255,255,255,0.38);font-family:var(--sans);font-size:7.5px;font-weight:500;pointer-events:none;letter-spacing:0.05em;text-transform:uppercase;}
 .map-legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
-.legend-chip{font-size:11px;padding:6px 11px;border-radius:999px;background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--muted);font-weight:500;transition:all .15s;cursor:pointer;}
-.legend-chip:hover{background:rgba(225,11,31,0.15);color:#fff;border-color:rgba(225,11,31,0.5);}
-.legend-chip.active{background:var(--red);color:#fff;border-color:var(--red);box-shadow:0 4px 12px rgba(225,11,31,0.4);}
+.legend-chip{font-size:11px;padding:6px 11px;border-radius:999px;background:rgba(225,11,31,0.08);border:1px solid rgba(225,11,31,0.3);color:var(--red-2);font-weight:600;transition:all .15s;cursor:pointer;}
+.legend-chip:hover{background:rgba(225,11,31,0.22);color:#fff;border-color:var(--red-2);}
+.legend-chip.active{background:var(--red);color:#fff;border-color:var(--red);box-shadow:0 4px 12px rgba(225,11,31,0.5);}
 
 /* SECTIONS */
 .section{margin:28px 0;}
@@ -367,6 +367,12 @@ h1,h2,h3,h4,p{margin:0;}
     </div>
     <!-- Desktop tab nav (right side) -->
     <div class="header-tabs">
+      <button class="htab" onclick="showPage('rebricky')">Rebríčky</button>
+      <button class="htab" onclick="showPage('interpreti')">Interpreti</button>
+      <button class="htab" onclick="showPage('gastro')">Gastro</button>
+      <button class="htab" onclick="showPage('radio')">Rádio</button>
+      <button class="htab" onclick="showPage('pausaly')">Paušály</button>
+      <button class="htab" onclick="showPage('monetiz')">Monetizovanie</button>
       <button class="htab" onclick="showPage('billiard')">🎱 Biliard</button>
     </div>
     <div class="header-actions">
@@ -404,39 +410,39 @@ h1,h2,h3,h4,p{margin:0;}
           Tvar zodpovedá skutočnému geografickému tvaru Slovenska.
         -->
                 <svg class="map-svg" viewBox="0 0 1000 488" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-        <path class="region" data-region="bratislavsky" data-name="Bratislavský kraj"
-          d="M 102,231 L 93,240 L 43,249 L 30,259 L 24,268 L 19,278 L 16,287 L 16,296 L 25,306 L 29,315 L 29,325 L 31,334 L 31,343 L 42,353 L 48,362 L 47,371 L 46,381 L 76,381 L 87,371 L 83,362 L 112,353 L 117,343 L 112,334 L 120,325 L 112,315 L 116,306 L 107,296 L 103,287 L 91,278 L 92,268 L 93,259 L 94,249 L 105,240 L 103,231 Z"/>
-        <path class="region" data-region="trnavsky" data-name="Trnavský kraj"
-          d="M 84,171 L 70,181 L 65,190 L 52,199 L 48,209 L 45,218 L 46,228 L 48,237 L 61,246 L 92,256 L 98,265 L 92,274 L 104,284 L 109,293 L 117,303 L 115,312 L 118,321 L 119,331 L 122,340 L 120,350 L 99,359 L 88,368 L 82,378 L 73,387 L 88,396 L 97,406 L 102,415 L 105,425 L 119,434 L 121,443 L 138,453 L 146,453 L 158,443 L 163,434 L 175,425 L 178,415 L 177,406 L 178,396 L 177,387 L 167,378 L 166,368 L 171,359 L 182,350 L 178,340 L 180,331 L 179,321 L 184,312 L 189,303 L 197,293 L 203,284 L 192,274 L 188,265 L 192,256 L 202,246 L 185,237 L 166,228 L 124,218 L 128,209 L 120,199 L 113,190 L 105,181 L 89,171 Z"/>
-        <path class="region" data-region="trenciansky" data-name="Trenčiansky kraj"
-          d="M 289,74 L 259,84 L 255,93 L 253,102 L 250,112 L 248,121 L 245,131 L 238,140 L 209,149 L 205,159 L 186,168 L 176,178 L 121,187 L 109,196 L 129,206 L 127,215 L 130,224 L 133,234 L 200,243 L 255,253 L 250,262 L 261,271 L 264,281 L 273,281 L 286,271 L 314,262 L 336,253 L 339,243 L 349,234 L 356,224 L 348,215 L 345,206 L 335,196 L 338,187 L 338,178 L 328,168 L 309,159 L 323,149 L 323,140 L 319,131 L 320,121 L 310,112 L 304,102 L 301,93 L 295,84 L 290,74 Z"/>
-        <path class="region" data-region="nitriansky" data-name="Nitriansky kraj"
-          d="M 216,223 L 217,232 L 218,242 L 209,251 L 190,260 L 189,270 L 201,279 L 204,289 L 195,298 L 188,307 L 184,317 L 180,326 L 182,336 L 184,345 L 171,354 L 165,364 L 170,373 L 177,382 L 180,392 L 180,401 L 179,411 L 176,420 L 175,429 L 161,439 L 148,448 L 148,458 L 163,467 L 316,467 L 335,458 L 328,448 L 327,439 L 330,429 L 327,420 L 339,411 L 369,401 L 373,392 L 383,382 L 381,373 L 342,364 L 343,354 L 348,345 L 349,336 L 345,326 L 339,317 L 302,307 L 298,298 L 300,289 L 291,279 L 258,270 L 248,260 L 253,251 L 241,242 L 235,232 L 219,223 Z"/>
-        <path class="region" data-region="zilinsky" data-name="Žilinský kraj"
-          d="M 478,16 L 465,25 L 324,34 L 319,44 L 311,53 L 302,63 L 295,72 L 297,81 L 302,91 L 305,100 L 310,109 L 322,119 L 322,128 L 324,138 L 325,147 L 321,156 L 301,166 L 342,175 L 340,185 L 338,194 L 346,203 L 349,213 L 368,222 L 386,222 L 384,213 L 384,203 L 565,194 L 560,185 L 553,175 L 561,166 L 562,156 L 560,147 L 542,138 L 541,128 L 520,119 L 522,109 L 530,100 L 528,91 L 530,81 L 528,72 L 503,63 L 495,53 L 490,44 L 488,34 L 488,25 L 479,16 Z"/>
-        <path class="region" data-region="banskobystricky" data-name="Banskobystrický kraj"
-          d="M 484,185 L 395,194 L 387,203 L 386,213 L 361,222 L 353,231 L 343,241 L 339,250 L 320,260 L 298,269 L 295,278 L 302,288 L 301,297 L 304,307 L 306,316 L 299,325 L 352,335 L 351,344 L 345,353 L 345,363 L 349,372 L 385,382 L 377,391 L 377,400 L 419,400 L 533,391 L 558,382 L 567,372 L 599,363 L 605,353 L 612,344 L 616,335 L 619,325 L 629,316 L 601,307 L 603,297 L 608,288 L 603,278 L 603,269 L 600,260 L 588,250 L 584,241 L 588,231 L 590,222 L 596,213 L 590,203 L 508,194 L 491,185 Z"/>
-        <path class="region" data-region="presovsky" data-name="Prešovský kraj"
-          d="M 778,72 L 623,81 L 605,91 L 589,100 L 587,109 L 549,119 L 544,128 L 545,138 L 567,147 L 565,156 L 563,166 L 555,175 L 562,185 L 568,194 L 592,203 L 754,213 L 768,222 L 768,231 L 822,241 L 860,241 L 905,231 L 964,222 L 965,213 L 971,203 L 982,194 L 988,185 L 988,175 L 962,166 L 936,156 L 923,147 L 905,138 L 902,128 L 899,119 L 894,109 L 880,100 L 855,91 L 841,81 L 780,72 Z"/>
-        <path class="region" data-region="kosicky" data-name="Košický kraj"
-          d="M 631,180 L 612,189 L 616,199 L 606,208 L 598,217 L 590,227 L 589,236 L 586,246 L 600,255 L 604,264 L 605,274 L 612,283 L 608,292 L 604,302 L 605,311 L 829,321 L 830,330 L 835,339 L 840,349 L 854,358 L 860,358 L 912,349 L 912,339 L 915,330 L 915,321 L 915,311 L 916,302 L 923,292 L 932,283 L 949,274 L 951,264 L 950,255 L 957,246 L 956,236 L 936,227 L 934,217 L 729,208 L 723,199 L 698,189 L 632,180 Z"/>
-        <circle class="city-dot" cx="70" cy="305" r="4"/>
-        <text class="city-label" x="76" y="301">Bratislava</text>
-        <circle class="city-dot" cx="141" cy="297" r="4"/>
-        <text class="city-label" x="147" y="293">Trnava</text>
-        <circle class="city-dot" cx="254" cy="196" r="4"/>
-        <text class="city-label" x="260" y="192">Trenčín</text>
-        <circle class="city-dot" cx="289" cy="352" r="4"/>
-        <text class="city-label" x="295" y="348">Nitra</text>
-        <circle class="city-dot" cx="375" cy="121" r="4"/>
-        <text class="city-label" x="381" y="117">Žilina</text>
-        <circle class="city-dot" cx="406" cy="321" r="4"/>
-        <text class="city-label" x="412" y="317">B. Bystrica</text>
-        <circle class="city-dot" cx="680" cy="184" r="4"/>
-        <text class="city-label" x="686" y="180">Prešov</text>
-        <circle class="city-dot" cx="781" cy="289" r="4"/>
-        <text class="city-label" x="787" y="285">Košice</text>
-        </svg>
+<path class="region" data-region="bratislavsky" data-name="Bratislavský kraj" d="M 101.6,230.7 L 96.1,237.0 L 85.2,243.2 L 43.0,249.5 L 32.8,255.7 L 27.3,262.0 L 24.2,268.2 L 17.2,274.5 L 18.8,280.8 L 15.6,287.0 L 13.3,293.3 L 18.8,299.5 L 25.0,305.8 L 22.7,312.0 L 30.5,318.3 L 28.9,324.6 L 30.5,330.8 L 31.2,337.1 L 31.2,343.3 L 36.7,349.6 L 57.0,355.8 L 48.4,362.1 L 50.0,368.3 L 46.9,374.6 L 46.1,380.9 L 75.8,380.9 L 83.6,374.6 L 83.6,368.3 L 82.8,362.1 L 107.0,355.8 L 118.0,349.6 L 117.2,343.3 L 113.3,337.1 L 115.6,330.8 L 120.3,324.6 L 111.7,318.3 L 112.5,312.0 L 115.6,305.8 L 108.6,299.5 L 107.0,293.3 L 103.1,287.0 L 96.9,280.8 L 89.8,274.5 L 92.2,268.2 L 96.1,262.0 L 89.8,255.7 L 93.8,249.5 L 98.4,243.2 L 105.5,237.0 L 102.3,230.7 Z"/>
+<path class="region" data-region="trnavsky" data-name="Trnavský kraj" d="M 84.4,171.3 L 76.6,177.5 L 68.0,183.8 L 64.8,190.0 L 56.2,196.3 L 50.0,202.6 L 48.4,208.8 L 46.1,215.1 L 45.3,221.3 L 46.1,227.6 L 47.7,233.8 L 48.4,240.1 L 60.9,246.3 L 93.0,252.6 L 95.3,258.9 L 97.7,265.1 L 92.2,271.4 L 94.5,277.6 L 103.9,283.9 L 107.0,290.1 L 109.4,296.4 L 117.2,302.7 L 116.4,308.9 L 114.1,315.2 L 118.0,321.4 L 122.7,327.7 L 114.8,333.9 L 121.9,340.2 L 121.9,346.4 L 98.4,352.7 L 99.2,359.0 L 84.4,365.2 L 89.8,371.5 L 82.0,377.7 L 74.2,384.0 L 74.2,390.2 L 88.3,396.5 L 93.0,402.8 L 98.4,409.0 L 101.6,415.3 L 103.9,421.5 L 106.2,427.8 L 118.8,434.0 L 120.3,440.3 L 133.6,446.6 L 137.5,452.8 L 143.8,459.1 L 145.3,459.1 L 146.1,452.8 L 155.5,446.6 L 158.6,440.3 L 163.3,434.0 L 173.4,427.8 L 173.4,421.5 L 178.1,415.3 L 176.6,409.0 L 177.3,402.8 L 178.1,396.5 L 178.1,390.2 L 175.0,384.0 L 167.2,377.7 L 168.0,371.5 L 163.3,365.2 L 171.1,359.0 L 179.7,352.7 L 182.0,346.4 L 178.1,340.2 L 180.5,333.9 L 178.1,327.7 L 178.9,321.4 L 182.8,315.2 L 185.2,308.9 L 189.1,302.7 L 193.8,296.4 L 200.0,290.1 L 203.1,283.9 L 195.3,277.6 L 188.3,271.4 L 187.5,265.1 L 188.3,258.9 L 206.2,252.6 L 201.6,246.3 L 189.8,240.1 L 169.5,233.8 L 166.4,227.6 L 125.8,221.3 L 124.2,215.1 L 127.3,208.8 L 124.2,202.6 L 119.5,196.3 L 113.3,190.0 L 107.8,183.8 L 100.0,177.5 L 89.1,171.3 Z"/>
+<path class="region" data-region="trenciansky" data-name="Trenčiansky kraj" d="M 289.1,74.3 L 261.7,80.6 L 256.2,86.8 L 254.7,93.1 L 254.7,99.3 L 251.6,105.6 L 250.0,111.8 L 246.1,118.1 L 247.7,124.3 L 244.5,130.6 L 241.4,136.9 L 233.6,143.1 L 209.4,149.4 L 207.0,155.6 L 204.7,161.9 L 185.9,168.1 L 180.5,174.4 L 173.4,180.7 L 121.1,186.9 L 111.7,193.2 L 123.4,199.4 L 128.9,205.7 L 127.3,211.9 L 126.6,218.2 L 129.7,224.4 L 132.0,230.7 L 188.3,237.0 L 200.0,243.2 L 253.9,249.5 L 252.3,255.7 L 250.8,262.0 L 259.4,268.2 L 261.7,274.5 L 264.1,280.8 L 273.4,280.8 L 281.2,274.5 L 295.3,268.2 L 314.1,262.0 L 319.5,255.7 L 336.7,249.5 L 339.1,243.2 L 347.7,237.0 L 350.8,230.7 L 356.2,224.4 L 349.2,218.2 L 346.9,211.9 L 345.3,205.7 L 337.5,199.4 L 335.2,193.2 L 338.3,186.9 L 337.5,180.7 L 339.8,174.4 L 328.1,168.1 L 306.2,161.9 L 318.8,155.6 L 322.7,149.4 L 323.4,143.1 L 321.1,136.9 L 318.8,130.6 L 321.9,124.3 L 318.8,118.1 L 310.2,111.8 L 304.7,105.6 L 303.1,99.3 L 300.8,93.1 L 296.9,86.8 L 293.8,80.6 L 289.8,74.3 Z"/>
+<path class="region" data-region="nitriansky" data-name="Nitriansky kraj" d="M 215.6,222.9 L 215.6,229.1 L 218.0,235.4 L 218.0,241.7 L 211.7,247.9 L 207.0,254.2 L 189.8,260.4 L 189.1,266.7 L 193.8,272.9 L 200.8,279.2 L 205.5,285.4 L 201.6,291.7 L 195.3,298.0 L 190.6,304.2 L 186.7,310.5 L 184.4,316.7 L 180.5,323.0 L 182.0,329.2 L 182.0,335.5 L 181.2,341.8 L 184.4,348.0 L 171.1,354.3 L 172.7,360.5 L 167.2,366.8 L 170.3,373.0 L 169.5,379.3 L 178.1,385.6 L 180.5,391.8 L 179.7,398.1 L 178.9,404.3 L 178.9,410.6 L 178.9,416.8 L 177.3,423.1 L 175.0,429.3 L 164.1,435.6 L 160.2,441.9 L 148.4,448.1 L 148.4,454.4 L 146.9,460.6 L 163.3,466.9 L 236.7,473.1 L 282.8,473.1 L 315.6,466.9 L 321.1,460.6 L 335.2,454.4 L 328.1,448.1 L 326.6,441.9 L 328.9,435.6 L 330.5,429.3 L 325.8,423.1 L 337.5,416.8 L 339.1,410.6 L 340.6,404.3 L 371.9,398.1 L 373.4,391.8 L 382.0,385.6 L 382.8,379.3 L 381.2,373.0 L 338.3,366.8 L 343.0,360.5 L 343.0,354.3 L 343.0,348.0 L 349.2,341.8 L 349.2,335.5 L 346.1,329.2 L 343.0,323.0 L 339.1,316.7 L 335.9,310.5 L 300.0,304.2 L 298.4,298.0 L 299.2,291.7 L 300.0,285.4 L 291.4,279.2 L 293.0,272.9 L 253.9,266.7 L 247.7,260.4 L 251.6,254.2 L 249.2,247.9 L 240.6,241.7 L 236.7,235.4 L 234.4,229.1 L 218.8,222.9 Z"/>
+<path class="region" data-region="zilinsky" data-name="Žilinský kraj" d="M 478.1,15.6 L 468.0,21.9 L 464.8,28.2 L 324.2,34.4 L 324.2,40.7 L 315.6,46.9 L 310.9,53.2 L 302.3,59.4 L 300.0,65.7 L 294.5,71.9 L 294.5,78.2 L 297.7,84.5 L 301.6,90.7 L 304.7,97.0 L 306.2,103.2 L 310.2,109.5 L 319.5,115.7 L 322.7,122.0 L 321.9,128.3 L 321.9,134.5 L 325.0,140.8 L 325.0,147.0 L 324.2,153.3 L 310.2,159.5 L 301.6,165.8 L 342.2,172.1 L 340.6,178.3 L 339.8,184.6 L 338.3,190.8 L 337.5,197.1 L 346.1,203.3 L 349.2,209.6 L 350.0,215.8 L 368.8,222.1 L 385.9,222.1 L 385.2,215.8 L 383.6,209.6 L 384.4,203.3 L 560.2,197.1 L 563.3,190.8 L 560.2,184.6 L 555.5,178.3 L 551.6,172.1 L 560.9,165.8 L 561.7,159.5 L 563.3,153.3 L 559.4,147.0 L 550.8,140.8 L 542.2,134.5 L 541.4,128.3 L 525.0,122.0 L 519.5,115.7 L 521.9,109.5 L 527.3,103.2 L 527.3,97.0 L 528.1,90.7 L 528.9,84.5 L 529.7,78.2 L 528.1,71.9 L 502.3,65.7 L 503.9,59.4 L 493.8,53.2 L 491.4,46.9 L 489.1,40.7 L 488.3,34.4 L 487.5,28.2 L 485.9,21.9 L 478.9,15.6 Z"/>
+<path class="region" data-region="banskobystricky" data-name="Banskobystrický kraj" d="M 483.6,184.6 L 451.6,190.8 L 391.4,197.1 L 386.7,203.3 L 386.7,209.6 L 388.3,215.8 L 360.9,222.1 L 356.2,228.4 L 351.6,234.6 L 343.0,240.9 L 339.8,247.1 L 324.2,253.4 L 319.5,259.6 L 314.1,265.9 L 295.3,272.2 L 294.5,278.4 L 301.6,284.7 L 301.6,290.9 L 300.8,297.2 L 301.6,303.4 L 306.2,309.7 L 306.2,315.9 L 303.1,322.2 L 297.7,328.5 L 351.6,334.7 L 351.6,341.0 L 345.3,347.2 L 345.3,353.5 L 345.3,359.7 L 343.0,366.0 L 349.2,372.3 L 384.4,378.5 L 385.2,384.8 L 377.3,391.0 L 374.2,397.3 L 406.2,403.5 L 414.8,403.5 L 455.5,397.3 L 532.8,391.0 L 546.9,384.8 L 561.7,378.5 L 567.2,372.3 L 581.2,366.0 L 601.6,359.7 L 604.7,353.5 L 610.9,347.2 L 615.6,341.0 L 616.4,334.7 L 618.0,328.5 L 622.7,322.2 L 628.9,315.9 L 601.6,309.7 L 600.8,303.4 L 603.1,297.2 L 606.2,290.9 L 609.4,284.7 L 603.1,278.4 L 602.3,272.2 L 601.6,265.9 L 600.0,259.6 L 595.3,253.4 L 584.4,247.1 L 583.6,240.9 L 586.7,234.6 L 587.5,228.4 L 589.8,222.1 L 595.3,215.8 L 596.9,209.6 L 589.8,203.3 L 554.7,197.1 L 499.2,190.8 L 490.6,184.6 Z"/>
+<path class="region" data-region="presovsky" data-name="Prešovský kraj" d="M 778.1,71.9 L 621.9,78.2 L 622.7,84.5 L 605.5,90.7 L 595.3,97.0 L 589.1,103.2 L 586.7,109.5 L 582.8,115.7 L 547.7,122.0 L 543.8,128.3 L 544.5,134.5 L 553.1,140.8 L 567.2,147.0 L 565.6,153.3 L 564.1,159.5 L 563.3,165.8 L 554.7,172.1 L 558.6,178.3 L 562.5,184.6 L 567.2,190.8 L 563.3,197.1 L 592.2,203.3 L 600.8,209.6 L 755.5,215.8 L 768.0,222.1 L 765.6,228.4 L 814.8,234.6 L 821.9,240.9 L 839.1,247.1 L 847.7,247.1 L 860.2,240.9 L 857.8,234.6 L 914.8,228.4 L 964.1,222.1 L 964.8,215.8 L 965.6,209.6 L 971.1,203.3 L 975.0,197.1 L 985.9,190.8 L 988.3,184.6 L 988.3,178.3 L 977.3,172.1 L 962.5,165.8 L 959.4,159.5 L 933.6,153.3 L 922.7,147.0 L 909.4,140.8 L 902.3,134.5 L 902.3,128.3 L 900.0,122.0 L 897.7,115.7 L 893.8,109.5 L 889.1,103.2 L 874.2,97.0 L 855.5,90.7 L 843.8,84.5 L 837.5,78.2 L 780.5,71.9 Z"/>
+<path class="region" data-region="kosicky" data-name="Košický kraj" d="M 631.2,179.9 L 619.5,186.1 L 610.2,192.4 L 615.6,198.6 L 607.8,204.9 L 602.3,211.2 L 597.7,217.4 L 590.6,223.7 L 589.8,229.9 L 589.1,236.2 L 585.2,242.4 L 589.1,248.7 L 600.0,254.9 L 603.1,261.2 L 604.7,267.5 L 604.7,273.7 L 613.3,280.0 L 610.9,286.2 L 607.8,292.5 L 604.7,298.7 L 603.1,305.0 L 605.5,311.3 L 828.9,317.5 L 828.1,323.8 L 830.5,330.0 L 833.6,336.3 L 835.9,342.5 L 839.8,348.8 L 843.0,355.1 L 870.3,355.1 L 911.7,348.8 L 913.3,342.5 L 913.3,336.3 L 914.8,330.0 L 914.8,323.8 L 914.8,317.5 L 914.8,311.3 L 915.6,305.0 L 918.0,298.7 L 922.7,292.5 L 931.2,286.2 L 935.2,280.0 L 949.2,273.7 L 950.0,267.5 L 952.3,261.2 L 950.0,254.9 L 954.7,248.7 L 957.0,242.4 L 956.2,236.2 L 957.0,229.9 L 934.4,223.7 L 933.6,217.4 L 934.4,211.2 L 726.6,204.9 L 723.4,198.6 L 707.8,192.4 L 694.5,186.1 L 632.0,179.9 Z"/>
+<circle class="city-dot" cx="55" cy="352" r="4"/>
+<text class="city-label" x="61" y="349">Bratislava</text>
+<circle class="city-dot" cx="154" cy="301" r="4"/>
+<text class="city-label" x="160" y="298">Trnava</text>
+<circle class="city-dot" cx="212" cy="192" r="4"/>
+<text class="city-label" x="218" y="189">Trenčín</text>
+<circle class="city-dot" cx="227" cy="352" r="4"/>
+<text class="city-label" x="233" y="349">Nitra</text>
+<circle class="city-dot" cx="297" cy="121" r="4"/>
+<text class="city-label" x="303" y="118">Žilina</text>
+<circle class="city-dot" cx="336" cy="325" r="4"/>
+<text class="city-label" x="342" y="322">B. Bystrica</text>
+<circle class="city-dot" cx="532" cy="188" r="4"/>
+<text class="city-label" x="538" y="185">Prešov</text>
+<circle class="city-dot" cx="609" cy="285" r="4"/>
+<text class="city-label" x="615" y="282">Košice</text>
+<text class="region-label" x="67" y="350" text-anchor="middle">BA</text>
+<text class="region-label" x="148" y="400" text-anchor="middle">TRNAVSKÝ</text>
+<text class="region-label" x="260" y="200" text-anchor="middle">TRENČIANSKY</text>
+<text class="region-label" x="290" y="380" text-anchor="middle">NITRIANSKY</text>
+<text class="region-label" x="465" y="140" text-anchor="middle">ŽILINSKÝ</text>
+<text class="region-label" x="440" y="350" text-anchor="middle">BANSKOBYSTRICKÝ</text>
+<text class="region-label" x="710" y="168" text-anchor="middle">PREŠOVSKÝ</text>
+<text class="region-label" x="820" y="310" text-anchor="middle">KOŠICKÝ</text>
+</svg>
       </div>
       <div class="map-legend" role="tablist">
         <button class="legend-chip" data-region="bratislavsky">Bratislavský</button>
