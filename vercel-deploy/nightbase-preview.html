@@ -1761,11 +1761,10 @@ window.renderArtists = function(genre) {
 // ===== PWA INSTALL =====
 let deferredPrompt = null;
 
+// Odregistruj starý service worker ak existuje (mohol spôsobovať problémy)
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js', {scope: '/'})
-      .then(() => console.log('SW OK'))
-      .catch(e => console.log('SW fail:', e));
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(reg => reg.unregister());
   });
 }
 
