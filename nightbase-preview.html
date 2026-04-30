@@ -600,6 +600,75 @@ h1,h2,h3,h4,p{margin:0;}
       <div class="rank-item"><div class="rank-num">4</div><div class="rank-info"><div class="rank-name">TÁLE FESTIVAL</div><div class="rank-sub">Tále resort · BB kraj</div></div><div class="rank-score">★ 4.5</div></div>
       <div class="rank-item"><div class="rank-num">5</div><div class="rank-info"><div class="rank-name">CASTLE RAVE</div><div class="rank-sub">Hidepark · Nitra</div></div><div class="rank-score">★ 4.4</div></div>
     </div>
+
+    <!-- TOP TAXIKY -->
+    <div style="margin-top:32px;">
+      <div class="section-head" style="margin-bottom:16px;">
+        <h3 class="section-title" style="font-size:clamp(18px,4vw,24px);">🚕 TOP <em>Taxislužby</em></h3>
+        <span style="font-size:12px;color:var(--muted);">Najlepšie hodnotené vo všetkých krajoch</span>
+      </div>
+      <div class="rank-list" id="rankTaxi">
+        <div class="rank-item">
+          <div class="rank-num gold">1</div>
+          <div class="rank-info">
+            <div class="rank-name">NightRide BA</div>
+            <div class="rank-sub">Bratislavský kraj · 24/7 · Mercedes E</div>
+          </div>
+          <div class="rank-score" style="color:#f5c832;">★ 4.9</div>
+        </div>
+        <div class="rank-item">
+          <div class="rank-num" style="color:#c0c0c0;">2</div>
+          <div class="rank-info">
+            <div class="rank-name">Košice Taxi Nočný</div>
+            <div class="rank-sub">Košický kraj · Nočná jazda</div>
+          </div>
+          <div class="rank-score" style="color:#f5c832;">★ 4.6</div>
+        </div>
+        <div class="rank-item" style="opacity:0.5;">
+          <div class="rank-num">3</div>
+          <div class="rank-info">
+            <div class="rank-name">Tu môžeš byť ty</div>
+            <div class="rank-sub">Zaregistruj svoju taxislužbu</div>
+          </div>
+          <button onclick="showPage('taxi')" style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(245,200,50,0.15);border:1px solid rgba(245,200,50,0.3);color:#f5c832;cursor:pointer;">Registrovať →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP HOTELY -->
+    <div style="margin-top:32px;">
+      <div class="section-head" style="margin-bottom:16px;">
+        <h3 class="section-title" style="font-size:clamp(18px,4vw,24px);">🏨 TOP <em>Hotely</em></h3>
+        <span style="font-size:12px;color:var(--muted);">Najlepšie hodnotené ubytovanie na Slovensku</span>
+      </div>
+      <div class="rank-list" id="rankHotely">
+        <div class="rank-item">
+          <div class="rank-num gold">1</div>
+          <div class="rank-info">
+            <div class="rank-name">Hotel Night BA</div>
+            <div class="rank-sub">Bratislavský kraj · ★★★★ · centrum</div>
+          </div>
+          <div class="rank-score" style="color:#6ab0ff;">★ 4.8</div>
+        </div>
+        <div class="rank-item">
+          <div class="rank-num" style="color:#c0c0c0;">2</div>
+          <div class="rank-info">
+            <div class="rank-name">Penzión Stará Brána KE</div>
+            <div class="rank-sub">Košický kraj · ★★★</div>
+          </div>
+          <div class="rank-score" style="color:#6ab0ff;">★ 4.5</div>
+        </div>
+        <div class="rank-item" style="opacity:0.5;">
+          <div class="rank-num">3</div>
+          <div class="rank-info">
+            <div class="rank-name">Registruj svoje ubytovanie</div>
+            <div class="rank-sub">Hotel, penzión alebo hostel</div>
+          </div>
+          <button onclick="showPage('hotely')" style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(100,160,255,0.15);border:1px solid rgba(100,160,255,0.3);color:#6ab0ff;cursor:pointer;">Registrovať →</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -1572,6 +1641,8 @@ h1,h2,h3,h4,p{margin:0;}
 .rstation-embed.open{display:block;}
 .rstation-embed iframe{width:100%;border:none;display:block;}
 .rnote{background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 14px;font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6;}
+.radio-yt-link{display:block;text-align:center;padding:8px;font-size:11px;color:var(--muted);text-decoration:none;border-top:1px solid var(--line);}
+.radio-yt-link:hover{color:var(--red-2);}
 .rnote strong{color:var(--text);}
 </style>
   <div class="section radio-pg">
@@ -1588,8 +1659,10 @@ h1,h2,h3,h4,p{margin:0;}
     <div class="radio-tabs">
       <button class="rtab on" onclick="switchRadio2('pop',this)">🎤 Pop</button>
       <button class="rtab" onclick="switchRadio2('rock',this)">🎸 Rock</button>
+      <button class="rtab" onclick="switchRadio2('techno',this)">⚡ Techno</button>
+      <button class="rtab" onclick="switchRadio2('dnb',this)">🥁 D'N'B</button>
+      <button class="rtab" onclick="switchRadio2('edm',this)">💃 EDM</button>
       <button class="rtab" onclick="switchRadio2('hiphop',this)">🎧 Hip-Hop</button>
-      <button class="rtab" onclick="switchRadio2('dance',this)">💃 Dance/EDM</button>
       <button class="rtab" onclick="switchRadio2('80s',this)">📻 80s</button>
       <button class="rtab" onclick="switchRadio2('90s',this)">💿 90s</button>
       <button class="rtab" onclick="switchRadio2('jazz',this)">🎷 Jazz</button>
@@ -1615,9 +1688,9 @@ h1,h2,h3,h4,p{margin:0;}
 }
 .plans-cat-title::after{content:'';flex:1;height:1px;background:var(--line);}
 .plans-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-@media(min-width:700px){.plans-row.cols3{grid-template-columns:repeat(3,1fr);}}
-@media(min-width:1000px){.plans-row.cols3{grid-template-columns:repeat(3,1fr);}}
-@media(min-width:700px){.plans-row.cols2{grid-template-columns:repeat(2,1fr);}}
+.plans-row.cols3{grid-template-columns:repeat(3,1fr);}
+.plans-row.cols2{grid-template-columns:repeat(2,1fr);}
+@media(max-width:480px){.plans-row.cols3{grid-template-columns:1fr 1fr;}.plans-row.cols2{grid-template-columns:1fr 1fr;}}
 
 /* Nový plan-card dizajn */
 .pcard{
@@ -1998,6 +2071,75 @@ h1,h2,h3,h4,p{margin:0;}
       </div>
 
     </div>
+
+    <!-- TOP TAXIKY -->
+    <div style="margin-top:32px;">
+      <div class="section-head" style="margin-bottom:16px;">
+        <h3 class="section-title" style="font-size:clamp(18px,4vw,24px);">🚕 TOP <em>Taxislužby</em></h3>
+        <span style="font-size:12px;color:var(--muted);">Najlepšie hodnotené vo všetkých krajoch</span>
+      </div>
+      <div class="rank-list" id="rankTaxi">
+        <div class="rank-item">
+          <div class="rank-num gold">1</div>
+          <div class="rank-info">
+            <div class="rank-name">NightRide BA</div>
+            <div class="rank-sub">Bratislavský kraj · 24/7 · Mercedes E</div>
+          </div>
+          <div class="rank-score" style="color:#f5c832;">★ 4.9</div>
+        </div>
+        <div class="rank-item">
+          <div class="rank-num" style="color:#c0c0c0;">2</div>
+          <div class="rank-info">
+            <div class="rank-name">Košice Taxi Nočný</div>
+            <div class="rank-sub">Košický kraj · Nočná jazda</div>
+          </div>
+          <div class="rank-score" style="color:#f5c832;">★ 4.6</div>
+        </div>
+        <div class="rank-item" style="opacity:0.5;">
+          <div class="rank-num">3</div>
+          <div class="rank-info">
+            <div class="rank-name">Tu môžeš byť ty</div>
+            <div class="rank-sub">Zaregistruj svoju taxislužbu</div>
+          </div>
+          <button onclick="showPage('taxi')" style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(245,200,50,0.15);border:1px solid rgba(245,200,50,0.3);color:#f5c832;cursor:pointer;">Registrovať →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP HOTELY -->
+    <div style="margin-top:32px;">
+      <div class="section-head" style="margin-bottom:16px;">
+        <h3 class="section-title" style="font-size:clamp(18px,4vw,24px);">🏨 TOP <em>Hotely</em></h3>
+        <span style="font-size:12px;color:var(--muted);">Najlepšie hodnotené ubytovanie na Slovensku</span>
+      </div>
+      <div class="rank-list" id="rankHotely">
+        <div class="rank-item">
+          <div class="rank-num gold">1</div>
+          <div class="rank-info">
+            <div class="rank-name">Hotel Night BA</div>
+            <div class="rank-sub">Bratislavský kraj · ★★★★ · centrum</div>
+          </div>
+          <div class="rank-score" style="color:#6ab0ff;">★ 4.8</div>
+        </div>
+        <div class="rank-item">
+          <div class="rank-num" style="color:#c0c0c0;">2</div>
+          <div class="rank-info">
+            <div class="rank-name">Penzión Stará Brána KE</div>
+            <div class="rank-sub">Košický kraj · ★★★</div>
+          </div>
+          <div class="rank-score" style="color:#6ab0ff;">★ 4.5</div>
+        </div>
+        <div class="rank-item" style="opacity:0.5;">
+          <div class="rank-num">3</div>
+          <div class="rank-info">
+            <div class="rank-name">Registruj svoje ubytovanie</div>
+            <div class="rank-sub">Hotel, penzión alebo hostel</div>
+          </div>
+          <button onclick="showPage('hotely')" style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(100,160,255,0.15);border:1px solid rgba(100,160,255,0.3);color:#6ab0ff;cursor:pointer;">Registrovať →</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -2681,6 +2823,21 @@ document.querySelectorAll(".rank-tab").forEach(tab=>{
 
   const W = 800, H = 440;
   canvas.width = W; canvas.height = H;
+  // Responsive: prispôsob canvasu šírke kontajnera
+  function resizeBilCanvas() {
+    var box = canvas.parentElement;
+    if (!box) return;
+    var w = box.clientWidth;
+    if (w > 0 && w < W) {
+      canvas.style.width = w + 'px';
+      canvas.style.height = Math.round(w * H / W) + 'px';
+    } else {
+      canvas.style.width = '';
+      canvas.style.height = '';
+    }
+  }
+  resizeBilCanvas();
+  window.addEventListener('resize', resizeBilCanvas);
 
   const PX=44,PY=44,TW=W-PX*2,TH=H-PY*2;
   const BR=18, PR=16, FRICTION=0.988, MIN_VEL=0.06;
@@ -3806,65 +3963,129 @@ window.sendMsg = function() {
 // ===== RADIO 2 =====
 var RADIO_STATIONS2 = {
   pop: [
-    {name:'PopHits Radio',   desc:'Top 40 & Pop Hits 24/7',   ico:'🎤', vid:'36YnV9STBqc'},
-    {name:'Hot Hits Radio',  desc:'Charts & New Music',        ico:'🔥', vid:'4xDzrJKXOOY'},
-    {name:'Pop Mix Radio',   desc:'Best Pop Classics',         ico:'🎵', vid:'HoRX6yBCHpY'},
+    {name:'PopHits Radio',    desc:'Top 40 & Pop Hits 24/7',    ico:'🎤', vid:'36YnV9STBqc'},
+    {name:'Hits Global',      desc:'Worldwide Pop Hits',         ico:'🔥', vid:'4xDzrJKXOOY'},
+    {name:'Pop Mix',          desc:'Pop Classics & New Tracks',  ico:'🎵', vid:'HoRX6yBCHpY'},
   ],
   rock: [
-    {name:'Classic Rock Radio', desc:'Rock Legends 24/7',       ico:'🎸', vid:'2gTrg2BMs7c'},
-    {name:'Rock Hits Radio',    desc:'Best Rock All Day',        ico:'🤘', vid:'YHSHf4bUbSA'},
-    {name:'Rock Mix',           desc:'Modern & Classic Rock',   ico:'🔊', vid:'gE4RHzLynJk'},
+    {name:'Classic Rock',     desc:'Rock Legends 24/7',          ico:'🎸', vid:'YHSHf4bUbSA'},
+    {name:'Rock Hits Radio',  desc:'Best Rock All Day',          ico:'🤘', vid:'2gTrg2BMs7c'},
+    {name:'Rock Mix',         desc:'Modern & Classic Rock',      ico:'🔊', vid:'gE4RHzLynJk'},
+    {name:'Alternative Rock', desc:'Alt & Indie Rock Radio',     ico:'🎙️', vid:'82Pu3jbOyFA'},
+  ],
+  techno: [
+    {name:'Techno Radio',     desc:'Dark Techno 24/7',           ico:'⚡', vid:'UvlZhHEBsEo'},
+    {name:'Hard Techno',      desc:'Hard Techno & Schranz',      ico:'🔥', vid:'bt4ET_oZ0VM'},
+    {name:'Techno Live',      desc:'Underground Techno',         ico:'🖤', vid:'_gDymuVECrY'},
+    {name:'Dark Techno',      desc:'Industrial & Dark Techno',   ico:'💀', vid:'XMeD5r8JDlQ'},
+  ],
+  edm: [
+    {name:'EDM Radio',        desc:'Electronic Dance 24/7',      ico:'💃', vid:'RlhXliSqkbc'},
+    {name:'Club Hits',        desc:'Club & Dance Hits',          ico:'⚡', vid:'K4TOrB7at0Y'},
+    {name:'Lofi Girl',        desc:'Chill Beats / Study',        ico:'☕', vid:'jfKfPfyJRdk'},
+  ],
+  dnb: [
+    {name:'DNB Radio',        desc:'Drum & Bass 24/7',           ico:'🥁', vid:'q_sB7D7jNMs'},
+    {name:'Liquid DNB',       desc:'Liquid & Neurofunk',         ico:'💧', vid:'tKi9Z-f6qX4'},
+    {name:'DNB Session',      desc:'DNB Mix Nonstop',        ico:'🔊', vid:'5yx6BWlEVcY'},
+    {name:'Bass Radio',       desc:'Heavy Bass Music',           ico:'💥', vid:'h3gFOLSP3lU'},
   ],
   hiphop: [
-    {name:'Hip Hop Nation',  desc:'Rap & Hip Hop 24/7',    ico:'🎧', vid:'hHW1oY26kxQ'},
-    {name:'Trap Radio',      desc:'Trap Beats Nonstop',    ico:'🎚️', vid:'5qap5aO4i9A'},
-    {name:'Hip Hop Radio',   desc:'Best Hip Hop Tracks',   ico:'🎙️', vid:'WbFUCIj-JuE'},
-    {name:'Old School',      desc:'90s & 2000s Classics',  ico:'👟', vid:'c_9q1D0Wsgc'},
-  ],
-  dance: [
-    {name:'EDM Radio',       desc:'Electronic Dance 24/7',  ico:'💃', vid:'RlhXliSqkbc'},
-    {name:'Club Hits',       desc:'Club & Dance Hits',      ico:'⚡', vid:'K4TOrB7at0Y'},
-    {name:'Dance Mix',       desc:'House & Dance Music',    ico:'🕺', vid:'Na0w3Mz46GA'},
+    {name:'Hip Hop Nation',   desc:'Rap & Hip Hop 24/7',        ico:'🎧', vid:'hHW1oY26kxQ'},
+    {name:'Trap Radio',       desc:'Trap Beats Nonstop',        ico:'🎚️', vid:'5qap5aO4i9A'},
+    {name:'Hip Hop Radio',    desc:'Best Hip Hop Tracks',       ico:'🎙️', vid:'WbFUCIj-JuE'},
+    {name:'Old School',       desc:'90s & 2000s Classics',      ico:'👟', vid:'c_9q1D0Wsgc'},
   ],
   '80s': [
-    {name:'80s Hits',        desc:'Best of the 80s',        ico:'📻', vid:'lKbWuiW4EVM'},
-    {name:'80s Radio',       desc:'80s Pop & Rock Classics', ico:'🕺', vid:'4fndeDfaWCg'},
-    {name:'80s Nonstop',     desc:'80s All Day Long',        ico:'📼', vid:'Tkg2nF1PfNI'},
-    {name:'80s Rewind',      desc:'80s Greatest Hits',       ico:'⏮️', vid:'56SXgdTk5W4'},
+    {name:'80s Hits',         desc:'Best of the 80s',           ico:'📻', vid:'lKbWuiW4EVM'},
+    {name:'80s Radio',        desc:'80s Pop & Rock Classics',   ico:'🕺', vid:'4fndeDfaWCg'},
+    {name:'80s Nonstop',      desc:'80s All Day Long',          ico:'📼', vid:'Tkg2nF1PfNI'},
+    {name:'80s Rewind',       desc:'80s Greatest Hits',         ico:'⏮️', vid:'56SXgdTk5W4'},
   ],
   '90s': [
-    {name:'90s Pop Radio',   desc:'90s Pop Hits Nonstop',   ico:'💿', vid:'ZsL4aAi7YvY'},
-    {name:'90s Radio',       desc:'90s All Day',            ico:'🎀', vid:'riyBv2BtXE0'},
-    {name:'90s Hits',        desc:'Best 90s Pop & RnB',     ico:'📀', vid:'0VFG5vC2Vy0'},
-    {name:'90s Retro',       desc:'90s Throwback Hits',     ico:'🎵', vid:'YkMETK7B8sg'},
+    {name:'90s Pop Radio',    desc:'90s Pop Hits Nonstop',      ico:'💿', vid:'ZsL4aAi7YvY'},
+    {name:'90s Radio',        desc:'90s All Day',               ico:'🎀', vid:'riyBv2BtXE0'},
+    {name:'90s Hits',         desc:'Best 90s Pop & RnB',        ico:'📀', vid:'0VFG5vC2Vy0'},
+    {name:'90s Retro',        desc:'90s Throwback Hits',        ico:'🎵', vid:'YkMETK7B8sg'},
   ],
   jazz: [
-    {name:'Jazz Café',       desc:'Jazz & Blues 24/7',       ico:'🎷', vid:'i3VwS0wAz9I'},
-    {name:'Smooth Jazz',     desc:'Relaxing Jazz',           ico:'🎹', vid:'Dx5qFachd3A'},
-    {name:'Late Night Jazz', desc:'Late Night Atmosphere',   ico:'🌙', vid:'rUxyKA_-grg'},
-    {name:'Study Jazz',      desc:'Jazz for Focus',          ico:'📖', vid:'DSGyEsJ17cI'},
+    {name:'Jazz Café',        desc:'Jazz & Blues 24/7',         ico:'🎷', vid:'i3VwS0wAz9I'},
+    {name:'Smooth Jazz',      desc:'Relaxing Jazz',             ico:'🎹', vid:'Dx5qFachd3A'},
+    {name:'Jazz Night',       desc:'Late Night Jazz',           ico:'🌙', vid:'rUxyKA_-grg'},
+    {name:'Study Jazz',       desc:'Jazz for Focus',            ico:'📖', vid:'DSGyEsJ17cI'},
   ],
   lofi: [
-    {name:'Lofi Girl',       desc:'Beats to relax / study', ico:'☕', vid:'jfKfPfyJRdk'},
-    {name:'Lofi Girl 2',     desc:'Lofi Chill Beats',       ico:'🌿', vid:'rUxyKA_-grg'},
-    {name:'ChillHop',        desc:'Chill Hip Hop Beats',    ico:'🎵', vid:'7NOSDKb0HlU'},
+    {name:'Lofi Girl',        desc:'Beats to relax / study',    ico:'☕', vid:'jfKfPfyJRdk'},
+    {name:'Lofi Night',       desc:'Lofi Chill Beats',          ico:'🌙', vid:'rUxyKA_-grg'},
+    {name:'ChillHop',         desc:'Chill Hip Hop Beats',       ico:'🎵', vid:'7NOSDKb0HlU'},
   ],
   country: [
-    {name:'Country Radio',   desc:'Country Hits 24/7',        ico:'🤠', vid:'6V_mHoKDpMw'},
-    {name:'Country Gold',    desc:'Classic Country Legends',  ico:'🌾', vid:'lp9soZMHqMQ'},
-    {name:'New Country',     desc:'Modern Country Hits',      ico:'🎸', vid:'yxQF4RG-r6A'},
-    {name:'Country Mix',     desc:'Best Country Nonstop',     ico:'🏕️', vid:'J6-bkPkZhIE'},
+    {name:'Country Radio',    desc:'Country Hits 24/7',         ico:'🤠', vid:'6V_mHoKDpMw'},
+    {name:'Country Gold',     desc:'Classic Country Legends',   ico:'🌾', vid:'lp9soZMHqMQ'},
+    {name:'New Country',      desc:'Modern Country Hits',       ico:'🎸', vid:'yxQF4RG-r6A'},
   ],
   classical: [
-    {name:'Classical Radio', desc:'Orchestra & Symphonies',    ico:'🎻', vid:'SfY3cW56-c8'},
-    {name:'Piano Radio',     desc:'Solo Piano Masterpieces',   ico:'🎹', vid:'4Tr0otuiQuU'},
-    {name:'Classical Study', desc:'Focus & Concentration',     ico:'📚', vid:'SlfcFbz4H4U'},
-    {name:'Opera & Choir',   desc:'Opera & Classical Choir',  ico:'🎼', vid:'jAZ8X0-HMis'},
+    {name:'Classical Radio',  desc:'Orchestra & Symphonies',    ico:'🎻', vid:'SfY3cW56-c8'},
+    {name:'Piano Radio',      desc:'Solo Piano Masterpieces',   ico:'🎹', vid:'4Tr0otuiQuU'},
+    {name:'Classical Study',  desc:'Focus & Concentration',     ico:'📚', vid:'SlfcFbz4H4U'},
   ],
 };
 
 var activeRadioTab2 = 'pop';
 var openRadioCard = null;
+
+window.switchRadio2 = function(tab, el) {
+  activeRadioTab2 = tab;
+  openRadioCard = null;
+  document.querySelectorAll('.rtab').forEach(function(t) { t.classList.remove('on'); });
+  if (el) el.classList.add('on');
+  renderRadio2();
+};
+
+function renderRadio2() {
+  var grid = document.getElementById('radioStations2');
+  if (!grid) return;
+  var stations = RADIO_STATIONS2[activeRadioTab2] || [];
+  grid.innerHTML = stations.map(function(s, i) {
+    var isOpen = (openRadioCard === i);
+    var ytUrl = 'https://www.youtube.com/watch?v=' + s.vid;
+    var embedSrc = 'https://www.youtube-nocookie.com/embed/' + s.vid +
+      '?controls=1&modestbranding=1&rel=0&playsinline=1&autoplay=0';
+    return (
+      '<div class="rstation' + (isOpen ? ' on' : '') + '" id="rs_' + i + '">' +
+        '<div class="rstation-head" onclick="toggleRadio2(' + i + ')">' +
+          '<div class="rstation-ico">' + s.ico + '</div>' +
+          '<div class="rstation-info">' +
+            '<div class="rstation-name">' + s.name + '</div>' +
+            '<div class="rstation-desc">' + s.desc + '</div>' +
+          '</div>' +
+          '<button class="rstation-play">' + (isOpen ? '⏸' : '▶') + '</button>' +
+        '</div>' +
+        (isOpen
+          ? '<div class="rstation-embed open">' +
+              '<iframe width="100%" height="200" src="' + embedSrc + '" ' +
+              'allow="encrypted-media;picture-in-picture" allowfullscreen ' +
+              'style="display:block;border:none;"></iframe>' +
+              '<a href="' + ytUrl + '" target="_blank" rel="noopener" class="radio-yt-link">' +
+              '↗ Otvoriť na YouTube (ak nefunguje zvuk)</a>' +
+            '</div>'
+          : '<div class="rstation-embed"></div>') +
+      '</div>'
+    );
+  }).join('');
+}
+
+window.toggleRadio2 = function(idx) {
+  openRadioCard = (openRadioCard === idx) ? null : idx;
+  renderRadio2();
+  if (openRadioCard !== null) {
+    setTimeout(function() {
+      var el = document.getElementById('rs_' + openRadioCard);
+      if (el) el.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }, 80);
+  }
+};
+
 
 window.switchRadio2 = function(tab, el) {
   activeRadioTab2 = tab;
