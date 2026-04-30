@@ -6,6 +6,12 @@
 <meta http-equiv="cache-control" content="no-cache,no-store,must-revalidate"/>
 <meta name="theme-color" content="#0a0a0c"/>
 <title>NightBase — Objav. Zaži. Vyber si.</title>
+<link rel="manifest" href="/manifest.json"/>
+<link rel="apple-touch-icon" href="nightbase-logo.png"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="NightBase"/>
+<meta name="mobile-web-app-capable" content="yes"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -528,6 +534,17 @@ h1,h2,h3,h4,p{margin:0;}
       <div class="stat-item"><div class="stat-num">20+</div><div class="stat-label">žánrov</div></div>
       <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">interpretov</div></div>
     </div>
+  </div>
+
+  <!-- INSTALL BANNER -->
+  <div id="pwaBanner" style="display:none;margin:18px 0;background:linear-gradient(135deg,rgba(225,11,31,0.18),rgba(14,14,20,0.98));border:1px solid rgba(225,11,31,0.5);border-radius:var(--r-xl);padding:14px 16px;align-items:center;gap:12px;position:relative;">
+    <div style="font-size:32px;flex-shrink:0;">📱</div>
+    <div style="flex:1;min-width:0;">
+      <div style="font-weight:700;font-size:14px;color:#fff;margin-bottom:2px;">Pridaj appku na plochu</div>
+      <div style="font-size:12px;color:var(--muted);">Rýchlejšie spustenie · vyzerá ako natívna apka</div>
+    </div>
+    <button onclick="installApp()" style="background:linear-gradient(180deg,var(--red-2),var(--red));color:#fff;border:none;padding:9px 16px;border-radius:9px;font-weight:700;font-size:13px;white-space:nowrap;cursor:pointer;flex-shrink:0;">Inštalovať</button>
+    <button onclick="document.getElementById('pwaBanner').style.display='none';localStorage.setItem('pwaBannerDismissed','1');" style="position:absolute;top:6px;right:6px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:2px 6px;">×</button>
   </div>
 
   <!-- VEĽKÉ TLAČIDLÁ — Paušály & Rádio & Biliard -->
@@ -1709,6 +1726,48 @@ window.renderArtists = function(genre) {
   ).join('');
 };
 
+// ===== PWA INSTALL (iba inštalácia, ŽIADNY service worker) =====
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Zobraz banner ak je v standalone móde
+  if (!window.matchMedia('(display-mode: standalone)').matches &&
+      !window.navigator.standalone &&
+      localStorage.getItem('pwaBannerDismissed') !== '1') {
+    document.getElementById('pwaBanner').style.display = 'flex';
+  }
+});
+
+window.installApp = async function() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const result = await deferredPrompt.userChoice;
+    if (result.outcome === 'accepted') {
+      document.getElementById('pwaBanner').style.display = 'none';
+    }
+    deferredPrompt = null;
+  } else if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+    alert('Pre iPhone:\n\n1. Klikni na ikonu Zdieľať (štvorček so šípkou hore)\n2. Vyber "Pridať na plochu"');
+  }
+};
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('pwaBanner').style.display = 'none';
+});
+
+// Pre iOS Safari (nemá beforeinstallprompt) zobraz banner manuálne
+window.addEventListener('load', () => {
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const inStandalone = window.navigator.standalone;
+  const dismissed = localStorage.getItem('pwaBannerDismissed') === '1';
+  if (isIOS && !inStandalone && !dismissed) {
+    setTimeout(() => {
+      document.getElementById('pwaBanner').style.display = 'flex';
+    }, 1500);
+  }
+});
 </script>
 </body>
 </html>

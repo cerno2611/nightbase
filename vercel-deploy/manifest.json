@@ -1,7 +1,7 @@
 {
-  "name": "NightBase — Objav. Zaži. Vyber si.",
+  "name": "NightBase",
   "short_name": "NightBase",
-  "description": "Slovenská appka pre nočný život — akcie, kluby, gastro, taxi a hotely.",
+  "description": "Slovenská appka pre nočný život",
   "start_url": "/nightbase-preview.html",
   "scope": "/",
   "display": "standalone",
@@ -10,7 +10,16 @@
   "theme_color": "#0a0a0c",
   "lang": "sk",
   "icons": [
-    { "src": "/nightbase-logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/nightbase-logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    {
+      "src": "/nightbase-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/nightbase-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }
