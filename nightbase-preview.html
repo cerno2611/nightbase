@@ -534,8 +534,8 @@ h1,h2,h3,h4,p{margin:0;}
     </div>
   </div>
 
-  <!-- INSTALL BANNER — pridať appku na plochu -->
-  <div id="installBanner" style="display:none;margin:18px 0;background:linear-gradient(135deg,rgba(225,11,31,0.18),rgba(14,14,20,0.98));border:1px solid rgba(225,11,31,0.5);border-radius:var(--r-xl);padding:14px 16px;align-items:center;gap:12px;position:relative;">
+  <!-- INSTALL BANNER — vždy viditeľné -->
+  <div id="installBanner" style="margin:18px 0;background:linear-gradient(135deg,rgba(225,11,31,0.18),rgba(14,14,20,0.98));border:1px solid rgba(225,11,31,0.5);border-radius:var(--r-xl);padding:14px 16px;display:flex;align-items:center;gap:12px;position:relative;">
     <div style="font-size:32px;flex-shrink:0;">📱</div>
     <div style="flex:1;min-width:0;">
       <div style="font-weight:700;font-size:14px;color:#fff;margin-bottom:2px;">Pridaj NightBase na plochu</div>
@@ -1827,43 +1827,29 @@ window.closeArtistProfile = function() {
   document.getElementById('artistProfileMask')?.classList.remove('open');
 };
 
-// ===== INSTALL APP - jednoklikova installacia ako ravefusion =====
+// ===== INSTALL APP =====
 let deferredPrompt = null;
 
-// Registracia minimal SW (nutne pre beforeinstallprompt)
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW err:', err));
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
   });
 }
 
-// Zachytenie installacneho promptu od Chrome
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  // Zobraz banner
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-  const dismissed = localStorage.getItem('iBannerHidden') === '1';
-  if (!isStandalone && !dismissed) {
-    const b = document.getElementById('installBanner');
-    if (b) b.style.display = 'flex';
-  }
 });
 
 window.installApp = async function() {
   if (deferredPrompt) {
-    // Android Chrome - natívny prompt
     deferredPrompt.prompt();
     const result = await deferredPrompt.userChoice;
     if (result.outcome === 'accepted') {
       document.getElementById('installBanner').style.display = 'none';
     }
     deferredPrompt = null;
-  } else if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-    // iOS - musi cez Share menu (nepodporuje beforeinstallprompt)
-    showInstallGuide();
   } else {
-    // Desktop alebo iny browser bez podpory
     showInstallGuide();
   }
 };
@@ -1886,18 +1872,12 @@ window.closeInstallGuide = function() {
   document.getElementById('installGuideMask').classList.remove('open');
 };
 
-// Pre iOS Safari - ukáž banner manuálne (tam beforeinstallprompt nefunguje)
 window.addEventListener('load', () => {
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
   const dismissed = localStorage.getItem('iBannerHidden') === '1';
-  if (isStandalone || dismissed) return;
-
-  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-  if (isIOS) {
-    setTimeout(() => {
-      const b = document.getElementById('installBanner');
-      if (b) b.style.display = 'flex';
-    }, 1000);
+  if (isStandalone || dismissed) {
+    const b = document.getElementById('installBanner');
+    if (b) b.style.display = 'none';
   }
 });
 </script>
