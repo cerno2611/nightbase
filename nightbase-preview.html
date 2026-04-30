@@ -586,85 +586,273 @@ h1,h2,h3,h4,p{margin:0;}
 
 <!-- ===== PAGE: REBRÍČKY ===== -->
 <div class="page" id="page-rebricky">
+<style>
+/* Rebríčky tabs */
+.reb-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
+.reb-tab{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:999px;font-size:12px;font-weight:600;
+  background:rgba(255,255,255,0.04);border:1px solid var(--line);
+  color:var(--muted);cursor:pointer;transition:all .15s;
+}
+.reb-tab:hover{color:#fff;background:rgba(255,255,255,0.08);}
+.reb-tab.on{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 4px 12px rgba(225,11,31,0.4);}
+/* Rank panel */
+.reb-panel{display:none;}
+.reb-panel.on{display:block;}
+.reb-panel-head{
+  display:flex;align-items:center;gap:10px;margin-bottom:18px;
+  padding-bottom:14px;border-bottom:1px solid var(--line);
+}
+.reb-panel-icon{font-size:28px;}
+.reb-panel-title{font-family:var(--display);font-size:clamp(20px,5vw,28px);letter-spacing:0.03em;}
+.reb-panel-title em{font-style:normal;color:var(--red-2);}
+.reb-panel-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+/* Rank items */
+.rank-list2{display:flex;flex-direction:column;gap:8px;}
+.rank-item2{
+  display:flex;align-items:center;gap:14px;
+  background:var(--bg-2);border:1px solid var(--line);
+  border-radius:var(--r-md);padding:13px 16px;
+  transition:border-color .15s;
+}
+.rank-item2:hover{border-color:rgba(225,11,31,0.3);}
+.rank-item2.gold-border{border-color:rgba(245,200,50,0.35);}
+.rank-num2{
+  font-family:var(--display);font-size:22px;letter-spacing:0.02em;
+  width:28px;text-align:center;flex-shrink:0;
+}
+.rank-num2.g{color:#f5c842;}
+.rank-num2.s{color:#b0b8c8;}
+.rank-num2.b{color:#c87840;}
+.rank-info2{flex:1;min-width:0;}
+.rank-name2{font-weight:700;font-size:14px;margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rank-sub2{font-size:11px;color:var(--muted);}
+.rank-score2{
+  display:flex;align-items:center;gap:4px;
+  font-family:var(--display);font-size:16px;font-weight:700;
+  flex-shrink:0;
+}
+.rank-cta{
+  flex-shrink:0;font-size:11px;padding:5px 11px;border-radius:6px;
+  background:rgba(225,11,31,0.1);border:1px solid rgba(225,11,31,0.3);
+  color:var(--red-2);cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.rank-cta:hover{background:var(--red);color:#fff;border-color:var(--red);}
+.rank-cta.yellow{background:rgba(245,200,50,0.1);border-color:rgba(245,200,50,0.3);color:#f5c832;}
+.rank-cta.yellow:hover{background:#f5c832;color:#000;}
+.rank-cta.blue{background:rgba(100,160,255,0.1);border-color:rgba(100,160,255,0.3);color:#6ab0ff;}
+.rank-cta.blue:hover{background:#6ab0ff;color:#000;}
+</style>
   <div class="section">
-    <div class="section-head"><h2 class="section-title"><em>Rebríčky</em></h2><button class="section-link" onclick="showPage('home')">← Späť</button></div>
-    <div class="rank-tabs">
-      <button class="rank-tab active">Top eventy</button>
-      <button class="rank-tab">Top kluby</button>
-      <button class="rank-tab">Top interpreti</button>
-    </div>
-    <div class="rank-list">
-      <div class="rank-item"><div class="rank-num gold">1</div><div class="rank-info"><div class="rank-name">NIGHTSHIFT VOL. 14</div><div class="rank-sub">Subclub · Bratislava</div></div><div class="rank-score">★ 4.9</div></div>
-      <div class="rank-item"><div class="rank-num">2</div><div class="rank-info"><div class="rank-name">BASS RIOT</div><div class="rank-sub">Stanica · Žilina</div></div><div class="rank-score">★ 4.7</div></div>
-      <div class="rank-item"><div class="rank-num">3</div><div class="rank-info"><div class="rank-name">EAST SIDE FEST</div><div class="rank-sub">Wave · Prešov</div></div><div class="rank-score">★ 4.6</div></div>
-      <div class="rank-item"><div class="rank-num">4</div><div class="rank-info"><div class="rank-name">TÁLE FESTIVAL</div><div class="rank-sub">Tále resort · BB kraj</div></div><div class="rank-score">★ 4.5</div></div>
-      <div class="rank-item"><div class="rank-num">5</div><div class="rank-info"><div class="rank-name">CASTLE RAVE</div><div class="rank-sub">Hidepark · Nitra</div></div><div class="rank-score">★ 4.4</div></div>
+    <div class="section-head">
+      <h2 class="section-title">🏆 <em>Rebríčky</em></h2>
+      <button class="section-link" onclick="showPage('home')">← Späť</button>
     </div>
 
-    <!-- TOP TAXIKY -->
-    <div style="margin-top:32px;">
-      <div class="section-head" style="margin-bottom:16px;">
-        <h3 class="section-title" style="font-size:clamp(18px,4vw,24px);">🚕 TOP <em>Taxislužby</em></h3>
-        <span style="font-size:12px;color:var(--muted);">Najlepšie hodnotené vo všetkých krajoch</span>
+    <!-- Záložky -->
+    <div class="reb-tabs">
+      <button class="reb-tab on"  onclick="switchReb('eventy',this)">🎉 Top eventy</button>
+      <button class="reb-tab"     onclick="switchReb('kluby',this)">🏛️ Top kluby</button>
+      <button class="reb-tab"     onclick="switchReb('interpreti',this)">🎧 Top interpreti</button>
+      <button class="reb-tab"     onclick="switchReb('gastro',this)">🍽️ Top gastro</button>
+      <button class="reb-tab"     onclick="switchReb('taxi',this)">🚕 Top taxi</button>
+      <button class="reb-tab"     onclick="switchReb('hotely',this)">🏨 Top hotely</button>
+    </div>
+
+    <!-- TOP EVENTY -->
+    <div class="reb-panel on" id="reb-eventy">
+      <div class="reb-panel-head">
+        <div class="reb-panel-icon">🎉</div>
+        <div><div class="reb-panel-title">Top <em>eventy</em></div>
+        <div class="reb-panel-sub">Najlepšie hodnotené akcie na Slovensku · zoradené podľa ratingu</div></div>
       </div>
-      <div class="rank-list" id="rankTaxi">
-        <div class="rank-item">
-          <div class="rank-num gold">1</div>
-          <div class="rank-info">
-            <div class="rank-name">NightRide BA</div>
-            <div class="rank-sub">Bratislavský kraj · 24/7 · Mercedes E</div>
-          </div>
-          <div class="rank-score" style="color:#f5c832;">★ 4.9</div>
+      <div class="rank-list2">
+        <div class="rank-item2 gold-border">
+          <div class="rank-num2 g">1</div>
+          <div class="rank-info2"><div class="rank-name2">NIGHTSHIFT VOL. 14</div><div class="rank-sub2">Subclub · Bratislava · Techno</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.9</div>
         </div>
-        <div class="rank-item">
-          <div class="rank-num" style="color:#c0c0c0;">2</div>
-          <div class="rank-info">
-            <div class="rank-name">Košice Taxi Nočný</div>
-            <div class="rank-sub">Košický kraj · Nočná jazda</div>
-          </div>
-          <div class="rank-score" style="color:#f5c832;">★ 4.6</div>
+        <div class="rank-item2">
+          <div class="rank-num2 s">2</div>
+          <div class="rank-info2"><div class="rank-name2">BASS RIOT ZA</div><div class="rank-sub2">Stanica · Žilina · D'N'B</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.8</div>
         </div>
-        <div class="rank-item" style="opacity:0.5;">
-          <div class="rank-num">3</div>
-          <div class="rank-info">
-            <div class="rank-name">Tu môžeš byť ty</div>
-            <div class="rank-sub">Zaregistruj svoju taxislužbu</div>
-          </div>
-          <button onclick="showPage('taxi')" style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(245,200,50,0.15);border:1px solid rgba(245,200,50,0.3);color:#f5c832;cursor:pointer;">Registrovať →</button>
+        <div class="rank-item2">
+          <div class="rank-num2 b">3</div>
+          <div class="rank-info2"><div class="rank-name2">CASTLE RAVE</div><div class="rank-sub2">Hidepark · Nitra · Electronic</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.7</div>
+        </div>
+        <div class="rank-item2">
+          <div class="rank-num2">4</div>
+          <div class="rank-info2"><div class="rank-name2">EAST SIDE FEST</div><div class="rank-sub2">Wave · Prešov · Electronic</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.6</div>
+        </div>
+        <div class="rank-item2">
+          <div class="rank-num2">5</div>
+          <div class="rank-info2"><div class="rank-name2">TÁLE FESTIVAL</div><div class="rank-sub2">Tále resort · Banskobystrický kraj</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.5</div>
+        </div>
+        <div class="rank-item2" style="opacity:0.45;">
+          <div class="rank-num2">+</div>
+          <div class="rank-info2"><div class="rank-name2">Pridaj svoju akciu</div><div class="rank-sub2">Registruj sa a pridaj prvý event</div></div>
+          <button class="rank-cta" onclick="showPage('ucet')">Pridať akciu →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP KLUBY -->
+    <div class="reb-panel" id="reb-kluby">
+      <div class="reb-panel-head">
+        <div class="reb-panel-icon">🏛️</div>
+        <div><div class="reb-panel-title">Top <em>kluby</em></div>
+        <div class="reb-panel-sub">Najlepšie hodnotené kluby a venues na Slovensku</div></div>
+      </div>
+      <div class="rank-list2">
+        <div class="rank-item2 gold-border">
+          <div class="rank-num2 g">1</div>
+          <div class="rank-info2"><div class="rank-name2">Subclub</div><div class="rank-sub2">Bratislava · Techno / Electronic</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.9</div>
+        </div>
+        <div class="rank-item2">
+          <div class="rank-num2 s">2</div>
+          <div class="rank-info2"><div class="rank-name2">Stanica Žilina</div><div class="rank-sub2">Žilina · D'N'B / Bass</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.7</div>
+        </div>
+        <div class="rank-item2">
+          <div class="rank-num2 b">3</div>
+          <div class="rank-info2"><div class="rank-name2">KC Dunaj</div><div class="rank-sub2">Bratislava · House / Techno</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.6</div>
+        </div>
+        <div class="rank-item2">
+          <div class="rank-num2">4</div>
+          <div class="rank-info2"><div class="rank-name2">Tabačka Kulturfabrik</div><div class="rank-sub2">Košice · Electronic / Indie</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.5</div>
+        </div>
+        <div class="rank-item2" style="opacity:0.45;">
+          <div class="rank-num2">+</div>
+          <div class="rank-info2"><div class="rank-name2">Zaregistruj klub</div><div class="rank-sub2">Pridaj svoje venue na NightBase</div></div>
+          <button class="rank-cta" onclick="showPage('ucet')">Registrovať →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP INTERPRETI -->
+    <div class="reb-panel" id="reb-interpreti">
+      <div class="reb-panel-head">
+        <div class="reb-panel-icon">🎧</div>
+        <div><div class="reb-panel-title">Top <em>interpreti</em></div>
+        <div class="reb-panel-sub">Najobľúbenejší DJi a hudobníci na NightBase</div></div>
+      </div>
+      <div class="rank-list2">
+        <div class="rank-item2 gold-border">
+          <div class="rank-num2 g">1</div>
+          <div class="rank-info2"><div class="rank-name2">NIRA REY</div><div class="rank-sub2">Hard Techno · Schranz · SK / CZ / SI</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.9</div>
+        </div>
+        <div class="rank-item2">
+          <div class="rank-num2 s">2</div>
+          <div class="rank-info2"><div class="rank-name2">DJ Merko</div><div class="rank-sub2">Techno · House · Bratislava</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.7</div>
+        </div>
+        <div class="rank-item2">
+          <div class="rank-num2 b">3</div>
+          <div class="rank-info2"><div class="rank-name2">Bass Duo</div><div class="rank-sub2">Bass · Electronic · Žilina</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.5</div>
+        </div>
+        <div class="rank-item2" style="opacity:0.45;">
+          <div class="rank-num2">+</div>
+          <div class="rank-info2"><div class="rank-name2">Zaregistruj sa ako interpret</div><div class="rank-sub2">DJ, hudobník, performer</div></div>
+          <button class="rank-cta" onclick="showPage('interpreti')">Registrovať →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP GASTRO -->
+    <div class="reb-panel" id="reb-gastro">
+      <div class="reb-panel-head">
+        <div class="reb-panel-icon">🍽️</div>
+        <div><div class="reb-panel-title">Top <em>gastro</em></div>
+        <div class="reb-panel-sub">Najlepšie hodnotené reštaurácie pred akciami</div></div>
+      </div>
+      <div class="rank-list2">
+        <div class="rank-item2 gold-border">
+          <div class="rank-num2 g">1</div>
+          <div class="rank-info2"><div class="rank-name2">Mestský Pivovar</div><div class="rank-sub2">Bratislavský kraj · Pivovar &amp; Reštaurácia</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.8</div>
+        </div>
+        <div class="rank-item2">
+          <div class="rank-num2 s">2</div>
+          <div class="rank-info2"><div class="rank-name2">Jazz Club Bistro</div><div class="rank-sub2">Košický kraj · Jazz &amp; Fine Dining</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.8</div>
+        </div>
+        <div class="rank-item2">
+          <div class="rank-num2 b">3</div>
+          <div class="rank-info2"><div class="rank-name2">NightBase Grill &amp; Bar</div><div class="rank-sub2">Trenčiansky kraj · Grill &amp; Bar</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.7</div>
+        </div>
+        <div class="rank-item2">
+          <div class="rank-num2">4</div>
+          <div class="rank-info2"><div class="rank-name2">Cvernovka Bistro</div><div class="rank-sub2">Bratislavský kraj · Bistro &amp; Brunch</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.6</div>
+        </div>
+        <div class="rank-item2" style="opacity:0.45;">
+          <div class="rank-num2">+</div>
+          <div class="rank-info2"><div class="rank-name2">Zaregistruj reštauráciu</div><div class="rank-sub2">Gastro Free alebo Premium</div></div>
+          <button class="rank-cta" onclick="showPage('gastro')">Registrovať →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP TAXI -->
+    <div class="reb-panel" id="reb-taxi">
+      <div class="reb-panel-head">
+        <div class="reb-panel-icon">🚕</div>
+        <div><div class="reb-panel-title">Top <em>taxislužby</em></div>
+        <div class="reb-panel-sub">Najlepšie hodnotené taxislužby vo všetkých krajoch</div></div>
+      </div>
+      <div class="rank-list2">
+        <div class="rank-item2 gold-border">
+          <div class="rank-num2 g">1</div>
+          <div class="rank-info2"><div class="rank-name2">NightRide BA</div><div class="rank-sub2">Bratislavský kraj · 24/7 · Mercedes E · max 4 os.</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.9</div>
+        </div>
+        <div class="rank-item2">
+          <div class="rank-num2 s">2</div>
+          <div class="rank-info2"><div class="rank-name2">Košice Taxi Nočný</div><div class="rank-sub2">Košický kraj · Nočná jazda</div></div>
+          <div class="rank-score2" style="color:#f5c842;">★ 4.6</div>
+        </div>
+        <div class="rank-item2" style="opacity:0.45;">
+          <div class="rank-num2">+</div>
+          <div class="rank-info2"><div class="rank-name2">Tu môžeš byť ty</div><div class="rank-sub2">Zaregistruj svoju taxislužbu</div></div>
+          <button class="rank-cta yellow" onclick="showPage('taxi')">Registrovať →</button>
         </div>
       </div>
     </div>
 
     <!-- TOP HOTELY -->
-    <div style="margin-top:32px;">
-      <div class="section-head" style="margin-bottom:16px;">
-        <h3 class="section-title" style="font-size:clamp(18px,4vw,24px);">🏨 TOP <em>Hotely</em></h3>
-        <span style="font-size:12px;color:var(--muted);">Najlepšie hodnotené ubytovanie na Slovensku</span>
+    <div class="reb-panel" id="reb-hotely">
+      <div class="reb-panel-head">
+        <div class="reb-panel-icon">🏨</div>
+        <div><div class="reb-panel-title">Top <em>hotely</em></div>
+        <div class="reb-panel-sub">Najlepšie hodnotené ubytovanie na Slovensku</div></div>
       </div>
-      <div class="rank-list" id="rankHotely">
-        <div class="rank-item">
-          <div class="rank-num gold">1</div>
-          <div class="rank-info">
-            <div class="rank-name">Hotel Night BA</div>
-            <div class="rank-sub">Bratislavský kraj · ★★★★ · centrum</div>
-          </div>
-          <div class="rank-score" style="color:#6ab0ff;">★ 4.8</div>
+      <div class="rank-list2">
+        <div class="rank-item2 gold-border">
+          <div class="rank-num2 g">1</div>
+          <div class="rank-info2"><div class="rank-name2">Hotel Night BA</div><div class="rank-sub2">Bratislavský kraj · ★★★★ · centrum</div></div>
+          <div class="rank-score2" style="color:#6ab0ff;">★ 4.8</div>
         </div>
-        <div class="rank-item">
-          <div class="rank-num" style="color:#c0c0c0;">2</div>
-          <div class="rank-info">
-            <div class="rank-name">Penzión Stará Brána KE</div>
-            <div class="rank-sub">Košický kraj · ★★★</div>
-          </div>
-          <div class="rank-score" style="color:#6ab0ff;">★ 4.5</div>
+        <div class="rank-item2">
+          <div class="rank-num2 s">2</div>
+          <div class="rank-info2"><div class="rank-name2">Penzión Stará Brána KE</div><div class="rank-sub2">Košický kraj · ★★★</div></div>
+          <div class="rank-score2" style="color:#6ab0ff;">★ 4.5</div>
         </div>
-        <div class="rank-item" style="opacity:0.5;">
-          <div class="rank-num">3</div>
-          <div class="rank-info">
-            <div class="rank-name">Registruj svoje ubytovanie</div>
-            <div class="rank-sub">Hotel, penzión alebo hostel</div>
-          </div>
-          <button onclick="showPage('hotely')" style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(100,160,255,0.15);border:1px solid rgba(100,160,255,0.3);color:#6ab0ff;cursor:pointer;">Registrovať →</button>
+        <div class="rank-item2" style="opacity:0.45;">
+          <div class="rank-num2">+</div>
+          <div class="rank-info2"><div class="rank-name2">Registruj svoje ubytovanie</div><div class="rank-sub2">Hotel, penzión alebo hostel</div></div>
+          <button class="rank-cta blue" onclick="showPage('hotely')">Registrovať →</button>
         </div>
       </div>
     </div>
@@ -1740,7 +1928,7 @@ h1,h2,h3,h4,p{margin:0;}
     <!-- NÁVŠTEVNÍK / ZÁKLADNÝ -->
     <div class="plans-category">
       <div class="plans-cat-title">👤 Základné — pre každého</div>
-      <div class="plans-row cols2">
+      <div class="plans-row cols3">
         <div class="pcard">
           <div class="pcard-icon">👀</div>
           <div class="pcard-name">Free</div>
@@ -1755,11 +1943,26 @@ h1,h2,h3,h4,p{margin:0;}
           </ul>
           <button class="pcard-btn" onclick="showPage('ucet')">Začať zadarmo</button>
         </div>
+        <div class="pcard">
+          <span class="pcard-badge" style="background:rgba(180,180,200,0.25);color:#c8ccd8;">🥈 SILVER</span>
+          <div class="pcard-icon">🥈</div>
+          <div class="pcard-name">Silver</div>
+          <div class="pcard-price"><b>9 €</b><span>/mesiac</span></div>
+          <ul class="pcard-features">
+            <li>1 akcia za týždeň</li>
+            <li>Predaj vstupeniek (4% provízia)</li>
+            <li>Štatistiky návštevnosti</li>
+            <li class="dim">Profil klubu s linkami</li>
+            <li class="dim">TOP odporúčanie v kraji</li>
+            <li class="dim">Prioritné schvaľovanie</li>
+          </ul>
+          <button class="pcard-btn" onclick="showPage('ucet')">Vybrať Silver</button>
+        </div>
         <div class="pcard star">
-          <span class="pcard-badge">★ BEST VALUE</span>
-          <div class="pcard-icon">🎟️</div>
-          <div class="pcard-name">Club Promoter</div>
-          <div class="pcard-price"><b>19 €</b><span>/mesiac</span></div>
+          <span class="pcard-badge">🥇 GOLD</span>
+          <div class="pcard-icon">🥇</div>
+          <div class="pcard-name">Gold</div>
+          <div class="pcard-price"><b>39 €</b><span>/mesiac</span></div>
           <ul class="pcard-features">
             <li>Neobmedzené pridávanie akcií</li>
             <li>Profil klubu s fotkami a ľubovoľnými linkami</li>
@@ -1768,7 +1971,7 @@ h1,h2,h3,h4,p{margin:0;}
             <li>Štatistiky návštevnosti</li>
             <li>Prioritné schvaľovanie</li>
           </ul>
-          <button class="pcard-btn" onclick="showPage('ucet')">Vybrať plán</button>
+          <button class="pcard-btn" onclick="showPage('ucet')">Vybrať Gold</button>
         </div>
       </div>
     </div>
@@ -1794,14 +1997,14 @@ h1,h2,h3,h4,p{margin:0;}
         <div class="pcard">
           <div class="pcard-icon">⭐</div>
           <div class="pcard-name">Artist Pro</div>
-          <div class="pcard-price"><b>9 €</b><span>/mesiac</span></div>
+          <div class="pcard-price"><b>39 €</b><span>/mesiac</span></div>
           <ul class="pcard-features">
             <li>Plný profil s fotkou a bio</li>
             <li>SoundCloud + Instagram + hocijaký link</li>
-            <li>Neobmedzené sety a mixy</li>
-            <li>Booking formulár</li>
+            <li>3× set SoundCloud + Instagram link</li>
+            <li>Booking email cez NightBase</li>
             <li>Krajové zaradenie</li>
-            <li class="dim">TOP zobrazenie v žánri</li>
+            <li>Žánrové zaradenie</li>
           </ul>
           <button class="pcard-btn" onclick="showPage('interpreti')">Vybrať plán</button>
         </div>
@@ -4159,6 +4362,14 @@ if (document.getElementById('page-radio')?.classList.contains('active')) {
   initRadioPage();
 }
 
+// ===== REBRÍČKY TAB SWITCH =====
+window.switchReb = function(id, el) {
+  document.querySelectorAll('.reb-tab').forEach(function(t) { t.classList.remove('on'); });
+  document.querySelectorAll('.reb-panel').forEach(function(p) { p.classList.remove('on'); });
+  if (el) el.classList.add('on');
+  var panel = document.getElementById('reb-' + id);
+  if (panel) panel.classList.add('on');
+};
 </script>
 </body>
 </html>
