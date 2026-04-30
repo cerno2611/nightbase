@@ -81,6 +81,12 @@ h1,h2,h3,h4,p{margin:0;}
   font-size:12px;
 }
 .btn-primary:hover{background:linear-gradient(180deg,#ff3b50,#c40919);}
+/* Hide big "Pridať udalosť" button on mobile - icon stays */
+@media(max-width:899px){.header-actions .btn-primary{display:none;}}
+/* Mobile-only "Pridať udalosť" button shown under hero */
+.btn-add-mobile{display:none;width:100%;margin-top:10px;padding:12px 18px;border-radius:12px;font-weight:700;font-size:14px;background:linear-gradient(180deg,var(--red-2),var(--red));border:none;color:#fff;box-shadow:0 6px 18px rgba(225,11,31,0.4);cursor:pointer;align-items:center;justify-content:center;gap:8px;}
+.btn-add-mobile:active{transform:scale(0.97);}
+@media(max-width:899px){.btn-add-mobile{display:flex;}}
 .btn-icon{width:38px;height:38px;padding:0;border-radius:50%;}
 .ico{width:18px;height:18px;flex-shrink:0;}
 
@@ -396,6 +402,10 @@ h1,h2,h3,h4,p{margin:0;}
         <div class="map-eyebrow"><span class="dot"></span> Vyber kraj — uvidíš akcie</div>
         <h1 class="map-title">Tvoj <em>kraj</em>,<br>tvoja <em>noc</em>.</h1>
         <p class="map-sub">Klikni na mapu Slovenska a zobrazia sa akcie v danom kraji.</p>
+        <button class="btn-add-mobile" onclick="showPage('ucet')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Pridať udalosť alebo klub
+        </button>
       </div>
       <button class="btn-register" onclick="showPage('ucet')">Zaregistruj sa</button>
     </div>
@@ -825,6 +835,118 @@ h1,h2,h3,h4,p{margin:0;}
   </div>
 </div>
 
+<!-- ===== PAGE: TAXI ===== -->
+<div class="page" id="page-taxi">
+<style>
+.taxi-hero{text-align:center;padding:20px 0 16px;}
+.taxi-hero h2{font-family:var(--display);font-size:clamp(26px,7vw,38px);letter-spacing:0.03em;line-height:1;margin-bottom:8px;}
+.taxi-hero h2 em{font-style:normal;color:var(--red-2);}
+.taxi-hero p{font-size:13px;color:var(--muted);}
+.taxi-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+@media(min-width:600px){.taxi-grid{grid-template-columns:1fr 1fr;}}
+@media(min-width:900px){.taxi-grid{grid-template-columns:repeat(3,1fr);}}
+.taxi-card{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px;transition:transform .2s,border-color .2s;}
+.taxi-card:hover{transform:translateY(-2px);border-color:var(--red);}
+.taxi-card.premium{border-color:var(--red);box-shadow:0 0 0 1px var(--red),0 6px 20px rgba(225,11,31,0.18);}
+.taxi-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;}
+.taxi-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#f5c842,#e0a020);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.taxi-info{flex:1;min-width:0;}
+.taxi-name{font-weight:700;font-size:15px;margin-bottom:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.taxi-city{font-size:11px;color:var(--muted);}
+.taxi-rating{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted);margin-top:4px;}
+.taxi-rating b{color:#f5c842;}
+.taxi-call{display:block;width:100%;padding:11px;border-radius:10px;font-weight:700;font-size:14px;background:linear-gradient(180deg,#4caf50,#2e8a3a);color:#fff;text-align:center;border:none;cursor:pointer;text-decoration:none;box-shadow:0 4px 12px rgba(76,175,80,0.3);transition:transform .15s;}
+.taxi-call:hover{transform:translateY(-1px);}
+.taxi-call:active{transform:scale(0.97);}
+.taxi-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:10px;padding:8px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.taxi-meta b{color:var(--text);font-weight:700;}
+.taxi-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.08em;text-transform:uppercase;background:var(--red);color:#fff;}
+</style>
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title"><em>Taxi</em> 🚖</h2>
+      <button class="section-link" onclick="showPage('home')">← Späť</button>
+    </div>
+    <div class="taxi-hero">
+      <p>Vyber si taxi službu vo svojom meste a klikni na Zavolať</p>
+    </div>
+    <div class="taxi-grid">
+      <div class="taxi-card premium">
+        <div class="taxi-head">
+          <div class="taxi-icon">🚖</div>
+          <div class="taxi-info">
+            <div class="taxi-name">NightBase Taxi BA <span class="taxi-badge">Partner</span></div>
+            <div class="taxi-city">Bratislava · 24/7</div>
+            <div class="taxi-rating">⭐ <b>4.9</b> · 1280 jázd</div>
+          </div>
+        </div>
+        <div class="taxi-meta"><span>Štart: <b>2.50 €</b></span><span>Za km: <b>0.90 €</b></span></div>
+        <a href="tel:+421900111222" class="taxi-call">📞 Zavolať</a>
+      </div>
+      <div class="taxi-card premium">
+        <div class="taxi-head">
+          <div class="taxi-icon">🚕</div>
+          <div class="taxi-info">
+            <div class="taxi-name">Trenčín Taxi <span class="taxi-badge">Partner</span></div>
+            <div class="taxi-city">Trenčín · 24/7</div>
+            <div class="taxi-rating">⭐ <b>4.7</b> · 540 jázd</div>
+          </div>
+        </div>
+        <div class="taxi-meta"><span>Štart: <b>2.00 €</b></span><span>Za km: <b>0.80 €</b></span></div>
+        <a href="tel:+421901222333" class="taxi-call">📞 Zavolať</a>
+      </div>
+      <div class="taxi-card">
+        <div class="taxi-head">
+          <div class="taxi-icon">🚖</div>
+          <div class="taxi-info">
+            <div class="taxi-name">City Taxi Žilina</div>
+            <div class="taxi-city">Žilina · 06:00 – 02:00</div>
+            <div class="taxi-rating">⭐ <b>4.5</b> · 320 jázd</div>
+          </div>
+        </div>
+        <div class="taxi-meta"><span>Štart: <b>2.20 €</b></span><span>Za km: <b>0.85 €</b></span></div>
+        <a href="tel:+421902333444" class="taxi-call">📞 Zavolať</a>
+      </div>
+      <div class="taxi-card">
+        <div class="taxi-head">
+          <div class="taxi-icon">🚕</div>
+          <div class="taxi-info">
+            <div class="taxi-name">Nitra Express Taxi</div>
+            <div class="taxi-city">Nitra · 24/7</div>
+            <div class="taxi-rating">⭐ <b>4.4</b> · 210 jázd</div>
+          </div>
+        </div>
+        <div class="taxi-meta"><span>Štart: <b>2.00 €</b></span><span>Za km: <b>0.85 €</b></span></div>
+        <a href="tel:+421903444555" class="taxi-call">📞 Zavolať</a>
+      </div>
+      <div class="taxi-card premium">
+        <div class="taxi-head">
+          <div class="taxi-icon">🚖</div>
+          <div class="taxi-info">
+            <div class="taxi-name">East Taxi KE <span class="taxi-badge">Partner</span></div>
+            <div class="taxi-city">Košice · 24/7</div>
+            <div class="taxi-rating">⭐ <b>4.8</b> · 890 jázd</div>
+          </div>
+        </div>
+        <div class="taxi-meta"><span>Štart: <b>2.30 €</b></span><span>Za km: <b>0.90 €</b></span></div>
+        <a href="tel:+421904555666" class="taxi-call">📞 Zavolať</a>
+      </div>
+      <div class="taxi-card">
+        <div class="taxi-head">
+          <div class="taxi-icon">🚕</div>
+          <div class="taxi-info">
+            <div class="taxi-name">Prešov Taxi</div>
+            <div class="taxi-city">Prešov · 24/7</div>
+            <div class="taxi-rating">⭐ <b>4.3</b> · 180 jázd</div>
+          </div>
+        </div>
+        <div class="taxi-meta"><span>Štart: <b>2.00 €</b></span><span>Za km: <b>0.80 €</b></span></div>
+        <a href="tel:+421905666777" class="taxi-call">📞 Zavolať</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ===== PAGE: BILIARD ===== -->
 <div class="page" id="page-billiard">
 <style>
@@ -904,17 +1026,17 @@ h1,h2,h3,h4,p{margin:0;}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="3,11 12,2 21,11"/><polyline points="3,11 3,20 9,20 9,14 15,14 15,20 21,20 21,11"/></svg>
     Mapa
   </button>
-  <button class="mobile-nav-item" onclick="showPage('rebricky',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
-    Rebríčky
+  <button class="mobile-nav-item" onclick="showPage('taxi',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M7 17v-5l2-5h6l2 5v5M9 7V5h6v2"/><circle cx="7.5" cy="17.5" r="1.5"/><circle cx="16.5" cy="17.5" r="1.5"/></svg>
+    Taxi
   </button>
   <button class="mobile-nav-item" onclick="showPage('gastro',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
     Gastro
   </button>
-  <button class="mobile-nav-item" onclick="showPage('billiard',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
-    Biliard
+  <button class="mobile-nav-item" onclick="showPage('rebricky',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+    Rebríčky
   </button>
   <button class="mobile-nav-item" onclick="showPage('ucet',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6"/></svg>
