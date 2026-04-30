@@ -99,12 +99,12 @@ h1,h2,h3,h4,p{margin:0;}
 }
 @media(min-width:900px){.mobile-nav{display:none;}}
 .mobile-nav-item{
-  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
-  padding:8px 4px;font-size:9px;font-weight:600;letter-spacing:0.05em;
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:8px 2px;font-size:8.5px;font-weight:600;letter-spacing:0.04em;
   text-transform:uppercase;color:var(--muted);transition:color .15s;cursor:pointer;
 }
 .mobile-nav-item.active{color:var(--red-2);}
-.mobile-nav-item svg{width:20px;height:20px;}
+.mobile-nav-item svg{width:19px;height:19px;}
 
 /* SHELL */
 .app{width:100%;max-width:480px;margin:0 auto;padding:0 14px 90px;}
@@ -1133,6 +1133,10 @@ h1,h2,h3,h4,p{margin:0;}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21V12h6v9"/><path d="M3 21h18"/></svg>
     Hotely
   </button>
+  <button class="mobile-nav-item" onclick="showPage('interpreti',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+    Interpreti
+  </button>
   <button class="mobile-nav-item" onclick="showPage('gastro',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
     Gastro
@@ -1486,16 +1490,20 @@ window.showRankCategory = function(cat, btn) {
 
 // ===== INTERPRETI FILTER =====
 const ARTISTS_DATA = [
-  {name:'DJ Merko',  emoji:'🎧', genres:['Techno','House'],            tag:'Techno · House',    pro:true},
-  {name:'Vojtko',    emoji:'🎵', genres:['DNB'],                       tag:"D'N'B · Jungle",    pro:true},
-  {name:'Anna K.',   emoji:'🎤', genres:['House'],                     tag:'House · Deep',      pro:false},
-  {name:'Bass Duo',  emoji:'🎶', genres:['Electronic','DNB'],          tag:'Bass · Electronic', pro:false},
-  {name:'MC Novak',  emoji:'🎙️', genres:['Hip-Hop'],                  tag:'Hip-Hop · Rap',     pro:true},
-  {name:'DJ Slovak', emoji:'💿', genres:['Pop'],                       tag:'Pop · Hits',        pro:false},
-  {name:'Rock Stars',emoji:'🎸', genres:['Rock'],                      tag:'Rock · Indie',      pro:false},
-  {name:'Techno X',  emoji:'⚡', genres:['Techno','Electronic'],       tag:'Techno · Hardcore', pro:true},
-  {name:'House Lab', emoji:'🏠', genres:['House','Electronic'],        tag:'Deep House',        pro:false},
-  {name:'DnB Crew',  emoji:'🥁', genres:['DNB'],                       tag:"D'N'B · Liquid",    pro:false}
+  {name:'DJ Merko',  emoji:'🎧', genres:['Techno','House'],            tag:'Techno · House',    pro:true,  rating:4.9, fans:'12.4k'},
+  {name:'Vojtko',    emoji:'🎵', genres:['DNB'],                       tag:"D'N'B · Jungle",    pro:true,  rating:4.8, fans:'8.7k'},
+  {name:'Anna K.',   emoji:'🎤', genres:['House'],                     tag:'House · Deep',      pro:false, rating:4.7, fans:'5.2k'},
+  {name:'Bass Duo',  emoji:'🎶', genres:['Electronic','DNB'],          tag:'Bass · Electronic', pro:false, rating:4.6, fans:'4.1k'},
+  {name:'MC Novak',  emoji:'🎙️', genres:['Hip-Hop'],                  tag:'Hip-Hop · Rap',     pro:true,  rating:4.5, fans:'9.3k'},
+  {name:'DJ Slovak', emoji:'💿', genres:['Pop'],                       tag:'Pop · Hits',        pro:false, rating:4.4, fans:'6.8k'},
+  {name:'Rock Stars',emoji:'🎸', genres:['Rock'],                      tag:'Rock · Indie',      pro:false, rating:4.3, fans:'3.5k'},
+  {name:'Techno X',  emoji:'⚡', genres:['Techno','Electronic'],       tag:'Techno · Hardcore', pro:true,  rating:4.8, fans:'7.1k'},
+  {name:'House Lab', emoji:'🏠', genres:['House','Electronic'],        tag:'Deep House',        pro:false, rating:4.5, fans:'2.9k'},
+  {name:'DnB Crew',  emoji:'🥁', genres:['DNB'],                       tag:"D'N'B · Liquid",    pro:false, rating:4.4, fans:'2.1k'},
+  {name:'Pop Queen', emoji:'👑', genres:['Pop'],                       tag:'Pop · Mainstream',  pro:true,  rating:4.7, fans:'15.2k'},
+  {name:'Techno Master', emoji:'🎛️', genres:['Techno'],               tag:'Industrial Techno', pro:true,  rating:4.9, fans:'11.0k'},
+  {name:'Rap Kings', emoji:'🔥', genres:['Hip-Hop'],                   tag:'Trap · Rap',        pro:false, rating:4.2, fans:'4.8k'},
+  {name:'Rock Legend', emoji:'🤘', genres:['Rock'],                    tag:'Classic Rock',      pro:true,  rating:4.6, fans:'8.0k'}
 ];
 
 window.filterArtists = function(genre, btn) {
@@ -1509,17 +1517,26 @@ window.filterArtists = function(genre, btn) {
 window.renderArtists = function(genre) {
   const list = document.getElementById('artistsList');
   if (!list) return;
-  const filtered = genre === 'all' ? ARTISTS_DATA : ARTISTS_DATA.filter(a => a.genres.includes(genre));
+  let filtered = genre === 'all' ? [...ARTISTS_DATA] : ARTISTS_DATA.filter(a => a.genres.includes(genre));
+  // Triediť od najlepšieho ratingu
+  filtered.sort((a,b) => b.rating - a.rating);
   if (!filtered.length) {
     list.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center;font-size:13px;">Žiadni interpreti v tomto žánri.</div>';
     return;
   }
-  list.innerHTML = filtered.map(a =>
+  list.innerHTML = filtered.map((a,i) =>
     `<div class="artist-card">
-      <div class="artist-photo">${a.emoji}</div>
+      <div class="artist-photo" style="position:relative;">
+        ${a.emoji}
+        ${i<3?`<div style="position:absolute;top:6px;left:6px;background:${i===0?'#f5c842':i===1?'#c0c0c0':'#cd7f32'};color:#000;font-family:var(--display);font-size:12px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.4);">#${i+1}</div>`:''}
+      </div>
       <div class="artist-body">
         <div class="artist-name">${a.name}</div>
         <div class="artist-genre">${a.tag}</div>
+        <div style="display:flex;align-items:center;gap:6px;margin:4px 0 6px;font-size:11px;">
+          <span style="color:#f5c842;font-weight:700;">⭐ ${a.rating}</span>
+          <span style="color:var(--muted);">· ${a.fans} fans</span>
+        </div>
         <div class="artist-badges"><span class="badge ${a.pro?'badge-pro':'badge-free'}">${a.pro?'PRO':'Free'}</span></div>
       </div>
     </div>`
