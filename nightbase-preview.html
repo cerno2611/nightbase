@@ -542,17 +542,22 @@ h1,h2,h3,h4,p{margin:0;}
     </div>
   </div>
 
-  <!-- VEĽKÉ TLAČIDLÁ — Paušály & Rádio -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 8px;">
-    <button onclick="showPage('pausaly')" style="background:linear-gradient(160deg,rgba(225,11,31,0.15),var(--bg-2));border:1px solid rgba(225,11,31,0.4);border-radius:var(--r-xl);padding:22px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;color:var(--text);font-family:inherit;">
-      <div style="font-size:36px;line-height:1;">💎</div>
-      <div style="font-family:var(--display);font-size:20px;letter-spacing:0.03em;color:var(--red-2);">PAUŠÁLY</div>
-      <div style="font-size:11px;color:var(--muted);text-align:center;">Pre kluby, interpretov a podniky</div>
+  <!-- VEĽKÉ TLAČIDLÁ — Paušály & Rádio & Biliard -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:18px 0 8px;">
+    <button onclick="showPage('pausaly')" style="background:linear-gradient(160deg,rgba(225,11,31,0.15),var(--bg-2));border:1px solid rgba(225,11,31,0.4);border-radius:var(--r-xl);padding:18px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;color:var(--text);font-family:inherit;">
+      <div style="font-size:30px;line-height:1;">💎</div>
+      <div style="font-family:var(--display);font-size:16px;letter-spacing:0.03em;color:var(--red-2);">PAUŠÁLY</div>
+      <div style="font-size:10px;color:var(--muted);text-align:center;line-height:1.3;">Pre kluby a podniky</div>
     </button>
-    <button onclick="showPage('radio')" style="background:linear-gradient(160deg,rgba(225,11,31,0.15),var(--bg-2));border:1px solid rgba(225,11,31,0.4);border-radius:var(--r-xl);padding:22px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;color:var(--text);font-family:inherit;">
-      <div style="font-size:36px;line-height:1;">📻</div>
-      <div style="font-family:var(--display);font-size:20px;letter-spacing:0.03em;color:var(--red-2);">RÁDIO</div>
-      <div style="font-size:11px;color:var(--muted);text-align:center;">10 žánrov · 24/7 streaming</div>
+    <button onclick="showPage('radio')" style="background:linear-gradient(160deg,rgba(225,11,31,0.15),var(--bg-2));border:1px solid rgba(225,11,31,0.4);border-radius:var(--r-xl);padding:18px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;color:var(--text);font-family:inherit;">
+      <div style="font-size:30px;line-height:1;">📻</div>
+      <div style="font-family:var(--display);font-size:16px;letter-spacing:0.03em;color:var(--red-2);">RÁDIO</div>
+      <div style="font-size:10px;color:var(--muted);text-align:center;line-height:1.3;">10 žánrov · 24/7</div>
+    </button>
+    <button onclick="showPage('billiard')" style="background:linear-gradient(160deg,rgba(225,11,31,0.15),var(--bg-2));border:1px solid rgba(225,11,31,0.4);border-radius:var(--r-xl);padding:18px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;color:var(--text);font-family:inherit;">
+      <div style="font-size:30px;line-height:1;">🎱</div>
+      <div style="font-family:var(--display);font-size:16px;letter-spacing:0.03em;color:var(--red-2);">BILIARD</div>
+      <div style="font-size:10px;color:var(--muted);text-align:center;line-height:1.3;">Mini hra na nudu</div>
     </button>
   </div>
 
@@ -830,15 +835,199 @@ h1,h2,h3,h4,p{margin:0;}
 
 <!-- ===== PAGE: PAUŠÁLY ===== -->
 <div class="page" id="page-pausaly">
+<style>
+.plans-cat{margin-bottom:30px;}
+.plans-cat-title{font-family:var(--display);font-size:clamp(20px,5vw,26px);letter-spacing:0.03em;margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+.plans-cat-sub{font-size:12px;color:var(--muted);margin-bottom:14px;}
+.plans-row{display:grid;grid-template-columns:1fr;gap:12px;}
+@media(min-width:600px){.plans-row.cols2{grid-template-columns:1fr 1fr;}.plans-row.cols3{grid-template-columns:1fr 1fr 1fr;}}
+.pcard{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 16px;display:flex;flex-direction:column;gap:10px;position:relative;transition:transform .2s;}
+.pcard:hover{transform:translateY(-2px);}
+.pcard.star{border-color:var(--red);box-shadow:0 0 0 1px var(--red),0 8px 28px rgba(225,11,31,0.25);background:linear-gradient(160deg,rgba(225,11,31,0.1),var(--bg-2));}
+.pcard.gold{border-color:#f5c842;box-shadow:0 0 0 1px #f5c842,0 8px 24px rgba(245,200,66,0.2);background:linear-gradient(160deg,rgba(245,200,66,0.08),var(--bg-2));}
+.pcard.purple{border-color:#7b1fc8;box-shadow:0 0 0 1px #7b1fc8,0 8px 24px rgba(123,31,200,0.2);background:linear-gradient(160deg,rgba(123,31,200,0.1),var(--bg-2));}
+.pcard-badge{position:absolute;top:-9px;right:14px;font-size:10px;font-weight:800;letter-spacing:0.1em;padding:4px 10px;border-radius:6px;background:var(--red);color:#fff;text-transform:uppercase;}
+.pcard-badge.gold{background:#f5c842;color:#000;}
+.pcard-badge.purple{background:#7b1fc8;}
+.pcard-icon{font-size:32px;line-height:1;}
+.pcard-name{font-family:var(--display);font-size:22px;letter-spacing:0.03em;}
+.pcard-price{font-size:13px;color:var(--muted);}
+.pcard-price b{font-size:24px;color:var(--text);font-weight:800;}
+.pcard-features{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px;flex:1;}
+.pcard-features li{font-size:12px;color:var(--text);display:flex;gap:7px;align-items:flex-start;line-height:1.4;}
+.pcard-features li::before{content:"✓";color:#4caf50;font-weight:700;flex-shrink:0;}
+.pcard-features li.dim{color:var(--muted);}
+.pcard-features li.dim::before{content:"–";color:var(--dim);}
+.pcard-btn{width:100%;padding:11px;border-radius:9px;font-weight:700;font-size:13px;border:1px solid var(--line-strong);color:var(--text);background:rgba(255,255,255,0.04);transition:all .15s;cursor:pointer;margin-top:6px;}
+.pcard-btn:hover{background:rgba(255,255,255,0.1);}
+.pcard.star .pcard-btn{background:linear-gradient(180deg,var(--red-2),var(--red));border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(225,11,31,0.4);}
+.pcard.gold .pcard-btn{background:linear-gradient(180deg,#f5c842,#d4a514);border-color:transparent;color:#000;box-shadow:0 4px 14px rgba(245,200,66,0.4);}
+.pcard.purple .pcard-btn{background:linear-gradient(180deg,#9d3de0,#7b1fc8);border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(123,31,200,0.4);}
+</style>
   <div class="section">
     <div class="section-head"><h2 class="section-title">Paušály a <em>plány</em></h2><button class="section-link" onclick="showPage('home')">← Späť</button></div>
-    <div class="plans-scroll">
-      <div class="plan-card"><div class="plan-name">Free</div><div class="plan-price"><b>0 €</b>/mes</div><ul class="plan-features"><li>Prezeranie akcií</li><li>Mapa krajov</li><li>Rádio</li></ul><button class="plan-btn">Začať zadarmo</button></div>
-      <div class="plan-card"><div class="plan-name">Club Promoter</div><div class="plan-price"><b>19 €</b>/mes</div><ul class="plan-features"><li>Pridávanie akcií</li><li>Profil klubu</li><li>3 akcie/mesiac</li></ul><button class="plan-btn">Vybrať plán</button></div>
-      <div class="plan-card featured"><span class="plan-badge">★ TOP</span><div class="plan-name">Premium</div><div class="plan-price"><b>49 €</b>/mes</div><ul class="plan-features"><li>Neobmedzené akcie</li><li>TOP pozícia</li><li>Gastro profil</li><li>Pokročilá analytika</li></ul><button class="plan-btn">Vybrať Premium</button></div>
-      <div class="plan-card"><div class="plan-name">Artist Pro</div><div class="plan-price"><b>9 €</b>/mes</div><ul class="plan-features"><li>Profil interpreta</li><li>2 sety / videá</li><li>IG + booking email</li></ul><button class="plan-btn">Vybrať plán</button></div>
-      <div class="plan-card"><div class="plan-name">Artist Premium</div><div class="plan-price"><b>24 €</b>/mes</div><ul class="plan-features"><li>Neobmedzené sety</li><li>TOP v rebríčkoch</li><li>Booking manažment</li></ul><button class="plan-btn">Vybrať plán</button></div>
+
+    <!-- 🎧 INTERPRETI -->
+    <div class="plans-cat">
+      <div class="plans-cat-title">🎧 <span>Pre interpretov a DJ-ov</span></div>
+      <div class="plans-cat-sub">Buduj fanúšikovskú základňu, dostávaj bookingy</div>
+      <div class="plans-row cols3">
+        <div class="pcard">
+          <div class="pcard-icon">🎵</div>
+          <div class="pcard-name">Artist Free</div>
+          <div class="pcard-price"><b>0 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Profil na NightBase</li>
+            <li>1 odkaz (SoundCloud alebo IG)</li>
+            <li>Žánrové zaradenie</li>
+            <li>Booking email</li>
+            <li class="dim">Bez fotky a bio</li>
+          </ul>
+          <button class="pcard-btn" onclick="showPage('interpreti')">Zaregistrovať sa</button>
+        </div>
+        <div class="pcard">
+          <div class="pcard-icon">🎤</div>
+          <div class="pcard-name">Artist Pro</div>
+          <div class="pcard-price"><b>9 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Plný profil s fotkou a bio</li>
+            <li>SoundCloud + Instagram + ľubovoľný link</li>
+            <li>3× set (SoundCloud + IG link)</li>
+            <li>Booking email cez NightBase</li>
+            <li>Krajové zaradenie</li>
+            <li>Žánrové zaradenie</li>
+          </ul>
+          <button class="pcard-btn">Vybrať Pro</button>
+        </div>
+        <div class="pcard star">
+          <span class="pcard-badge">🔥 TOP</span>
+          <div class="pcard-icon">⭐</div>
+          <div class="pcard-name">Artist Premium</div>
+          <div class="pcard-price"><b>39 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Všetko z Artist Pro</li>
+            <li>Neobmedzené linky (Spotify, YouTube, web)</li>
+            <li>TOP pozícia v zozname interpretov</li>
+            <li>Zvýraznený profil na mape krajov</li>
+            <li>Promo banner na hlavnej strane</li>
+            <li>Štatistiky profilu a dosahu</li>
+            <li>Odporúčanie ku akciám v kraji</li>
+          </ul>
+          <button class="pcard-btn">Vybrať Premium</button>
+        </div>
+      </div>
     </div>
+
+    <!-- 🍽️ GASTRO -->
+    <div class="plans-cat">
+      <div class="plans-cat-title">🍽️ <span>Pre reštaurácie a gastro</span></div>
+      <div class="plans-cat-sub">Pritiahni hostí pred a po akciách v okolí</div>
+      <div class="plans-row cols2">
+        <div class="pcard">
+          <div class="pcard-icon">🍴</div>
+          <div class="pcard-name">Gastro Free</div>
+          <div class="pcard-price"><b>0 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Základný profil</li>
+            <li>1 fotka</li>
+            <li>1 link (bistro.sk, web, mapy)</li>
+            <li class="dim">Bez menu karty</li>
+            <li class="dim">Bez TOP pozície</li>
+          </ul>
+          <button class="pcard-btn" onclick="showPage('gastro')">Zaregistrovať sa</button>
+        </div>
+        <div class="pcard star">
+          <span class="pcard-badge">★ ODPORÚČANÉ</span>
+          <div class="pcard-icon">🍽️</div>
+          <div class="pcard-name">Gastro Premium</div>
+          <div class="pcard-price"><b>19 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Neobmedzené fotky</li>
+            <li>Ľubovoľné linky (bistro.sk, Wolt, Bolt Food)</li>
+            <li>TOP odporúčanie v kraji</li>
+            <li>Zobrazenie pri akciách v okolí</li>
+            <li>Menu karta v profile</li>
+            <li>Štatistiky návštevnosti</li>
+            <li>Badge „Odporúčame"</li>
+          </ul>
+          <button class="pcard-btn">Vybrať Premium</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🏨 HOTELY -->
+    <div class="plans-cat">
+      <div class="plans-cat-title">🏨 <span>Pre hotely, penzióny a ubytovne</span></div>
+      <div class="plans-cat-sub">Cieľ: hostia akcií ktorí potrebujú nocľah</div>
+      <div class="plans-row cols2">
+        <div class="pcard">
+          <div class="pcard-icon">🛏️</div>
+          <div class="pcard-name">Hotel Free</div>
+          <div class="pcard-price"><b>0 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Základný profil</li>
+            <li>1 fotka</li>
+            <li>1 telefónne číslo</li>
+            <li class="dim">Bez Booking.com / Airbnb linkov</li>
+            <li class="dim">Bez TOP pozície</li>
+          </ul>
+          <button class="pcard-btn" onclick="showPage('hotely')">Zaregistrovať sa</button>
+        </div>
+        <div class="pcard purple">
+          <span class="pcard-badge purple">★ ODPORÚČANÉ</span>
+          <div class="pcard-icon">🏨</div>
+          <div class="pcard-name">Hotel Premium</div>
+          <div class="pcard-price"><b>19 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Neobmedzené fotky</li>
+            <li>Booking.com / Airbnb / web linky</li>
+            <li>TOP odporúčanie v kraji</li>
+            <li>Zobrazenie pri akciách v okolí</li>
+            <li>Popis, hviezdičky, vybavenie</li>
+            <li>Štatistiky rezervácií</li>
+            <li>Badge „Partner"</li>
+          </ul>
+          <button class="pcard-btn">Vybrať Premium</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🚕 TAXI -->
+    <div class="plans-cat">
+      <div class="plans-cat-title">🚕 <span>Pre taxislužby</span></div>
+      <div class="plans-cat-sub">Buď viditeľný keď ľudia odchádzajú z klubu</div>
+      <div class="plans-row cols2">
+        <div class="pcard">
+          <div class="pcard-icon">🚕</div>
+          <div class="pcard-name">Taxi Free</div>
+          <div class="pcard-price"><b>0 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Názov služby</li>
+            <li>1 telefónne číslo</li>
+            <li>1 fotka</li>
+            <li class="dim">Bez TOP pozície</li>
+            <li class="dim">Bez Bolt linku</li>
+          </ul>
+          <button class="pcard-btn" onclick="showPage('taxi')">Zaregistrovať sa</button>
+        </div>
+        <div class="pcard gold">
+          <span class="pcard-badge gold">⭐ TOP</span>
+          <div class="pcard-icon">🚖</div>
+          <div class="pcard-name">Taxi Premium</div>
+          <div class="pcard-price"><b>19 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Neobmedzené čísla a fotky</li>
+            <li>Linky (Bolt, web, app)</li>
+            <li>TOP pozícia v kraji</li>
+            <li>Prednosť v rebríčku „Top taxi"</li>
+            <li>Zobrazenie pri akciách v okolí</li>
+            <li>Štatistiky volaní</li>
+          </ul>
+          <button class="pcard-btn">Vybrať Premium</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
