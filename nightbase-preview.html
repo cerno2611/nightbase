@@ -299,10 +299,29 @@ h1,h2,h3,h4,p{margin:0;}
 .footer-links a:hover{color:var(--red-2);}
 
 /* BOTTOM SHEET */
-.sheet-mask{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,0);pointer-events:none;transition:background .25s;}
-.sheet-mask.open{background:rgba(0,0,0,0.65);pointer-events:all;}
-.sheet{position:fixed;bottom:0;left:0;right:0;z-index:61;background:var(--bg-1);border-top:1px solid var(--line-strong);border-radius:20px 20px 0 0;padding:16px 18px 32px;max-height:70vh;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:0 -8px 40px rgba(0,0,0,0.5);}
-.sheet.open{transform:translateY(0);}
+.sheet-mask{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,0);pointer-events:none;transition:background .3s;}
+.sheet-mask.open{background:rgba(0,0,0,0.7);pointer-events:all;}
+.sheet{
+  position:fixed;top:0;left:0;bottom:0;z-index:61;
+  width:min(380px,92vw);
+  background:linear-gradient(180deg,rgba(10,10,14,0.99),rgba(7,7,10,0.99));
+  border-right:1px solid var(--line-strong);
+  padding:0;
+  overflow-y:auto;
+  transform:translateX(-100%);
+  transition:transform .32s cubic-bezier(.4,0,.2,1);
+  box-shadow:6px 0 40px rgba(0,0,0,0.7);
+  display:flex;flex-direction:column;
+}
+.sheet.open{transform:translateX(0);}
+.sheet-handle{
+  width:4px;height:48px;border-radius:2px;
+  background:rgba(255,255,255,0.12);
+  position:absolute;right:-12px;top:50%;transform:translateY(-50%);
+  display:none;
+}
+.sheet h3{font-family:var(--display);font-size:24px;letter-spacing:0.03em;margin-bottom:4px;}
+.sub{font-size:12px;color:var(--muted);margin-bottom:16px;}
 .sheet-handle{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.15);margin:0 auto 14px;}
 .sheet h3{font-family:var(--display);font-size:22px;letter-spacing:0.02em;margin-bottom:4px;}
 .sub{font-size:12px;color:var(--muted);margin-bottom:14px;}
@@ -367,12 +386,14 @@ h1,h2,h3,h4,p{margin:0;}
     </div>
     <!-- Desktop tab nav (right side) -->
     <div class="header-tabs">
-      <button class="htab" onclick="showPage('rebricky')">Rebríčky</button>
-      <button class="htab" onclick="showPage('interpreti')">Interpreti</button>
-      <button class="htab" onclick="showPage('gastro')">Gastro</button>
-      <button class="htab" onclick="showPage('radio')">Rádio</button>
-      <button class="htab" onclick="showPage('pausaly')">Paušály</button>
-      <button class="htab" onclick="showPage('monetiz')">Monetizovanie</button>
+      <button class="htab" onclick="showPage('gastro')">🍽️ Gastro</button>
+      <button class="htab" onclick="showPage('interpreti')">🎧 Interpreti</button>
+      <button class="htab" onclick="showPage('taxi')">🚕 Taxi</button>
+      <button class="htab" onclick="showPage('rebricky')">🏆 Rebríčky</button>
+      <button class="htab" onclick="showPage('merch')">👕 Merch</button>
+      <button class="htab" onclick="showPage('pausaly')">💳 Paušály</button>
+      <button class="htab" onclick="showPage('monetiz')">💰 Monetizovanie</button>
+      <button class="htab" onclick="showPage('radio')">📻 Rádio</button>
       <button class="htab" onclick="showPage('billiard')">🎱 Biliard</button>
     </div>
     <div class="header-actions">
@@ -441,7 +462,7 @@ h1,h2,h3,h4,p{margin:0;}
 <text class="region-label" x="462" y="138" text-anchor="middle">ŽILINSKÝ</text>
 <text class="region-label" x="438" y="348" text-anchor="middle">BANSKOBYSTRICKÝ</text>
 <text class="region-label" x="708" y="167" text-anchor="middle">PREŠOVSKÝ</text>
-<text class="region-label" x="818" y="308" text-anchor="middle">KOŠICKÝ</text>
+<text class="region-label" x="818" y="295" text-anchor="middle">KOŠICKÝ</text>
 </svg>
       </div>
       <div class="map-legend" role="tablist">
@@ -542,6 +563,61 @@ h1,h2,h3,h4,p{margin:0;}
     </div>
   </div>
 </div>
+
+<!-- ===== PAGE: MERCH ===== -->
+<div class="page" id="page-merch">
+<style>
+.merch-coming{
+  min-height:60vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;gap:16px;padding:40px 20px;
+}
+.merch-icon{font-size:72px;opacity:0.4;}
+.merch-title{font-family:var(--display);font-size:clamp(28px,8vw,52px);letter-spacing:0.04em;}
+.merch-title em{font-style:normal;color:var(--red-2);}
+.merch-sub{font-size:14px;color:var(--muted);max-width:440px;line-height:1.6;}
+.merch-notify{
+  display:flex;gap:8px;margin-top:8px;max-width:380px;width:100%;
+}
+.merch-notify input{
+  flex:1;padding:11px 14px;background:var(--bg-2);border:1px solid var(--line-strong);
+  border-radius:10px;color:var(--text);font-size:14px;outline:none;
+}
+.merch-notify input:focus{border-color:var(--red-2);}
+.merch-notify button{
+  padding:11px 18px;border-radius:10px;font-weight:700;font-size:13px;
+  background:linear-gradient(180deg,var(--red-2),var(--red));border:none;
+  color:#fff;cursor:pointer;white-space:nowrap;
+  box-shadow:0 4px 14px rgba(225,11,31,0.4);
+}
+.merch-notify button:hover{opacity:0.88;}
+.merch-tags{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:4px;}
+.merch-tag{padding:5px 14px;border-radius:999px;font-size:12px;font-weight:600;background:rgba(255,255,255,0.05);border:1px solid var(--line);color:var(--muted);}
+</style>
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title">👕 <em>Merch</em></h2>
+      <button class="section-link" onclick="showPage('home')">← Späť</button>
+    </div>
+    <div class="merch-coming">
+      <div class="merch-icon">👕</div>
+      <div class="merch-title">Night<em>Merch</em></div>
+      <div class="merch-sub">Náš merch shop je na ceste. Limitované edície, kolekcie od slovenských umelcov a NightBase official gear. Zanechaj email a budeš prvý, kto sa dozvie o spustení.</div>
+      <div class="merch-tags">
+        <span class="merch-tag">Hoodies</span>
+        <span class="merch-tag">T-Shirts</span>
+        <span class="merch-tag">Caps</span>
+        <span class="merch-tag">Artist Collab</span>
+        <span class="merch-tag">Limited Drops</span>
+      </div>
+      <div class="merch-notify">
+        <input id="merchEmail" type="email" placeholder="tvoj@email.sk"/>
+        <button onclick="merchNotify()">Notifikovať ma</button>
+      </div>
+      <div id="merchOk" style="display:none;font-size:13px;color:#81c784;">✅ Super! Dáme ti vedieť ako náhle spustíme.</div>
+    </div>
+  </div>
+</div>
+
 
 <!-- ===== PAGE: INTERPRETI ===== -->
 <div class="page" id="page-interpreti">
@@ -863,6 +939,232 @@ h1,h2,h3,h4,p{margin:0;}
   </div>
 
 </div>
+<!-- ===== PAGE: TAXI ===== -->
+<div class="page" id="page-taxi">
+<style>
+/* TAXI PAGE */
+.taxi-layout{display:grid;grid-template-columns:1fr;gap:20px;}
+@media(min-width:900px){.taxi-layout{grid-template-columns:1fr 380px;}}
+
+.taxi-hero{
+  background:linear-gradient(135deg,rgba(245,200,50,0.08),rgba(10,10,14,0.6));
+  border:1px solid rgba(245,200,50,0.2);border-radius:var(--r-xl);
+  padding:22px;margin-bottom:20px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.taxi-hero-icon{font-size:48px;flex-shrink:0;}
+.taxi-hero-text h2{font-family:var(--display);font-size:clamp(22px,5vw,32px);letter-spacing:0.03em;margin-bottom:4px;}
+.taxi-hero-text h2 em{font-style:normal;color:#f5c832;}
+.taxi-hero-text p{font-size:13px;color:var(--muted);line-height:1.6;margin:0;}
+
+/* Taxi cards grid */
+.taxi-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:20px;}
+@media(min-width:500px){.taxi-grid{grid-template-columns:1fr 1fr;}}
+@media(min-width:900px){.taxi-grid{grid-template-columns:repeat(3,1fr);}}
+
+.taxi-card{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:16px;display:flex;gap:14px;align-items:flex-start;
+  transition:border-color .2s,transform .2s;
+}
+.taxi-card:hover{border-color:rgba(245,200,50,0.4);transform:translateY(-2px);}
+.taxi-card.premium{
+  border-color:rgba(245,200,50,0.5);
+  background:linear-gradient(160deg,rgba(245,200,50,0.06),var(--bg-2));
+  box-shadow:0 0 0 1px rgba(245,200,50,0.25),0 6px 20px rgba(245,200,50,0.08);
+}
+.taxi-photo{
+  width:64px;height:64px;border-radius:10px;flex-shrink:0;overflow:hidden;
+  background:linear-gradient(135deg,rgba(245,200,50,0.2),rgba(10,10,14,0.8));
+  display:flex;align-items:center;justify-content:center;font-size:28px;
+}
+.taxi-photo img{width:100%;height:100%;object-fit:cover;}
+.taxi-info{flex:1;min-width:0;}
+.taxi-name{font-weight:700;font-size:15px;margin-bottom:3px;}
+.taxi-badge{
+  display:inline-block;font-size:9px;font-weight:700;letter-spacing:0.1em;
+  text-transform:uppercase;padding:2px 7px;border-radius:4px;margin-bottom:6px;
+}
+.taxi-badge.prem{background:rgba(245,200,50,0.2);color:#f5c832;border:1px solid rgba(245,200,50,0.4);}
+.taxi-badge.free{background:rgba(255,255,255,0.06);color:var(--muted);}
+.taxi-kraj{font-size:11px;color:var(--muted);margin-bottom:6px;}
+.taxi-numbers{display:flex;flex-direction:column;gap:4px;}
+.taxi-num{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:700;color:var(--text);
+}
+.taxi-num svg{color:#f5c832;flex-shrink:0;}
+.taxi-more{font-size:11px;color:var(--muted);margin-top:4px;}
+
+/* Registračný panel */
+.taxi-reg{
+  background:linear-gradient(160deg,rgba(245,200,50,0.07),var(--bg-2));
+  border:1px solid rgba(245,200,50,0.25);border-radius:var(--r-xl);padding:22px;
+}
+.taxi-reg-title{font-family:var(--display);font-size:22px;letter-spacing:0.03em;margin-bottom:4px;}
+.taxi-reg-title em{font-style:normal;color:#f5c832;}
+.taxi-reg-sub{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5;}
+.taxi-input{width:100%;padding:10px 13px;background:var(--bg-3);border:1px solid var(--line-strong);border-radius:9px;color:var(--text);font-size:14px;outline:none;transition:border-color .15s;margin-bottom:10px;}
+.taxi-input:focus{border-color:#f5c832;}
+.taxi-label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:5px;letter-spacing:0.06em;text-transform:uppercase;}
+.taxi-plans-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;}
+.taxi-plan{padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg-3);cursor:pointer;transition:all .15s;}
+.taxi-plan:hover{border-color:rgba(245,200,50,0.4);}
+.taxi-plan.sel{border-color:rgba(245,200,50,0.6);background:rgba(245,200,50,0.07);}
+.taxi-plan-name{font-weight:700;font-size:13px;margin-bottom:2px;}
+.taxi-plan-price b{font-size:20px;color:#f5c832;}
+.taxi-plan-price{font-size:12px;color:var(--muted);}
+.taxi-plan-feat{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4;}
+.taxi-submit{
+  width:100%;padding:13px;border-radius:10px;font-weight:700;font-size:14px;
+  background:linear-gradient(135deg,#f5c832,#d4a820);
+  border:none;color:#000;cursor:pointer;transition:opacity .15s;margin-top:8px;
+}
+.taxi-submit:hover{opacity:0.88;}
+.taxi-success{display:none;padding:14px;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.4);border-radius:10px;color:#81c784;font-size:13px;text-align:center;margin-top:10px;}
+.taxi-success.show{display:block;}
+/* Kraj filter chips */
+.taxi-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.taxi-chip{padding:5px 12px;border-radius:999px;font-size:11px;font-weight:600;background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:all .15s;}
+.taxi-chip:hover{color:#fff;}
+.taxi-chip.on{background:rgba(245,200,50,0.15);border-color:rgba(245,200,50,0.5);color:#f5c832;}
+</style>
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title">🚕 <em>Taxi</em></h2>
+      <button class="section-link" onclick="showPage('home')">← Späť</button>
+    </div>
+
+    <div class="taxi-hero">
+      <div class="taxi-hero-icon">🚕</div>
+      <div class="taxi-hero-text">
+        <h2>Bezpečne domov po <em>akcii</em></h2>
+        <p>Nájdi overených taxikárov vo svojom kraji. Každý vodič je registrovaný a overený NightBase tímom. Zavolaj priamo — žiadna aplikácia, žiadne čakanie.</p>
+      </div>
+    </div>
+
+    <!-- Filter podľa kraja -->
+    <div class="taxi-filter" id="taxiFilter">
+      <button class="taxi-chip on" onclick="filterTaxi('all',this)">🗺️ Všetky kraje</button>
+      <button class="taxi-chip" onclick="filterTaxi('ba',this)">Bratislavský</button>
+      <button class="taxi-chip" onclick="filterTaxi('tt',this)">Trnavský</button>
+      <button class="taxi-chip" onclick="filterTaxi('tn',this)">Trenčiansky</button>
+      <button class="taxi-chip" onclick="filterTaxi('nr',this)">Nitriansky</button>
+      <button class="taxi-chip" onclick="filterTaxi('za',this)">Žilinský</button>
+      <button class="taxi-chip" onclick="filterTaxi('bb',this)">Banskobystrický</button>
+      <button class="taxi-chip" onclick="filterTaxi('po',this)">Prešovský</button>
+      <button class="taxi-chip" onclick="filterTaxi('ke',this)">Košický</button>
+    </div>
+
+    <div class="taxi-layout">
+      <!-- Ľavá: zoznam taxikárov -->
+      <div>
+        <div class="taxi-grid" id="taxiGrid">
+
+          <!-- Premium taxikár — vzorový -->
+          <div class="taxi-card premium" data-kraj="ba">
+            <div class="taxi-photo">🚗</div>
+            <div class="taxi-info">
+              <div class="taxi-name">NightRide BA</div>
+              <span class="taxi-badge prem">★ Premium</span>
+              <div class="taxi-kraj">📍 Bratislavský kraj</div>
+              <div class="taxi-numbers">
+                <span class="taxi-num">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.24h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.12 6.12l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  +421 900 111 222
+                </span>
+                <span class="taxi-num">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.24h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.12 6.12l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  +421 900 333 444
+                </span>
+              </div>
+              <div class="taxi-more">🕐 24/7 · Mercedes E · max 4 osoby</div>
+            </div>
+          </div>
+
+          <!-- Free taxikár — vzorový -->
+          <div class="taxi-card" data-kraj="ke">
+            <div class="taxi-photo">🚙</div>
+            <div class="taxi-info">
+              <div class="taxi-name">Košice Taxi Nočný</div>
+              <span class="taxi-badge free">Free</span>
+              <div class="taxi-kraj">📍 Košický kraj</div>
+              <div class="taxi-numbers">
+                <span class="taxi-num">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.24h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.12 6.12l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  +421 950 123 456
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- "Registruj sa" placeholder -->
+          <div class="taxi-card" style="opacity:0.45;cursor:default;align-items:center;justify-content:center;flex-direction:column;gap:8px;min-height:100px;text-align:center;">
+            <div style="font-size:28px;">🚕</div>
+            <div style="font-size:12px;color:var(--muted);">Tu môžeš byť ty</div>
+            <button style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;background:rgba(245,200,50,0.15);border:1px solid rgba(245,200,50,0.4);color:#f5c832;cursor:pointer;opacity:1;" onclick="document.getElementById('taxiRegForm').scrollIntoView({behavior:'smooth'})">Registrovať sa</button>
+          </div>
+
+        </div>
+        <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:8px;">Všetci taxikári sú manuálne overení NightBase tímom pred zverejnením.</p>
+      </div>
+
+      <!-- Pravá: registrácia -->
+      <div id="taxiRegForm">
+        <div class="taxi-reg">
+          <div class="taxi-reg-title">Registrácia <em>taxikára</em></div>
+          <div class="taxi-reg-sub">Zaregistruj sa a dostávaj zákazníkov priamo z NightBase. Po schválení ťa pridáme do zoznamu overených vodičov.</div>
+
+          <label class="taxi-label">Názov / meno taxislužby</label>
+          <input class="taxi-input" id="txName" placeholder="napr. Nočný Expres BA, TaxiMax..."/>
+
+          <label class="taxi-label">Hlavné telefónne číslo *</label>
+          <input class="taxi-input" id="txPhone1" type="tel" placeholder="+421..."/>
+
+          <label class="taxi-label">Kraj pôsobenia</label>
+          <select class="taxi-input" id="txKraj">
+            <option value="">— Vyber kraj —</option>
+            <option>Bratislavský</option><option>Trnavský</option><option>Trenčiansky</option>
+            <option>Nitriansky</option><option>Žilinský</option><option>Banskobystrický</option>
+            <option>Prešovský</option><option>Košický</option>
+          </select>
+
+          <label class="taxi-label">Email (pre potvrdenie)</label>
+          <input class="taxi-input" id="txEmail" type="email" placeholder="taxi@email.sk"/>
+
+          <!-- Plány -->
+          <label class="taxi-label" style="margin-bottom:8px;">Vyber plán</label>
+          <div class="taxi-plans-row">
+            <div class="taxi-plan sel" id="txPlanFree" onclick="selectTaxiPlan('free')">
+              <div class="taxi-plan-name">Free</div>
+              <div class="taxi-plan-price"><b>0 €</b><span>/mes</span></div>
+              <div class="taxi-plan-feat">Názov + 1 číslo + fotka vozidla</div>
+            </div>
+            <div class="taxi-plan" id="txPlanPrem" onclick="selectTaxiPlan('prem')">
+              <div class="taxi-plan-name">Premium ⭐</div>
+              <div class="taxi-plan-price"><b>19 €</b><span>/mes</span></div>
+              <div class="taxi-plan-feat">Neobm. čísla + fotky · TOP v kraji · prednosť v rebríčku</div>
+            </div>
+          </div>
+
+          <!-- Premium extra polia (skryté pre free) -->
+          <div id="txPremFields" style="display:none;">
+            <label class="taxi-label">Ďalšie číslo (voliteľné)</label>
+            <input class="taxi-input" id="txPhone2" type="tel" placeholder="+421..."/>
+            <label class="taxi-label">Ďalšie číslo (voliteľné)</label>
+            <input class="taxi-input" id="txPhone3" type="tel" placeholder="+421..."/>
+            <label class="taxi-label">Typ vozidla / info</label>
+            <input class="taxi-input" id="txCar" placeholder="napr. Mercedes E, 4 os., 24/7..."/>
+          </div>
+
+          <button class="taxi-submit" onclick="submitTaxiReg()">🚕 Zaregistrovať taxislužbu</button>
+          <div class="taxi-success" id="txSuccess">✅ Registrácia odoslaná! Ozveme sa do 24 hodín.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ===== PAGE: GASTRO ===== -->
 <div class="page" id="page-gastro">
 <style>
@@ -1211,6 +1513,42 @@ h1,h2,h3,h4,p{margin:0;}
       </div>
     </div>
 
+    <!-- TAXI -->
+    <div class="plans-category">
+      <div class="plans-cat-title">🚕 Pre taxislužby a rozvoz</div>
+      <div class="plans-row cols2">
+        <div class="pcard">
+          <div class="pcard-icon">🚕</div>
+          <div class="pcard-name">Taxi Free</div>
+          <div class="pcard-price"><b>0 €</b><span>/mesiac</span></div>
+          <ul class="pcard-features">
+            <li>Názov taxislužby</li>
+            <li>1 kontaktné číslo</li>
+            <li>1 profilová fotka</li>
+            <li>Zaradenie do kraja</li>
+            <li class="dim">Viac čísel a fotiek</li>
+            <li class="dim">TOP pozícia v kraji</li>
+          </ul>
+          <button class="pcard-btn" onclick="showPage('taxi')">Zaregistrovať sa</button>
+        </div>
+        <div class="pcard star">
+          <span class="pcard-badge">★ TOP</span>
+          <div class="pcard-icon">⭐</div>
+          <div class="pcard-name">Taxi Premium</div>
+          <div class="pcard-price"><b>19 €</b><span>/mesiac</span></div>
+          <ul class="pcard-features">
+            <li>Neobmedzené kontaktné čísla</li>
+            <li>Neobmedzené fotky</li>
+            <li>TOP pozícia pred Free taxíkmi</li>
+            <li>Zobrazenie pri akciách v kraji</li>
+            <li>Badge "Overený partner"</li>
+            <li>Prioritné zobrazenie na mape</li>
+          </ul>
+          <button class="pcard-btn" onclick="showPage('taxi')">Vybrať Premium</button>
+        </div>
+      </div>
+    </div>
+
     <!-- GASTRO -->
     <div class="plans-category">
       <div class="plans-cat-title">🍽️ Pre reštaurácie a gastro podniky</div>
@@ -1386,6 +1724,259 @@ h1,h2,h3,h4,p{margin:0;}
   </div>
 </div>
 
+<!-- ===== PAGE: MERCH ===== -->
+<div class="page" id="page-merch">
+<style>
+.merch-coming{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:60vh;text-align:center;gap:16px;padding:40px 20px;
+}
+.merch-icon{font-size:72px;margin-bottom:8px;filter:grayscale(30%);}
+.merch-title{font-family:var(--display);font-size:clamp(28px,8vw,48px);letter-spacing:0.04em;}
+.merch-title em{font-style:normal;color:var(--red-2);}
+.merch-sub{font-size:14px;color:var(--muted);max-width:420px;line-height:1.7;}
+.merch-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 20px;border-radius:999px;font-size:12px;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  border:1px solid rgba(225,11,31,0.4);color:var(--red-2);
+  background:rgba(225,11,31,0.08);
+}
+.merch-notify{display:flex;gap:8px;max-width:360px;}
+.merch-notify input{
+  flex:1;padding:10px 14px;border-radius:8px;background:var(--bg-3);
+  border:1px solid var(--line-strong);color:var(--text);font-size:13px;outline:none;
+}
+.merch-notify input:focus{border-color:var(--red-2);}
+.merch-notify button{
+  padding:10px 16px;border-radius:8px;background:var(--red);border:none;
+  color:#fff;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;
+}
+</style>
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title"><em>Merch</em></h2>
+      <button class="section-link" onclick="showPage('home')">← Späť</button>
+    </div>
+    <div class="merch-coming">
+      <div class="merch-icon">👕</div>
+      <div class="merch-title">Night<em>Base</em> Merch</div>
+      <div class="merch-badge">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--red-2);box-shadow:0 0 8px var(--red-2);"></span>
+        Čoskoro
+      </div>
+      <div class="merch-sub">
+        Pripravujeme pre teba exkluzívny NightBase merch — oblečenie, doplnky a limitované edície pre fanúšikov nočnej scény. Nechaj nám email a budeš prvý, kto sa dozvie.
+      </div>
+      <div class="merch-notify">
+        <input type="email" placeholder="tvoj@email.sk" id="merchEmail"/>
+        <button onclick="
+          const e=document.getElementById('merchEmail').value;
+          if(e&&e.includes('@')){
+            this.textContent='✓ OK';this.style.background='#4caf50';
+            window.open('mailto:cerno2611@gmail.com?subject=Merch notifikácia&body='+encodeURIComponent(e));
+          }
+        ">Notifikovať</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: TAXI ===== -->
+<div class="page" id="page-taxi">
+<style>
+/* ===== TAXI PAGE ===== */
+.taxi-layout{display:grid;grid-template-columns:1fr;gap:20px;}
+@media(min-width:900px){.taxi-layout{grid-template-columns:1fr 360px;}}
+.taxi-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+@media(min-width:600px){.taxi-grid{grid-template-columns:1fr 1fr;}}
+
+.tcard{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);
+  overflow:hidden;transition:border-color .2s,transform .2s;
+}
+.tcard:hover{border-color:rgba(225,11,31,0.4);transform:translateY(-2px);}
+.tcard.premium{border-color:var(--red);box-shadow:0 0 0 1px var(--red),0 6px 20px rgba(225,11,31,0.18);}
+.tcard-header{padding:14px 16px;display:flex;gap:12px;align-items:center;}
+.tcard-photo{
+  width:56px;height:56px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(225,11,31,0.3),rgba(10,5,8,0.9));
+  overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:26px;
+}
+.tcard-photo img{width:100%;height:100%;object-fit:cover;}
+.tcard-info{flex:1;min-width:0;}
+.tcard-name{font-weight:700;font-size:15px;margin-bottom:2px;}
+.tcard-region{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.tcard-numbers{display:flex;flex-direction:column;gap:4px;}
+.tcard-num{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:700;color:var(--text);
+  background:rgba(255,255,255,0.05);border-radius:6px;padding:4px 10px;width:fit-content;
+}
+.tcard-num svg{width:14px;height:14px;color:var(--red-2);}
+.tcard-badge-row{padding:0 16px 12px;display:flex;gap:6px;flex-wrap:wrap;}
+.tbadge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:0.08em;text-transform:uppercase;}
+.tbadge-prem{background:var(--red);color:#fff;}
+.tbadge-free{background:rgba(255,255,255,0.07);color:var(--dim);}
+.tbadge-avail{background:rgba(76,175,80,0.15);color:#81c784;border:1px solid rgba(76,175,80,0.3);}
+
+/* Taxi plans in registration panel */
+.taxi-plans{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;}
+.taxi-plan{padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg-3);cursor:pointer;transition:all .15s;}
+.taxi-plan:hover{border-color:var(--muted);}
+.taxi-plan.sel{border-color:var(--red-2);background:rgba(225,11,31,0.08);}
+.taxi-plan-name{font-weight:700;font-size:13px;margin-bottom:2px;}
+.taxi-plan-price{font-size:11px;color:var(--muted);}
+.taxi-plan-price b{color:var(--red-2);}
+.taxi-reg-panel{background:linear-gradient(160deg,rgba(225,11,31,0.06),var(--bg-2));border:1px solid rgba(225,11,31,0.3);border-radius:var(--r-xl);padding:20px;}
+.taxi-reg-title{font-family:var(--display);font-size:20px;letter-spacing:0.03em;margin-bottom:4px;}
+.taxi-reg-title em{font-style:normal;color:var(--red-2);}
+.taxi-reg-sub{font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.5;}
+</style>
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title">🚕 Night<em>Taxi</em></h2>
+      <button class="section-link" onclick="showPage('home')">← Späť</button>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:18px;">Taxi a rozvoz domov z akcií — overeí vodiči pre nočnú scénu. Vyber kraj a zavolaj.</p>
+
+    <div class="taxi-layout">
+      <!-- Zoznam taxíkov -->
+      <div>
+        <!-- Krajový filter -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;" id="taxiKrajFilter">
+          <button class="rtab on" onclick="filterTaxi('all',this)" style="font-size:11px;padding:5px 13px;">Všetky kraje</button>
+          <button class="rtab" onclick="filterTaxi('ba',this)" style="font-size:11px;padding:5px 13px;">Bratislava</button>
+          <button class="rtab" onclick="filterTaxi('za',this)" style="font-size:11px;padding:5px 13px;">Žilina</button>
+          <button class="rtab" onclick="filterTaxi('ke',this)" style="font-size:11px;padding:5px 13px;">Košice</button>
+          <button class="rtab" onclick="filterTaxi('tn',this)" style="font-size:11px;padding:5px 13px;">Trenčín</button>
+          <button class="rtab" onclick="filterTaxi('bb',this)" style="font-size:11px;padding:5px 13px;">Banská Bystrica</button>
+        </div>
+
+        <div class="taxi-grid" id="taxiGrid">
+          <!-- Premium taxíky -->
+          <div class="tcard premium" data-kraj="ba">
+            <div class="tcard-header">
+              <div class="tcard-photo">🚕</div>
+              <div class="tcard-info">
+                <div class="tcard-name">NightRide BA</div>
+                <div class="tcard-region">📍 Bratislava · 24/7</div>
+                <div class="tcard-numbers">
+                  <div class="tcard-num">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.58a16 16 0 0 0 6.06 6.06l1.65-1.65a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 15z"/></svg>
+                    +421 900 111 222
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tcard-badge-row">
+              <span class="tbadge tbadge-prem">★ Premium</span>
+              <span class="tbadge tbadge-avail">● Dostupný</span>
+              <span class="tbadge" style="background:rgba(255,255,255,0.07);color:var(--muted);">Akcie &amp; after-party</span>
+            </div>
+          </div>
+
+          <div class="tcard premium" data-kraj="ke">
+            <div class="tcard-header">
+              <div class="tcard-photo">🚗</div>
+              <div class="tcard-info">
+                <div class="tcard-name">KE Night Transfer</div>
+                <div class="tcard-region">📍 Košice &amp; okolie · 24/7</div>
+                <div class="tcard-numbers">
+                  <div class="tcard-num">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.58a16 16 0 0 0 6.06 6.06l1.65-1.65a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 15z"/></svg>
+                    +421 900 333 444
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tcard-badge-row">
+              <span class="tbadge tbadge-prem">★ Premium</span>
+              <span class="tbadge tbadge-avail">● Dostupný</span>
+            </div>
+          </div>
+
+          <!-- Free taxíky -->
+          <div class="tcard" data-kraj="za">
+            <div class="tcard-header">
+              <div class="tcard-photo">🚖</div>
+              <div class="tcard-info">
+                <div class="tcard-name">Taxi Žilina Nonstop</div>
+                <div class="tcard-region">📍 Žilina · nočné hodiny</div>
+                <div class="tcard-numbers">
+                  <div class="tcard-num">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.58a16 16 0 0 0 6.06 6.06l1.65-1.65a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 15z"/></svg>
+                    +421 900 555 666
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tcard-badge-row">
+              <span class="tbadge tbadge-free">Free</span>
+            </div>
+          </div>
+
+          <div class="tcard" data-kraj="tn">
+            <div class="tcard-header">
+              <div class="tcard-photo">🚕</div>
+              <div class="tcard-info">
+                <div class="tcard-name">Trenčín Taxi 24</div>
+                <div class="tcard-region">📍 Trenčín a okolie</div>
+                <div class="tcard-numbers">
+                  <div class="tcard-num">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.58a16 16 0 0 0 6.06 6.06l1.65-1.65a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 15z"/></svg>
+                    +421 900 777 888
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tcard-badge-row">
+              <span class="tbadge tbadge-free">Free</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registrácia taxi -->
+      <div class="taxi-reg-panel">
+        <div class="taxi-reg-title">Registrácia <em>taxi</em></div>
+        <div class="taxi-reg-sub">Prevádzkuješ taxi alebo rozvozovú službu? Zaregistruj sa a buď viditeľný pre tisíce návštevníkov akcií na NightBase.</div>
+
+        <div class="int-field"><label class="int-label">Názov taxislužby</label><input class="int-input" id="taxiName" placeholder="napr. NightRide BA, Taxi Žilina..."/></div>
+        <div class="int-field"><label class="int-label">Kontaktné číslo</label><input class="int-input" id="taxiPhone" placeholder="+421..." type="tel"/></div>
+        <div class="int-field"><label class="int-label">Email</label><input class="int-input" id="taxiEmail" placeholder="tvoj@email.sk" type="email"/></div>
+        <div class="int-field">
+          <label class="int-label">Kraj pôsobenia</label>
+          <select class="int-input" id="taxiRegion">
+            <option value="">— Vyber kraj —</option>
+            <option>Bratislavský</option><option>Trnavský</option><option>Trenčiansky</option>
+            <option>Nitriansky</option><option>Žilinský</option><option>Banskobystrický</option>
+            <option>Prešovský</option><option>Košický</option>
+          </select>
+        </div>
+
+        <div class="int-label" style="margin-bottom:8px;">Plán</div>
+        <div class="taxi-plans">
+          <div class="taxi-plan sel" id="taxiPlanFree" onclick="selectTaxiPlan('free')">
+            <div class="taxi-plan-name">🚕 Free</div>
+            <div class="taxi-plan-price"><b>0 €</b>/mes</div>
+            <div style="font-size:10px;color:var(--dim);margin-top:4px;">Názov + 1 číslo + 1 fotka</div>
+          </div>
+          <div class="taxi-plan" id="taxiPlanPrem" onclick="selectTaxiPlan('premium')">
+            <div class="taxi-plan-name">⭐ Premium</div>
+            <div class="taxi-plan-price"><b>19 €</b>/mes</div>
+            <div style="font-size:10px;color:var(--dim);margin-top:4px;">Viac čísel, fotky, TOP pozícia</div>
+          </div>
+        </div>
+
+        <button class="int-submit" onclick="submitTaxiReg()">🚕 Zaregistrovať taxislužbu</button>
+        <div class="int-success" id="taxiSuccess">✅ Registrácia odoslaná! Ozveme sa do 48 hodín.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- ===== PAGE: ÚČET ===== -->
 <div class="page" id="page-ucet">
   <div class="section">
@@ -1558,13 +2149,31 @@ h1,h2,h3,h4,p{margin:0;}
   </button>
 </nav>
 
-<!-- Bottom sheet (mapa klik) -->
+<!-- Left side drawer (mapa klik) -->
 <div class="sheet-mask" id="sheetMask"></div>
 <aside class="sheet" id="regionSheet" aria-hidden="true" role="dialog">
-  <div class="sheet-handle"></div>
-  <h3 id="sheetTitle">Bratislavský kraj</h3>
-  <p class="sub">Akcie vo vybranom kraji</p>
-  <div class="sheet-events" id="sheetEvents"></div>
+  <!-- Header -->
+  <div style="background:linear-gradient(135deg,rgba(225,11,31,0.18),rgba(10,10,14,0.9));padding:20px 20px 16px;border-bottom:1px solid var(--line);flex-shrink:0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--red-2);box-shadow:0 0 8px var(--red-2);display:inline-block;"></span>
+        <span style="font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);">Akcie v kraji</span>
+      </div>
+      <button onclick="closeSheet()" style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid var(--line);color:var(--muted);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Zavrieť">✕</button>
+    </div>
+    <h3 id="sheetTitle" style="font-family:var(--display);font-size:22px;letter-spacing:0.03em;margin:0 0 4px;color:#fff;"></h3>
+    <p class="sub" style="margin:0;font-size:12px;color:var(--muted);">Klikni na akciu pre viac info</p>
+  </div>
+  <!-- Events list -->
+  <div style="padding:14px 16px;overflow-y:auto;flex:1;">
+    <div class="sheet-events" id="sheetEvents"></div>
+  </div>
+  <!-- CTA dole -->
+  <div style="padding:14px 16px;border-top:1px solid var(--line);flex-shrink:0;">
+    <button onclick="showPage('ucet');closeSheet();" style="width:100%;padding:11px;border-radius:10px;font-weight:700;font-size:13px;background:linear-gradient(180deg,var(--red-2),var(--red));border:none;color:#fff;cursor:pointer;box-shadow:0 4px 14px rgba(225,11,31,0.4);">
+      + Pridať akciu v tomto kraji
+    </button>
+  </div>
 </aside>
 
 <script>
@@ -2520,6 +3129,61 @@ document.addEventListener('keydown', e => {
   }
 });
 
+// ===== TAXI =====
+var taxiAllCards = [];
+document.addEventListener('DOMContentLoaded', function() {
+  taxiAllCards = [...document.querySelectorAll('.taxi-card[data-kraj]')];
+});
+
+window.filterTaxi = function(kraj, el) {
+  document.querySelectorAll('.taxi-chip').forEach(c => c.classList.remove('on'));
+  if(el) el.classList.add('on');
+  const cards = document.querySelectorAll('.taxi-card[data-kraj]');
+  cards.forEach(c => {
+    c.style.display = (kraj === 'all' || c.dataset.kraj === kraj) ? '' : 'none';
+  });
+};
+
+var txPlanSel = 'free';
+window.selectTaxiPlan = function(plan) {
+  txPlanSel = plan;
+  document.getElementById('txPlanFree').classList.toggle('sel', plan==='free');
+  document.getElementById('txPlanPrem').classList.toggle('sel', plan==='prem');
+  document.getElementById('txPremFields').style.display = plan==='prem' ? 'block' : 'none';
+};
+
+window.submitTaxiReg = function() {
+  const name  = document.getElementById('txName')?.value.trim();
+  const phone = document.getElementById('txPhone1')?.value.trim();
+  const email = document.getElementById('txEmail')?.value.trim();
+  const kraj  = document.getElementById('txKraj')?.value;
+  if(!name || !phone) { alert('Vyplň aspoň názov a telefónne číslo.'); return; }
+  const ok = document.getElementById('txSuccess');
+  if(ok) ok.classList.add('show');
+  const car   = document.getElementById('txCar')?.value.trim() || '';
+  const ph2   = document.getElementById('txPhone2')?.value.trim() || '';
+  var bodyParts = 'REGISTRACIA TAXI\n\nNazov: '+name+'\nTelefon: '+phone;
+  if(ph2) bodyParts += ' / '+ph2;
+  if(ph3) bodyParts += ' / '+(document.getElementById('txPhone3')?.value||'');
+  bodyParts += '\nKraj: '+(kraj||'-')+'\nEmail: '+(email||'-');
+  if(car) bodyParts += '\nVozidlo: '+car;
+  bodyParts += '\nPlan: '+(txPlanSel==='prem'?'Premium 19e/mes':'Free');
+  var body = encodeURIComponent(bodyParts);
+  setTimeout(function() {
+    var a = document.createElement('a');
+    a.href = 'mailto:cerno2611@gmail.com?subject=Taxi+registracia:+'+encodeURIComponent(name)+'&body='+body;
+    a.click();
+  }, 600);
+};
+
+// ===== MERCH =====
+window.merchNotify = function() {
+  const el = document.getElementById('merchEmail');
+  if(!el || !el.value.includes('@')) { alert('Zadaj platný email.'); return; }
+  document.getElementById('merchOk').style.display = 'block';
+  el.value = '';
+};
+
 // ===== INTERPRETI REGISTRATION =====
 window.toggleGenre = function(el) {
   el.classList.toggle('sel');
@@ -2562,6 +3226,35 @@ window.submitArtistReg = function() {
   }, 800);
 };
 
+
+// ===== TAXI =====
+window.selectTaxiPlan = function(plan) {
+  document.getElementById('taxiPlanFree').classList.toggle('sel', plan==='free');
+  document.getElementById('taxiPlanPrem').classList.toggle('sel', plan==='premium');
+};
+window.filterTaxi = function(kraj, el) {
+  document.querySelectorAll('#taxiKrajFilter .rtab').forEach(t=>t.classList.remove('on'));
+  if(el) el.classList.add('on');
+  document.querySelectorAll('.tcard').forEach(c=>{
+    c.style.display = (kraj==='all' || c.dataset.kraj===kraj) ? '' : 'none';
+  });
+};
+window.submitTaxiReg = function() {
+  const name  = document.getElementById('taxiName')?.value.trim();
+  const phone = document.getElementById('taxiPhone')?.value.trim();
+  const email = document.getElementById('taxiEmail')?.value.trim();
+  const region= document.getElementById('taxiRegion')?.value;
+  if (!name || !phone || !email) { alert('Vyplň názov, číslo a email.'); return; }
+  const plan = document.getElementById('taxiPlanPrem')?.classList.contains('sel') ? 'Premium (19€/mes)' : 'Free';
+  const success = document.getElementById('taxiSuccess');
+  if(success) success.classList.add('show');
+  const body = encodeURIComponent(`REGISTRÁCIA TAXI\n\nNázov: ${name}\nTelefón: ${phone}\nEmail: ${email}\nKraj: ${region||'—'}\nPlán: ${plan}`);
+  setTimeout(()=>{
+    const a=document.createElement('a');
+    a.href=`mailto:cerno2611@gmail.com?subject=Registrácia taxi: ${encodeURIComponent(name)}&body=${body}`;
+    a.click();
+  }, 600);
+};
 
 </script>
 </body>
