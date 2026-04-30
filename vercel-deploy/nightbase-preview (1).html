@@ -1,0 +1,1934 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta http-equiv="cache-control" content="no-cache,no-store,must-revalidate"/>
+<meta name="theme-color" content="#0a0a0c"/>
+<title>NightBase — Objav. Zaži. Vyber si.</title>
+<link rel="apple-touch-icon" href="nightbase-logo.png"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="NightBase"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<script>
+// Inline manifest — nevyžaduje externý manifest.json
+const manifestData = {
+  name: "NightBase — Objav. Zaži. Vyber si.",
+  short_name: "NightBase",
+  description: "Slovenská appka pre nočný život — akcie, kluby, gastro, taxi a hotely.",
+  start_url: "/nightbase-preview.html",
+  scope: "/",
+  display: "standalone",
+  orientation: "portrait",
+  background_color: "#07070a",
+  theme_color: "#0a0a0c",
+  lang: "sk",
+  icons: [
+    { src: "nightbase-logo.png", sizes: "192x192", type: "image/png", purpose: "any" },
+    { src: "nightbase-logo.png", sizes: "512x512", type: "image/png", purpose: "any maskable" }
+  ]
+};
+const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/manifest+json'});
+const manifestURL = URL.createObjectURL(manifestBlob);
+const manifestLink = document.createElement('link');
+manifestLink.rel = 'manifest';
+manifestLink.href = manifestURL;
+document.currentScript.after(manifestLink);
+
+// Inline service worker — nevyžaduje externý sw.js
+if ('serviceWorker' in navigator) {
+  const swCode = `
+const CACHE = 'nightbase-v3';
+const ASSETS = [
+  '/nightbase-preview.html',
+  '/nightbase-logo.png',
+  '/party-people-bg.png'
+];
+
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open(CACHE).then(c => {
+      return Promise.all(
+        ASSETS.map(url =>
+          fetch(url).then(res => {
+            if (res.ok) return c.put(url, res);
+          }).catch(() => {})
+        )
+      );
+    })
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+    )
+  );
+  self.clients.claim();
+});
+
+self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
+  e.respondWith(
+    caches.match(e.request).then(cached => {
+      if (cached) return cached;
+      return fetch(e.request)
+        .then(res => {
+          if (res && res.ok) {
+            const clone = res.clone();
+            caches.open(CACHE).then(c => c.put(e.request, clone));
+          }
+          return res;
+        })
+        .catch(() => caches.match('/nightbase-preview.html'));
+    })
+  );
+});
+  `;
+  const swBlob = new Blob([swCode], {type: 'application/javascript'});
+  const swURL = URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swURL, {scope: '/'})
+    .then(() => console.log('NightBase SW registered'))
+    .catch(e => console.log('SW failed:', e));
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  color-scheme:dark;
+  --bg-0:#07070a;--bg-1:#0d0d11;--bg-2:#14141a;--bg-3:#1c1c24;
+  --line:rgba(255,255,255,0.08);--line-strong:rgba(255,255,255,0.16);
+  --text:#f4f4f6;--muted:#9a9aa6;--dim:#5e5e6a;
+  --red:#e10b1f;--red-2:#ff2238;--red-soft:rgba(225,11,31,0.14);
+  --shadow-card:0 12px 32px rgba(0,0,0,0.55);
+  --r-sm:10px;--r-md:14px;--r-lg:18px;--r-xl:24px;
+  --display:"Bebas Neue","Impact",system-ui,sans-serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden;}
+body{
+  background:
+    radial-gradient(1200px 600px at 50% -200px,rgba(225,11,31,0.18),transparent 60%),
+    linear-gradient(180deg,rgba(7,7,10,0.82) 0%,rgba(7,7,10,0.95) 100%),
+    url("party-people-bg.png") center top/cover no-repeat fixed,
+    var(--bg-0);
+  color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;min-height:100vh;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+button,input,select,textarea{font:inherit;color:inherit;}
+button{cursor:pointer;border:none;background:none;}
+a{color:inherit;text-decoration:none;}
+img,svg{display:block;max-width:100%;}
+h1,h2,h3,h4,p{margin:0;}
+
+/* HEADER */
+.header{
+  position:sticky;top:0;z-index:50;
+  background:linear-gradient(180deg,rgba(7,7,10,0.97) 80%,rgba(7,7,10,0.7));
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+}
+.header-top{display:flex;align-items:center;gap:10px;padding:10px 16px calc(10px + env(safe-area-inset-top));padding-top:calc(10px + env(safe-area-inset-top));}
+@media(min-width:900px){.header-top{padding:12px 32px;}}
+.brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0;}
+.brand-logo{height:38px;width:38px;object-fit:contain;border-radius:8px;flex-shrink:0;}
+@media(min-width:900px){.brand-logo{height:44px;width:44px;}}
+.brand-text{font-family:var(--display);letter-spacing:0.04em;font-size:clamp(24px,5vw,34px);line-height:1;white-space:nowrap;}
+.brand-text b{color:var(--red-2);font-weight:inherit;}
+.header-actions{display:flex;gap:8px;flex-shrink:0;align-items:center;}
+
+/* Nav tabs (right side, desktop) */
+.header-tabs{display:none;gap:4px;align-items:center;margin-right:10px;}
+@media(min-width:900px){.header-tabs{display:flex;}}
+.htab{
+  padding:7px 13px;border-radius:8px;font-size:13px;font-weight:600;
+  color:var(--muted);transition:color .15s,background .15s;white-space:nowrap;cursor:pointer;
+  background:none;border:none;
+}
+.htab:hover{color:var(--text);background:rgba(255,255,255,0.06);}
+.htab.active{color:var(--red-2);background:rgba(225,11,31,0.1);}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:9px 14px;border-radius:10px;font-weight:600;font-size:13px;
+  border:1px solid var(--line-strong);background:rgba(255,255,255,0.03);
+  color:var(--text);transition:transform .15s,background .15s;white-space:nowrap;
+}
+.btn:hover{background:rgba(255,255,255,0.07);}
+.btn:active{transform:scale(0.97);}
+.btn-primary{
+  background:linear-gradient(180deg,var(--red-2),var(--red));
+  border-color:rgba(255,255,255,0.15);color:#fff;
+  box-shadow:0 6px 18px rgba(225,11,31,0.4);
+  font-size:12px;
+}
+.btn-primary:hover{background:linear-gradient(180deg,#ff3b50,#c40919);}
+/* Hide big "Pridať udalosť" button on mobile - icon stays */
+@media(max-width:899px){.header-actions .btn-primary{display:none;}}
+/* Mobile-only "Pridať udalosť" button shown under hero */
+.btn-add-mobile{display:none;width:100%;margin-top:10px;padding:12px 18px;border-radius:12px;font-weight:700;font-size:14px;background:linear-gradient(180deg,var(--red-2),var(--red));border:none;color:#fff;box-shadow:0 6px 18px rgba(225,11,31,0.4);cursor:pointer;align-items:center;justify-content:center;gap:8px;}
+.btn-add-mobile:active{transform:scale(0.97);}
+@media(max-width:899px){.btn-add-mobile{display:flex;}}
+.btn-icon{width:38px;height:38px;padding:0;border-radius:50%;}
+.ico{width:18px;height:18px;flex-shrink:0;}
+
+/* Mobile bottom nav */
+.mobile-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:40;
+  background:rgba(7,7,10,0.96);backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);display:flex;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+@media(min-width:900px){.mobile-nav{display:none;}}
+.mobile-nav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:8px 2px;font-size:8.5px;font-weight:600;letter-spacing:0.04em;
+  text-transform:uppercase;color:var(--muted);transition:color .15s;cursor:pointer;
+}
+.mobile-nav-item.active{color:var(--red-2);}
+.mobile-nav-item svg{width:19px;height:19px;}
+
+/* SHELL */
+.app{width:100%;max-width:480px;margin:0 auto;padding:0 14px 90px;}
+@media(min-width:900px){.app{max-width:1160px;padding:0 32px 60px;}}
+
+/* PAGE VIEWS */
+.page{display:none;}
+.page.active{display:block;}
+
+/* MAP HERO */
+.map-section{margin-top:18px;margin-bottom:24px;}
+.map-hero-row{display:flex;align-items:flex-start;gap:20px;margin-bottom:16px;}
+.map-hero-text{flex:1;min-width:0;}
+.map-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--red-2);box-shadow:0 0 10px var(--red-2);animation:pulse 1.8s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.8);}}
+.map-title{font-family:var(--display);font-size:clamp(28px,8vw,44px);line-height:1;letter-spacing:0.01em;margin-bottom:4px;}
+.map-title em{font-style:normal;color:var(--red-2);}
+.map-sub{color:var(--muted);font-size:13px;}
+.btn-register{
+  flex-shrink:0;margin-top:4px;
+  background:linear-gradient(180deg,var(--red-2),var(--red));
+  border:none;color:#fff;padding:11px 18px;border-radius:12px;
+  font-weight:700;font-size:14px;letter-spacing:0.02em;
+  box-shadow:0 6px 20px rgba(225,11,31,0.45);white-space:nowrap;cursor:pointer;
+  transition:transform .15s,box-shadow .15s;
+}
+.btn-register:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(225,11,31,0.55);}
+.btn-register:active{transform:scale(0.97);}
+@media(max-width:440px){.btn-register{display:none;}}
+
+/* MAP CARD */
+.map-card{
+  background:linear-gradient(180deg,rgba(20,20,26,0.85),rgba(13,13,17,0.95));
+  border:1px solid var(--line-strong);border-radius:var(--r-xl);
+  padding:14px;box-shadow:var(--shadow-card);position:relative;overflow:hidden;
+}
+.map-card::before{content:"";position:absolute;top:-40%;right:-20%;width:60%;height:80%;background:radial-gradient(circle,rgba(225,11,31,0.12),transparent 70%);pointer-events:none;}
+.map-wrap{position:relative;width:100%;aspect-ratio:1.9;border-radius:var(--r-md);overflow:hidden;background:#050507;}
+.map-svg{width:100%;height:100%;display:block;}
+.region{fill:rgba(50,50,62,0.75);stroke:rgba(255,255,255,0.22);stroke-width:1;stroke-linejoin:round;transition:fill .18s,stroke .18s;cursor:pointer;}
+.region:hover{fill:rgba(225,11,31,0.5);stroke:rgba(255,80,90,0.9);}
+.region.active{fill:var(--red);stroke:#fff;stroke-width:1.5;filter:drop-shadow(0 0 10px rgba(225,11,31,0.7));}
+.city-dot{fill:#fff;stroke:rgba(0,0,0,0.5);stroke-width:0.8;pointer-events:none;}
+.city-label{fill:rgba(255,255,255,0.9);font-family:var(--sans);font-size:9px;font-weight:700;pointer-events:none;}
+.region-label{fill:rgba(255,255,255,0.38);font-family:var(--sans);font-size:7.5px;font-weight:500;pointer-events:none;letter-spacing:0.05em;text-transform:uppercase;}
+.map-legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+.legend-chip{font-size:11px;padding:6px 11px;border-radius:999px;background:rgba(225,11,31,0.08);border:1px solid rgba(225,11,31,0.3);color:var(--red-2);font-weight:600;transition:all .15s;cursor:pointer;}
+.legend-chip:hover{background:rgba(225,11,31,0.22);color:#fff;border-color:var(--red-2);}
+.legend-chip.active{background:var(--red);color:#fff;border-color:var(--red);box-shadow:0 4px 12px rgba(225,11,31,0.5);}
+
+/* SECTIONS */
+.section{margin:28px 0;}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:14px;}
+.section-title{font-family:var(--display);font-size:clamp(22px,6vw,32px);letter-spacing:0.02em;line-height:1;}
+.section-title em{font-style:normal;color:var(--red-2);}
+.section-link{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;}
+.section-link:hover{color:var(--red-2);}
+
+/* EVENT CARDS */
+.events-scroll{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none;}
+.events-scroll::-webkit-scrollbar{display:none;}
+@media(min-width:900px){.events-scroll{display:grid;grid-template-columns:repeat(3,1fr);overflow:visible;}}
+.event-card{flex:0 0 270px;scroll-snap-align:start;background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-card);transition:transform .2s;}
+.event-card:hover{transform:translateY(-3px);}
+@media(min-width:900px){.event-card{flex:none;}}
+.event-cover{height:150px;position:relative;background-size:cover;background-position:center;}
+.event-tag{position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;letter-spacing:0.08em;text-transform:uppercase;}
+.event-date-badge{position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.75);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:4px 8px;text-align:center;font-family:var(--display);font-size:18px;line-height:1;color:#fff;}
+.event-date-badge span{display:block;font-family:var(--sans);font-size:9px;font-weight:600;color:var(--muted);letter-spacing:0.08em;}
+.event-body{padding:12px;}
+.event-title{font-family:var(--display);font-size:17px;letter-spacing:0.03em;margin-bottom:4px;}
+.event-meta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin-bottom:8px;}
+.event-dot{width:5px;height:5px;border-radius:50%;background:var(--red-2);flex-shrink:0;}
+.event-foot{display:flex;align-items:center;justify-content:space-between;}
+.event-price{font-weight:700;font-size:16px;color:var(--red-2);}
+.event-btn{font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:6px 12px;border-radius:7px;border:1px solid var(--red);color:var(--red);transition:background .15s,color .15s;}
+.event-btn:hover{background:var(--red);color:#fff;}
+
+/* GASTRO */
+.gastro-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(min-width:900px){.gastro-grid{grid-template-columns:repeat(4,1fr);}}
+.gastro-card{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-md);padding:14px;transition:transform .2s;}
+.gastro-card:hover{transform:translateY(-2px);}
+.gastro-card.premium{border-color:var(--red);box-shadow:0 0 0 1px var(--red),0 8px 24px rgba(225,11,31,0.2);}
+.gastro-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:0.1em;padding:3px 7px;border-radius:4px;margin-bottom:8px;text-transform:uppercase;}
+.gastro-badge.free{background:rgba(255,255,255,0.08);color:var(--muted);}
+.gastro-badge.prem{background:var(--red);color:#fff;}
+.gastro-name{font-weight:700;font-size:14px;margin-bottom:3px;}
+.gastro-type{font-size:12px;color:var(--muted);margin-bottom:8px;}
+.gastro-meta{font-size:11px;color:var(--muted);}
+
+/* INTERPRETI */
+.artists-scroll{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none;}
+.artists-scroll::-webkit-scrollbar{display:none;}
+@media(min-width:900px){.artists-scroll{display:grid;grid-template-columns:repeat(4,1fr);overflow:visible;}}
+.artist-card{flex:0 0 160px;scroll-snap-align:start;background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;transition:transform .2s;}
+.artist-card:hover{transform:translateY(-2px);}
+@media(min-width:900px){.artist-card{flex:none;}}
+.artist-photo{height:120px;background:linear-gradient(160deg,rgba(225,11,31,0.35),rgba(10,5,8,0.9));display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:36px;color:rgba(255,255,255,0.3);}
+.artist-body{padding:10px;}
+.artist-name{font-weight:700;font-size:13px;margin-bottom:2px;}
+.artist-genre{font-size:11px;color:var(--muted);margin-bottom:6px;}
+.artist-badges{display:flex;gap:4px;flex-wrap:wrap;}
+.badge{font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:2px 6px;border-radius:4px;}
+.badge-pro{background:var(--red);color:#fff;}
+.badge-free{background:rgba(255,255,255,0.08);color:var(--muted);}
+.booking-note{margin-top:10px;padding:12px 14px;border-radius:var(--r-md);background:var(--red-soft);border:1px solid rgba(225,11,31,0.3);font-size:12px;color:var(--muted);}
+.booking-note a{color:var(--red-2);font-weight:600;}
+
+/* RADIO */
+.radio-info{padding:12px 14px;border-radius:var(--r-md);background:rgba(255,255,255,0.03);border:1px solid var(--line);font-size:12px;color:var(--muted);margin-bottom:14px;}
+.radio-info strong{color:var(--text);}
+.radio-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(min-width:900px){.radio-grid{grid-template-columns:repeat(3,1fr);}}
+.radio-embed{border-radius:var(--r-md);overflow:hidden;background:var(--bg-2);border:1px solid var(--line);}
+.radio-embed iframe{width:100%;height:80px;border:none;display:block;}
+.radio-label{padding:8px 10px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;}
+.radio-dot{width:7px;height:7px;border-radius:50%;background:var(--red-2);flex-shrink:0;}
+
+/* REBRÍČKY */
+.rank-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.rank-tab{padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--muted);transition:all .15s;}
+.rank-tab:hover{color:#fff;}
+.rank-tab.active{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 4px 12px rgba(225,11,31,0.35);}
+.rank-list{display:flex;flex-direction:column;gap:8px;}
+.rank-item{display:flex;align-items:center;gap:12px;background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-md);padding:11px 14px;transition:border-color .15s;}
+.rank-item:hover{border-color:var(--line-strong);}
+.rank-num{font-family:var(--display);font-size:20px;color:var(--dim);width:24px;text-align:center;flex-shrink:0;}
+.rank-num.gold{color:#f5c842;}
+.rank-info{flex:1;}
+.rank-name{font-weight:700;font-size:14px;margin-bottom:1px;}
+.rank-sub{font-size:11px;color:var(--muted);}
+.rank-score{font-weight:700;font-size:13px;color:var(--red-2);}
+
+/* PAUŠÁLY */
+.plans-scroll{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:none;}
+.plans-scroll::-webkit-scrollbar{display:none;}
+@media(min-width:900px){.plans-scroll{display:grid;grid-template-columns:repeat(5,1fr);overflow:visible;}}
+.plan-card{flex:0 0 200px;scroll-snap-align:start;background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 16px;display:flex;flex-direction:column;gap:10px;transition:transform .2s;}
+.plan-card:hover{transform:translateY(-2px);}
+@media(min-width:900px){.plan-card{flex:none;}}
+.plan-card.featured{border-color:var(--red);box-shadow:0 0 0 1px var(--red),0 8px 28px rgba(225,11,31,0.25);background:linear-gradient(160deg,rgba(225,11,31,0.1),var(--bg-2));}
+.plan-badge{font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:3px 8px;border-radius:4px;display:inline-block;width:fit-content;background:var(--red);color:#fff;}
+.plan-name{font-family:var(--display);font-size:20px;letter-spacing:0.03em;}
+.plan-price{font-size:13px;color:var(--muted);}
+.plan-price b{font-size:22px;color:var(--text);font-weight:800;}
+.plan-features{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px;flex:1;}
+.plan-features li{font-size:12px;color:var(--muted);display:flex;gap:7px;align-items:flex-start;}
+.plan-features li::before{content:"✓";color:var(--red-2);font-weight:700;flex-shrink:0;}
+.plan-btn{width:100%;padding:10px;border-radius:9px;font-weight:700;font-size:13px;border:1px solid var(--line-strong);color:var(--text);background:rgba(255,255,255,0.04);transition:all .15s;margin-top:auto;}
+.plan-btn:hover{background:rgba(255,255,255,0.08);}
+.plan-card.featured .plan-btn{background:linear-gradient(180deg,var(--red-2),var(--red));border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(225,11,31,0.4);}
+
+/* MONETIZOVANIE */
+.mono-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+@media(min-width:600px){.mono-grid{grid-template-columns:1fr 1fr;}}
+@media(min-width:900px){.mono-grid{grid-template-columns:repeat(3,1fr);}}
+.mono-card{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-md);padding:16px;display:flex;gap:12px;align-items:flex-start;}
+.mono-icon{width:40px;height:40px;border-radius:10px;flex-shrink:0;background:var(--red-soft);border:1px solid rgba(225,11,31,0.3);display:flex;align-items:center;justify-content:center;font-size:20px;}
+.mono-title{font-weight:700;font-size:14px;margin-bottom:3px;}
+.mono-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* ÚČET + ADMIN */
+.two-col{display:grid;grid-template-columns:1fr;gap:14px;}
+@media(min-width:700px){.two-col{grid-template-columns:1fr 1fr;}}
+.panel{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px;}
+.panel-title{font-family:var(--display);font-size:20px;letter-spacing:0.03em;margin-bottom:12px;}
+.form-field{margin-bottom:10px;}
+.form-label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;letter-spacing:0.06em;text-transform:uppercase;}
+.form-input{width:100%;padding:10px 12px;background:var(--bg-3);border:1px solid var(--line-strong);border-radius:8px;color:var(--text);font-size:14px;transition:border-color .15s;outline:none;}
+.form-input:focus{border-color:var(--red);}
+.form-submit{width:100%;padding:12px;border-radius:10px;font-weight:700;font-size:14px;background:linear-gradient(180deg,var(--red-2),var(--red));border:none;color:#fff;box-shadow:0 4px 14px rgba(225,11,31,0.4);transition:opacity .15s;margin-top:6px;}
+.form-submit:hover{opacity:0.9;}
+.admin-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);}
+.admin-item:last-child{border-bottom:none;}
+.admin-dot{width:8px;height:8px;border-radius:50%;background:#f5c842;flex-shrink:0;}
+.admin-info{flex:1;}
+.admin-name{font-weight:600;font-size:13px;}
+.admin-sub{font-size:11px;color:var(--muted);}
+.admin-actions{display:flex;gap:6px;}
+.admin-ok{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--red);color:#fff;border:none;}
+.admin-no{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:700;background:rgba(255,255,255,0.05);border:1px solid var(--line);color:var(--muted);}
+
+/* STATS */
+.stats{margin:28px 0 8px;padding:20px;background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-xl);}
+.stats-title{font-family:var(--display);font-size:clamp(18px,5vw,24px);letter-spacing:0.04em;margin-bottom:16px;text-align:center;color:var(--muted);}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(min-width:600px){.stats-grid{grid-template-columns:repeat(4,1fr);}}
+.stat-item{text-align:center;padding:14px 8px;background:var(--bg-3);border-radius:var(--r-md);}
+.stat-num{font-family:var(--display);font-size:clamp(28px,7vw,40px);color:var(--red-2);line-height:1;}
+.stat-label{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:0.05em;}
+
+/* FOOTER */
+.footer{text-align:center;padding:24px 0 12px;color:var(--dim);font-size:12px;border-top:1px solid var(--line);margin-top:32px;}
+.footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 20px;margin-top:10px;}
+.footer-links a{color:var(--muted);font-size:12px;font-weight:500;}
+.footer-links a:hover{color:var(--red-2);}
+
+/* BOTTOM SHEET */
+.sheet-mask{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,0);pointer-events:none;transition:background .25s;}
+.sheet-mask.open{background:rgba(0,0,0,0.65);pointer-events:all;}
+.sheet{position:fixed;bottom:0;left:0;right:0;z-index:61;background:var(--bg-1);border-top:1px solid var(--line-strong);border-radius:20px 20px 0 0;padding:16px 18px 32px;max-height:70vh;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:0 -8px 40px rgba(0,0,0,0.5);}
+.sheet.open{transform:translateY(0);}
+.sheet-handle{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.15);margin:0 auto 14px;}
+.sheet h3{font-family:var(--display);font-size:22px;letter-spacing:0.02em;margin-bottom:4px;}
+.sub{font-size:12px;color:var(--muted);margin-bottom:14px;}
+.sheet-events{display:flex;flex-direction:column;gap:10px;}
+.sheet-event{display:flex;gap:12px;align-items:center;background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-md);padding:10px;}
+.sheet-event-thumb{width:52px;height:52px;border-radius:8px;flex-shrink:0;background:linear-gradient(135deg,rgba(225,11,31,0.45),rgba(15,5,8,0.85));background-size:cover;}
+.sheet-event-info h4{font-family:var(--display);font-size:14px;letter-spacing:0.02em;margin-bottom:2px;}
+.meta{font-size:11px;color:var(--muted);margin-bottom:3px;}
+.price{font-weight:700;font-size:13px;color:var(--red-2);}
+.sheet-empty{text-align:center;color:var(--muted);font-size:13px;padding:20px 0;}
+
+/* ===== BILLIARD GAME ===== */
+.billiard-page{padding:16px 0;}
+.billiard-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.billiard-title{font-family:var(--display);font-size:clamp(24px,6vw,36px);letter-spacing:0.03em;}
+.billiard-title em{font-style:normal;color:var(--red-2);}
+.billiard-layout{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:700px){.billiard-layout{grid-template-columns:1fr 320px;}}
+.billiard-canvas-wrap{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+#billiardCanvas{border-radius:8px;display:block;max-width:100%;cursor:crosshair;touch-action:none;}
+.billiard-controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.bctr-btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid var(--line-strong);color:var(--text);transition:all .15s;cursor:pointer;}
+.bctr-btn:hover{background:rgba(255,255,255,0.1);}
+.bctr-btn.danger{background:rgba(225,11,31,0.12);border-color:rgba(225,11,31,0.4);color:var(--red-2);}
+.billiard-sidebar{display:flex;flex-direction:column;gap:12px;}
+.billiard-score-panel{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px;}
+.bsp-title{font-family:var(--display);font-size:16px;letter-spacing:0.03em;margin-bottom:12px;color:var(--muted);}
+.player-score{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);}
+.player-score:last-of-type{border-bottom:none;}
+.ps-name{flex:1;font-weight:600;font-size:14px;}
+.ps-score{font-family:var(--display);font-size:24px;color:var(--red-2);min-width:32px;text-align:right;}
+.ps-active{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.15);flex-shrink:0;}
+.ps-active.on{background:var(--red-2);box-shadow:0 0 8px var(--red-2);}
+.billiard-add-player{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px;}
+.bap-title{font-family:var(--display);font-size:14px;letter-spacing:0.03em;margin-bottom:10px;color:var(--muted);}
+.bap-row{display:flex;gap:8px;}
+.bap-input{flex:1;padding:9px 12px;background:var(--bg-3);border:1px solid var(--line-strong);border-radius:8px;color:var(--text);font-size:13px;outline:none;}
+.bap-input:focus{border-color:var(--red);}
+.bap-btn{padding:9px 14px;border-radius:8px;font-size:13px;font-weight:700;background:var(--red);color:#fff;border:none;cursor:pointer;white-space:nowrap;}
+.billiard-leaderboard{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px;}
+.blb-title{font-family:var(--display);font-size:14px;letter-spacing:0.03em;margin-bottom:10px;color:var(--muted);}
+.lb-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px;}
+.lb-item:last-child{border-bottom:none;}
+.lb-pos{font-family:var(--display);font-size:16px;color:var(--dim);width:20px;text-align:center;}
+.lb-pos.gold{color:#f5c842;}
+.lb-name{flex:1;font-weight:600;}
+.lb-pts{font-weight:700;color:var(--red-2);}
+.billiard-power{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);}
+.power-bar{flex:1;height:8px;border-radius:4px;background:var(--bg-3);overflow:hidden;}
+.power-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#4caf50,#ff9800,#e10b1f);transition:width .1s;}
+/* PWA Install button */
+.pwa-install{
+  position:fixed;bottom:80px;right:14px;z-index:55;
+  display:none;align-items:center;gap:8px;
+  padding:11px 16px;border-radius:999px;
+  background:linear-gradient(180deg,var(--red-2),var(--red));
+  color:#fff;font-weight:700;font-size:13px;
+  box-shadow:0 6px 20px rgba(225,11,31,0.5);
+  border:1px solid rgba(255,255,255,0.18);
+  cursor:pointer;animation:pwaPulse 2.4s ease-in-out infinite;
+}
+.pwa-install.show{display:flex;}
+.pwa-install svg{width:16px;height:16px;}
+.pwa-install-close{
+  position:absolute;top:-6px;right:-6px;width:20px;height:20px;
+  border-radius:50%;background:#1c1c24;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;border:1px solid var(--line-strong);
+  cursor:pointer;
+}
+@keyframes pwaPulse{0%,100%{box-shadow:0 6px 20px rgba(225,11,31,0.5);}50%{box-shadow:0 6px 28px rgba(225,11,31,0.85);}}
+@media(min-width:900px){.pwa-install{bottom:20px;right:20px;}}
+
+/* Install instructions sheet (universal for all browsers) */
+.install-sheet-mask{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,0);pointer-events:none;transition:background .25s;}
+.install-sheet-mask.show{background:rgba(0,0,0,0.7);pointer-events:all;}
+.install-sheet{
+  position:fixed;bottom:0;left:0;right:0;z-index:71;
+  background:var(--bg-1);border-top:1px solid var(--red);
+  border-radius:24px 24px 0 0;padding:18px 20px 32px;
+  max-height:80vh;overflow-y:auto;
+  transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 -8px 40px rgba(225,11,31,0.3);
+}
+.install-sheet.show{transform:translateY(0);}
+.install-sheet-handle{width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,0.2);margin:0 auto 16px;}
+.install-sheet h3{font-family:var(--display);font-size:24px;letter-spacing:0.03em;margin-bottom:6px;color:#fff;display:flex;align-items:center;gap:10px;}
+.install-sheet h3 em{font-style:normal;color:var(--red-2);}
+.install-sheet-sub{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.5;}
+.install-step{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;padding:12px;background:rgba(255,255,255,0.04);border:1px solid var(--line);border-radius:12px;}
+.install-step-num{width:28px;height:28px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;font-family:var(--display);}
+.install-step-text{flex:1;font-size:13px;color:var(--text);line-height:1.5;}
+.install-step-text b{color:var(--red-2);font-weight:700;}
+.install-step-icon{font-size:24px;flex-shrink:0;line-height:1;}
+.install-sheet-close{width:100%;padding:12px;border-radius:10px;font-weight:700;font-size:14px;background:rgba(255,255,255,0.06);border:1px solid var(--line-strong);color:var(--text);cursor:pointer;margin-top:8px;}
+.install-sheet-close:hover{background:rgba(255,255,255,0.1);}
+.install-browser-name{display:inline-block;padding:3px 10px;border-radius:999px;background:rgba(225,11,31,0.15);color:var(--red-2);font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:14px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-top">
+    <div class="brand">
+      <img class="brand-logo" src="nightbase-logo.png" alt="NightBase"/>
+      <span class="brand-text">Night<b>Base</b></span>
+    </div>
+    <div class="header-tabs">
+      <button class="htab" onclick="showPage('rebricky')">Rebríčky</button>
+      <button class="htab" onclick="showPage('interpreti')">Interpreti</button>
+      <button class="htab" onclick="showPage('gastro')">Gastro</button>
+      <button class="htab" onclick="showPage('radio')">Rádio</button>
+      <button class="htab" onclick="showPage('pausaly')">Paušály</button>
+      <button class="htab" onclick="showPage('monetiz')">Monetizovanie</button>
+      <button class="htab" onclick="showPage('billiard')">🎱 Biliard</button>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" onclick="showPage('ucet')">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Pridať udalosť alebo klub
+      </button>
+      <button class="btn btn-icon" onclick="showPage('ucet')" aria-label="Účet">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="app">
+
+<!-- ===== PAGE: HLAVNÁ ===== -->
+<div class="page active" id="page-home">
+  <section class="map-section" id="mapa">
+    <div class="map-hero-row">
+      <div class="map-hero-text">
+        <div class="map-eyebrow"><span class="dot"></span> Vyber kraj — uvidíš akcie</div>
+        <h1 class="map-title">Tvoj <em>kraj</em>,<br>tvoja <em>noc</em>.</h1>
+        <p class="map-sub">Klikni na mapu Slovenska a zobrazia sa akcie v danom kraji.</p>
+        <button class="btn-add-mobile" onclick="showPage('ucet')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Pridať udalosť alebo klub
+        </button>
+      </div>
+      <button class="btn-register" onclick="showPage('ucet')">Zaregistruj sa</button>
+    </div>
+    <div class="map-card">
+      <div class="map-wrap">
+        <svg class="map-svg" viewBox="0 0 1000 488" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<path class="region" data-region="bratislavsky" data-name="Bratislavský kraj" d="M 60.2,387.5 L 50.8,381.2 L 44.9,381.6 L 49.6,366.8 L 46.5,356.6 L 54.7,357.0 L 57.4,347.2 L 50.0,343.7 L 44.9,347.2 L 43.8,353.9 L 30.9,344.9 L 29.3,316.7 L 21.5,311.3 L 23.8,303.4 L 12.1,290.1 L 17.6,282.3 L 16.8,272.9 L 34.0,251.8 L 33.6,238.1 L 46.1,244.4 L 50.0,253.8 L 52.3,246.0 L 58.6,246.0 L 64.1,251.4 L 78.1,249.1 L 103.1,229.5 L 106.6,240.1 L 90.2,254.2 L 98.0,262.0 L 90.2,272.9 L 102.7,283.1 L 109.0,298.0 L 116.8,303.4 L 112.9,319.9 L 122.3,326.9 L 113.7,335.5 L 119.9,339.4 L 121.5,348.0 L 106.2,357.8 L 97.7,349.2 L 98.0,360.5 L 83.2,363.7 L 88.7,371.5 L 71.1,385.2 L 60.2,387.5 Z"/>
+<path class="region" data-region="trnavsky" data-name="Trnavský kraj" d="M 145.3,461.0 L 131.2,444.6 L 121.5,445.0 L 117.6,433.3 L 105.9,428.6 L 97.3,407.4 L 85.2,394.5 L 74.2,393.0 L 70.7,385.6 L 88.7,371.5 L 83.2,366.8 L 85.2,361.7 L 98.0,360.5 L 97.7,349.2 L 106.2,357.8 L 121.5,348.0 L 119.9,339.4 L 113.7,335.5 L 122.3,326.9 L 112.9,319.9 L 116.8,303.4 L 109.0,298.0 L 102.7,283.1 L 90.2,272.9 L 98.0,262.8 L 90.2,254.2 L 99.2,243.6 L 105.1,242.4 L 105.9,232.3 L 101.6,229.5 L 79.7,248.3 L 67.2,251.4 L 58.6,246.0 L 50.0,246.7 L 48.4,242.8 L 47.7,246.0 L 32.4,237.0 L 39.5,226.8 L 41.0,217.4 L 47.3,212.7 L 49.6,201.0 L 66.8,186.9 L 71.1,177.9 L 85.2,170.1 L 97.7,174.8 L 115.2,188.5 L 108.6,197.5 L 119.9,193.2 L 129.3,208.0 L 125.4,219.0 L 133.6,237.4 L 145.3,235.0 L 150.8,227.2 L 166.4,225.6 L 173.4,235.8 L 185.2,235.0 L 209.0,247.9 L 204.7,256.1 L 196.1,253.8 L 188.7,259.6 L 187.9,269.8 L 204.3,287.0 L 187.9,305.8 L 179.3,322.2 L 179.3,341.0 L 183.2,349.6 L 178.1,354.7 L 171.1,352.3 L 170.3,361.7 L 162.1,361.3 L 169.9,373.8 L 168.4,381.6 L 175.8,382.0 L 179.3,387.9 L 179.3,415.3 L 174.6,420.0 L 173.8,429.3 L 159.8,438.7 L 158.2,445.8 L 153.9,449.3 L 150.8,446.2 L 147.3,448.1 L 145.3,461.0 Z"/>
+<path class="region" data-region="trenciansky" data-name="Trenčiansky kraj" d="M 273.4,283.5 L 264.1,282.7 L 259.0,269.0 L 248.8,264.3 L 248.8,258.1 L 254.3,251.0 L 240.2,240.1 L 235.2,228.8 L 215.6,221.7 L 216.8,242.4 L 209.4,248.3 L 185.2,235.0 L 173.4,235.8 L 166.4,225.6 L 150.8,227.2 L 145.3,235.0 L 133.6,237.4 L 125.4,219.0 L 128.5,206.5 L 119.5,192.8 L 110.9,197.5 L 107.4,195.5 L 125.8,181.8 L 132.0,181.8 L 136.7,190.4 L 148.4,189.6 L 155.5,182.6 L 171.9,181.0 L 185.9,167.0 L 200.8,167.0 L 210.9,144.3 L 226.6,146.6 L 240.2,137.6 L 259.0,82.1 L 290.6,73.1 L 305.9,105.6 L 323.0,123.6 L 319.9,130.6 L 324.6,140.8 L 323.0,153.3 L 310.2,158.4 L 300.4,168.1 L 314.1,170.9 L 320.3,163.8 L 321.1,167.8 L 339.8,170.1 L 336.3,197.1 L 346.5,204.9 L 348.8,215.8 L 357.4,225.2 L 340.2,242.4 L 335.2,255.3 L 325.8,251.4 L 311.7,267.9 L 289.8,270.2 L 273.4,283.5 Z"/>
+<path class="region" data-region="nitriansky" data-name="Nitriansky kraj" d="M 246.1,476.7 L 208.6,465.7 L 193.0,468.1 L 187.5,464.9 L 177.3,468.1 L 171.1,464.9 L 164.8,468.1 L 144.9,461.4 L 147.3,448.1 L 150.8,446.2 L 153.9,449.3 L 158.2,445.8 L 159.8,438.7 L 173.8,429.3 L 174.6,420.0 L 179.3,415.3 L 179.3,387.9 L 175.8,382.0 L 168.4,381.6 L 169.9,373.8 L 162.1,361.3 L 170.3,361.7 L 171.1,352.3 L 178.1,354.7 L 183.2,349.6 L 179.3,341.0 L 179.3,322.2 L 187.9,305.8 L 204.3,287.0 L 187.9,269.8 L 188.7,259.6 L 196.1,253.8 L 204.7,256.1 L 216.0,244.0 L 215.6,221.7 L 235.2,228.8 L 240.2,240.1 L 254.3,251.0 L 248.8,258.1 L 248.8,264.3 L 259.0,269.0 L 264.1,282.7 L 273.4,283.5 L 286.7,271.8 L 294.1,271.4 L 291.8,282.3 L 300.4,282.3 L 299.6,302.7 L 305.9,315.2 L 296.5,326.9 L 297.7,330.4 L 307.8,323.4 L 319.5,324.9 L 326.6,310.1 L 332.0,307.0 L 336.3,308.9 L 351.2,335.5 L 349.6,344.9 L 344.1,347.2 L 344.1,362.1 L 338.3,371.9 L 345.3,370.3 L 359.4,376.6 L 368.0,369.5 L 385.5,368.3 L 382.4,373.0 L 384.0,385.6 L 373.8,393.4 L 372.7,399.2 L 342.2,403.9 L 338.7,417.6 L 327.0,420.7 L 330.9,429.3 L 327.0,445.0 L 335.5,453.6 L 336.7,460.2 L 322.7,460.2 L 313.3,470.4 L 303.9,473.5 L 271.1,471.2 L 246.1,476.7 Z"/>
+<path class="region" data-region="zilinsky" data-name="Žilinský kraj" d="M 377.3,227.2 L 371.1,227.2 L 364.1,218.6 L 359.4,222.5 L 354.7,220.9 L 348.8,215.8 L 346.5,204.9 L 336.3,197.1 L 339.8,170.1 L 321.1,167.8 L 320.3,163.8 L 314.1,170.9 L 300.4,168.1 L 310.2,158.4 L 323.0,153.3 L 324.6,140.8 L 319.9,133.7 L 323.0,123.6 L 305.9,105.6 L 291.0,73.5 L 301.2,63.3 L 301.2,57.1 L 307.8,55.9 L 323.8,39.9 L 323.0,32.1 L 326.6,29.3 L 356.2,35.6 L 369.5,30.1 L 389.8,30.9 L 394.9,50.8 L 391.8,58.7 L 395.3,62.2 L 405.5,63.0 L 409.4,59.0 L 432.0,62.2 L 444.1,33.6 L 462.5,32.5 L 468.4,18.8 L 478.9,14.5 L 488.7,22.7 L 489.5,41.4 L 494.9,53.2 L 505.1,56.3 L 502.7,65.7 L 514.1,73.1 L 529.3,68.8 L 527.7,96.2 L 530.9,100.9 L 519.9,118.1 L 530.5,124.7 L 540.6,124.7 L 544.5,141.2 L 550.8,138.8 L 555.5,145.1 L 566.0,147.8 L 562.1,167.4 L 553.5,173.6 L 566.8,193.9 L 560.2,198.2 L 553.9,195.1 L 530.5,196.7 L 525.8,193.6 L 512.5,197.5 L 493.8,184.2 L 455.5,186.5 L 434.4,201.4 L 429.3,199.4 L 430.1,193.9 L 425.8,191.2 L 395.3,192.8 L 385.5,201.8 L 387.1,223.7 L 377.3,227.2 Z"/>
+<path class="region" data-region="banskobystricky" data-name="Banskobystrický kraj" d="M 412.5,407.1 L 400.8,401.6 L 385.9,400.8 L 379.7,403.9 L 373.0,398.1 L 373.8,393.4 L 384.0,385.6 L 383.6,366.4 L 368.0,369.5 L 359.4,376.6 L 345.3,370.3 L 337.9,371.5 L 344.1,362.1 L 344.1,347.2 L 349.6,344.9 L 351.2,335.5 L 334.4,307.0 L 325.4,311.3 L 319.5,324.9 L 307.8,323.4 L 300.0,330.4 L 296.5,329.2 L 305.9,315.2 L 299.6,302.7 L 300.4,282.3 L 291.8,282.3 L 294.1,271.4 L 298.4,267.1 L 311.7,267.9 L 325.8,251.4 L 335.2,255.3 L 340.2,242.4 L 349.6,236.2 L 362.5,219.4 L 371.1,227.2 L 385.9,224.8 L 385.5,201.8 L 395.3,192.8 L 425.8,191.2 L 430.1,193.9 L 429.3,199.4 L 434.4,201.4 L 455.5,186.5 L 493.8,184.2 L 512.5,197.5 L 522.7,193.6 L 530.5,196.7 L 553.9,195.1 L 564.8,201.4 L 586.7,200.6 L 597.7,208.4 L 596.5,219.8 L 588.7,224.4 L 584.0,244.8 L 598.8,254.9 L 604.3,277.6 L 612.1,280.8 L 602.0,308.1 L 609.4,316.3 L 630.9,315.9 L 619.1,326.1 L 616.8,341.0 L 602.7,359.7 L 596.9,365.6 L 585.9,360.1 L 579.7,368.7 L 571.9,364.8 L 568.4,374.6 L 556.2,384.4 L 536.7,389.1 L 532.0,393.8 L 525.8,383.6 L 519.5,381.2 L 512.5,385.9 L 515.2,381.6 L 512.5,377.3 L 503.9,371.1 L 496.1,375.0 L 492.6,364.4 L 485.9,362.5 L 461.3,376.2 L 454.7,400.8 L 450.0,397.7 L 422.7,399.2 L 412.5,407.1 Z"/>
+<path class="region" data-region="presovsky" data-name="Prešovský kraj" d="M 845.3,249.9 L 814.8,239.7 L 805.5,217.0 L 789.8,215.5 L 786.7,227.2 L 768.0,232.7 L 764.5,228.4 L 766.4,217.8 L 760.2,215.5 L 756.2,218.6 L 750.8,210.8 L 742.2,213.1 L 732.0,210.0 L 722.7,195.1 L 700.0,190.4 L 698.4,185.7 L 690.6,181.8 L 689.1,189.6 L 683.6,190.4 L 676.6,185.0 L 664.1,195.1 L 658.6,185.7 L 653.1,186.5 L 646.9,180.3 L 641.4,179.5 L 638.3,186.5 L 633.6,179.5 L 629.7,179.5 L 609.0,190.8 L 615.2,197.9 L 601.6,210.8 L 586.7,200.6 L 562.5,200.6 L 559.8,198.6 L 566.8,191.6 L 553.5,172.1 L 561.3,168.9 L 566.0,147.8 L 555.5,145.1 L 550.8,138.8 L 544.5,141.2 L 541.0,125.1 L 550.8,115.4 L 557.0,115.4 L 575.8,132.6 L 588.7,99.3 L 607.0,88.8 L 619.5,92.7 L 624.2,75.5 L 628.1,78.6 L 643.8,75.5 L 659.4,84.9 L 666.4,84.9 L 668.8,75.5 L 674.2,79.4 L 686.7,77.0 L 698.0,90.7 L 698.8,97.0 L 707.8,95.0 L 709.0,100.9 L 713.3,101.3 L 716.4,107.5 L 729.7,107.5 L 736.7,96.6 L 748.4,92.7 L 750.4,89.2 L 744.1,80.6 L 746.1,77.8 L 754.7,77.0 L 768.0,85.6 L 778.1,71.6 L 793.0,75.5 L 806.2,84.9 L 837.5,77.0 L 844.5,84.9 L 857.8,91.1 L 862.5,100.5 L 872.7,92.7 L 881.2,101.3 L 889.8,102.8 L 900.4,118.1 L 904.3,136.9 L 909.4,140.4 L 928.1,150.5 L 934.4,149.0 L 937.5,156.8 L 947.7,161.5 L 960.2,159.1 L 966.4,170.1 L 974.2,169.3 L 980.5,174.8 L 990.2,172.8 L 986.3,192.4 L 975.4,197.1 L 966.0,210.4 L 965.2,222.1 L 958.6,228.0 L 937.5,227.2 L 934.4,210.0 L 929.7,210.0 L 916.0,221.3 L 914.8,231.1 L 905.5,232.7 L 886.7,231.1 L 878.1,220.1 L 861.7,214.7 L 857.4,216.6 L 860.5,243.2 L 845.3,249.9 Z"/>
+<path class="region" data-region="kosicky" data-name="Košický kraj" d="M 859.4,361.7 L 841.0,354.3 L 828.5,328.5 L 827.0,315.2 L 824.2,312.4 L 815.6,314.0 L 810.5,301.9 L 795.3,292.1 L 792.2,298.4 L 776.6,298.4 L 774.2,309.3 L 760.9,303.8 L 746.1,308.5 L 739.8,314.8 L 735.2,306.2 L 717.2,306.2 L 710.2,296.8 L 700.8,297.6 L 689.8,289.0 L 637.5,299.9 L 636.3,308.9 L 630.5,315.6 L 607.8,315.6 L 602.0,303.4 L 612.1,280.8 L 604.3,277.6 L 598.8,254.9 L 584.0,244.8 L 588.7,224.4 L 615.2,197.9 L 609.0,190.8 L 629.7,179.5 L 633.6,179.5 L 638.3,186.5 L 641.4,179.5 L 646.9,180.3 L 653.1,186.5 L 658.6,185.7 L 664.1,195.1 L 676.6,185.0 L 687.5,190.4 L 689.5,183.0 L 693.0,182.6 L 700.0,190.4 L 722.7,195.1 L 732.0,210.0 L 742.2,213.1 L 750.8,210.8 L 756.2,218.6 L 760.2,215.5 L 766.4,217.8 L 764.5,228.4 L 768.0,232.7 L 786.7,227.2 L 789.8,215.5 L 805.5,217.0 L 814.8,239.7 L 841.4,249.9 L 860.5,243.2 L 858.6,215.5 L 878.1,220.1 L 886.7,231.1 L 905.5,232.7 L 914.8,231.1 L 916.0,221.3 L 929.7,210.0 L 934.4,210.0 L 937.5,227.2 L 958.2,227.6 L 958.2,244.8 L 950.4,254.9 L 953.5,261.2 L 950.4,274.5 L 936.7,279.6 L 917.6,301.1 L 914.5,348.0 L 907.8,351.5 L 903.9,347.6 L 885.2,348.4 L 872.7,352.3 L 870.3,356.2 L 862.5,353.1 L 859.4,361.7 Z"/>
+<circle class="city-dot" cx="51.6" cy="351.1" r="4"/><text class="city-label" x="58" y="347">Bratislava</text>
+<circle class="city-dot" cx="136.7" cy="303.4" r="4"/><text class="city-label" x="143" y="299">Trnava</text>
+<circle class="city-dot" cx="230.5" cy="179.1" r="4"/><text class="city-label" x="237" y="175">Trenčín</text>
+<circle class="city-dot" cx="221.9" cy="326.9" r="4"/><text class="city-label" x="228" y="323">Nitra</text>
+<circle class="city-dot" cx="350.0" cy="101.7" r="4"/><text class="city-label" x="357" y="98">Žilina</text>
+<circle class="city-dot" cx="409.4" cy="230.7" r="4"/><text class="city-label" x="416" y="227">B. Bystrica</text>
+<circle class="city-dot" cx="766.4" cy="186.9" r="4"/><text class="city-label" x="773" y="183">Prešov</text>
+<circle class="city-dot" cx="761.7" cy="259.6" r="4"/><text class="city-label" x="768" y="256">Košice</text>
+<text class="region-label" x="67" y="350" text-anchor="middle">BA</text>
+<text class="region-label" x="148" y="405" text-anchor="middle">TRNAVSKÝ</text>
+<text class="region-label" x="260" y="198" text-anchor="middle">TRENČIANSKY</text>
+<text class="region-label" x="285" y="382" text-anchor="middle">NITRIANSKY</text>
+<text class="region-label" x="462" y="138" text-anchor="middle">ŽILINSKÝ</text>
+<text class="region-label" x="438" y="348" text-anchor="middle">BANSKOBYSTRICKÝ</text>
+<text class="region-label" x="708" y="167" text-anchor="middle">PREŠOVSKÝ</text>
+<text class="region-label" x="818" y="308" text-anchor="middle">KOŠICKÝ</text>
+        </svg>
+      </div>
+      <div class="map-legend" role="tablist">
+        <button class="legend-chip" data-region="bratislavsky">Bratislavský</button>
+        <button class="legend-chip" data-region="trnavsky">Trnavský</button>
+        <button class="legend-chip" data-region="trenciansky">Trenčiansky</button>
+        <button class="legend-chip" data-region="nitriansky">Nitriansky</button>
+        <button class="legend-chip" data-region="zilinsky">Žilinský</button>
+        <button class="legend-chip" data-region="banskobystricky">Banskobystrický</button>
+        <button class="legend-chip" data-region="presovsky">Prešovský</button>
+        <button class="legend-chip" data-region="kosicky">Košický</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="akcie">
+    <div class="section-head">
+      <h2 class="section-title">Naj<em>bližšie</em> akcie</h2>
+      <a class="section-link" href="#">Všetky →</a>
+    </div>
+    <div class="events-scroll">
+      <article class="event-card">
+        <div class="event-cover" style="background-image:linear-gradient(135deg,rgba(225,11,31,0.6),rgba(10,5,8,0.85)),url('party-people-bg.png');background-size:cover;">
+          <span class="event-tag">Techno</span>
+          <div class="event-date-badge">10<span>MÁJ</span></div>
+        </div>
+        <div class="event-body">
+          <div class="event-title">NIGHTSHIFT VOL. 14</div>
+          <div class="event-meta"><span class="event-dot"></span>Subclub · Bratislava · 22:00</div>
+          <div class="event-foot"><span class="event-price">15 €</span><button class="event-btn">Detail</button></div>
+        </div>
+      </article>
+      <article class="event-card">
+        <div class="event-cover" style="background-image:linear-gradient(160deg,rgba(180,11,31,0.55),rgba(5,5,10,0.85)),url('party-people-bg.png');background-size:cover;">
+          <span class="event-tag">House</span>
+          <div class="event-date-badge">17<span>MÁJ</span></div>
+        </div>
+        <div class="event-body">
+          <div class="event-title">RED ROOM SESSIONS</div>
+          <div class="event-meta"><span class="event-dot"></span>KC Dunaj · Bratislava · 21:00</div>
+          <div class="event-foot"><span class="event-price">12 €</span><button class="event-btn">Detail</button></div>
+        </div>
+      </article>
+      <article class="event-card">
+        <div class="event-cover" style="background-image:linear-gradient(135deg,rgba(200,11,31,0.5),rgba(8,5,10,0.9)),url('party-people-bg.png');background-size:cover;">
+          <span class="event-tag">D'N'B</span>
+          <div class="event-date-badge">24<span>MÁJ</span></div>
+        </div>
+        <div class="event-body">
+          <div class="event-title">BASS RIOT ZA</div>
+          <div class="event-meta"><span class="event-dot"></span>Stanica · Žilina · 22:30</div>
+          <div class="event-foot"><span class="event-price">10 €</span><button class="event-btn">Detail</button></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="stats">
+    <div class="stats-title">NightBase v číslach</div>
+    <div class="stats-grid">
+      <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">schválených akcií</div></div>
+      <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">krajov Slovenska</div></div>
+      <div class="stat-item"><div class="stat-num">20+</div><div class="stat-label">žánrov</div></div>
+      <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">interpretov</div></div>
+    </div>
+  </div>
+
+  <!-- INSTALL BANNER — zobrazí sa keď je PWA inštalovateľná -->
+  <div id="pwaBanner" style="display:none;margin:18px 0;border-radius:var(--r-xl);overflow:hidden;">
+    <div style="background:linear-gradient(135deg,rgba(225,11,31,0.18),rgba(14,14,20,0.98));border:1px solid rgba(225,11,31,0.5);border-radius:var(--r-xl);padding:14px 16px;display:flex;align-items:center;gap:12px;position:relative;">
+      <div style="font-size:32px;flex-shrink:0;">📱</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:700;font-size:14px;color:#fff;margin-bottom:2px;">Pridaj appku na plochu</div>
+        <div style="font-size:12px;color:var(--muted);">Rýchly prístup · funguje offline</div>
+      </div>
+      <button onclick="installPWA()" style="background:linear-gradient(180deg,var(--red-2),var(--red));color:#fff;border:none;padding:9px 16px;border-radius:9px;font-weight:700;font-size:13px;white-space:nowrap;cursor:pointer;flex-shrink:0;">Inštalovať</button>
+      <button onclick="dismissBanner()" style="position:absolute;top:6px;right:6px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:2px 6px;">×</button>
+    </div>
+  </div>
+
+  <!-- VEĽKÉ TLAČIDLÁ — Paušály & Rádio & Biliard -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:18px 0 8px;">
+    <button onclick="showPage('pausaly')" style="background:linear-gradient(160deg,rgba(225,11,31,0.15),var(--bg-2));border:1px solid rgba(225,11,31,0.4);border-radius:var(--r-xl);padding:18px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;color:var(--text);font-family:inherit;">
+      <div style="font-size:30px;line-height:1;">💎</div>
+      <div style="font-family:var(--display);font-size:16px;letter-spacing:0.03em;color:var(--red-2);">PAUŠÁLY</div>
+      <div style="font-size:10px;color:var(--muted);text-align:center;line-height:1.3;">Pre kluby a podniky</div>
+    </button>
+    <button onclick="showPage('radio')" style="background:linear-gradient(160deg,rgba(225,11,31,0.15),var(--bg-2));border:1px solid rgba(225,11,31,0.4);border-radius:var(--r-xl);padding:18px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;color:var(--text);font-family:inherit;">
+      <div style="font-size:30px;line-height:1;">📻</div>
+      <div style="font-family:var(--display);font-size:16px;letter-spacing:0.03em;color:var(--red-2);">RÁDIO</div>
+      <div style="font-size:10px;color:var(--muted);text-align:center;line-height:1.3;">10 žánrov · 24/7</div>
+    </button>
+    <button onclick="showPage('billiard')" style="background:linear-gradient(160deg,rgba(225,11,31,0.15),var(--bg-2));border:1px solid rgba(225,11,31,0.4);border-radius:var(--r-xl);padding:18px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;color:var(--text);font-family:inherit;">
+      <div style="font-size:30px;line-height:1;">🎱</div>
+      <div style="font-family:var(--display);font-size:16px;letter-spacing:0.03em;color:var(--red-2);">BILIARD</div>
+      <div style="font-size:10px;color:var(--muted);text-align:center;line-height:1.3;">Mini hra na nudu</div>
+    </button>
+  </div>
+
+  <footer class="footer">
+    <b>NightBase</b> · Objav. Zaži. Vyber si. · © 2026
+    <div class="footer-links">
+      <a href="mailto:cerno2611@gmail.com">📧 Kontakt</a>
+    </div>
+  </footer>
+</div>
+
+<!-- ===== PAGE: REBRÍČKY ===== -->
+<div class="page" id="page-rebricky">
+  <div class="section">
+    <div class="section-head"><h2 class="section-title"><em>Rebríčky</em></h2><button class="section-link" onclick="showPage('home')">← Späť</button></div>
+    <div class="rank-tabs" id="rankTabs">
+      <button class="rank-tab active" onclick="showRankCategory('eventy',this)">🎉 Top eventy</button>
+      <button class="rank-tab" onclick="showRankCategory('kluby',this)">🎧 Top kluby</button>
+      <button class="rank-tab" onclick="showRankCategory('interpreti',this)">🎤 Top interpreti</button>
+      <button class="rank-tab" onclick="showRankCategory('taxi',this)">🚖 Top taxi</button>
+      <button class="rank-tab" onclick="showRankCategory('hotely',this)">🏨 Top hotely</button>
+      <button class="rank-tab" onclick="showRankCategory('gastro',this)">🍽️ Top gastro</button>
+    </div>
+    <div class="rank-list" id="rankList"></div>
+  </div>
+</div>
+
+<!-- ===== PAGE: INTERPRETI ===== -->
+<div class="page" id="page-interpreti">
+<style>
+.int-layout{display:grid;grid-template-columns:1fr;gap:20px;}
+@media(min-width:900px){.int-layout{grid-template-columns:1fr 380px;}}
+.int-reg-panel{background:linear-gradient(160deg,rgba(225,11,31,0.08),var(--bg-2));border:1px solid rgba(225,11,31,0.35);border-radius:var(--r-xl);padding:22px;}
+.int-reg-title{font-family:var(--display);font-size:22px;letter-spacing:0.03em;margin-bottom:4px;}
+.int-reg-title em{font-style:normal;color:var(--red-2);}
+.int-reg-sub{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5;}
+.int-field{margin-bottom:12px;}
+.int-label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:5px;letter-spacing:0.06em;text-transform:uppercase;}
+.int-input{width:100%;padding:10px 13px;background:var(--bg-3);border:1px solid var(--line-strong);border-radius:9px;color:var(--text);font-size:14px;outline:none;transition:border-color .15s;}
+.int-input:focus{border-color:var(--red-2);}
+.int-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.int-genres{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.int-genre-chip{padding:5px 12px;border-radius:999px;font-size:11px;font-weight:600;background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:all .15s;user-select:none;}
+.int-genre-chip.sel{background:rgba(225,11,31,0.18);border-color:var(--red-2);color:var(--red-2);}
+.int-submit{width:100%;padding:13px;border-radius:10px;font-weight:700;font-size:14px;background:linear-gradient(180deg,var(--red-2),var(--red));border:none;color:#fff;box-shadow:0 4px 18px rgba(225,11,31,0.45);cursor:pointer;margin-top:8px;transition:opacity .15s;}
+.int-submit:hover{opacity:0.88;}
+.int-success{display:none;padding:14px;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.4);border-radius:10px;color:#81c784;font-size:13px;text-align:center;margin-top:10px;}
+.int-success.show{display:block;}
+.int-plans{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;}
+.int-plan{padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg-3);cursor:pointer;transition:all .15s;}
+.int-plan:hover{border-color:var(--muted);}
+.int-plan.sel{border-color:var(--red-2);background:rgba(225,11,31,0.08);}
+.int-plan-name{font-weight:700;font-size:13px;margin-bottom:2px;}
+.int-plan-price{font-size:11px;color:var(--muted);}
+.int-plan-price b{color:var(--red-2);}
+</style>
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title"><em>Interpreti</em></h2>
+      <button class="section-link" onclick="showPage('home')">← Späť</button>
+    </div>
+
+    <!-- Žánrový filter -->
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;" id="artistFilterTabs">
+      <button class="rank-tab active" onclick="filterArtists('all',this)">Všetci</button>
+      <button class="rank-tab" onclick="filterArtists('Techno',this)">🎛 Techno</button>
+      <button class="rank-tab" onclick="filterArtists('House',this)">🏠 House</button>
+      <button class="rank-tab" onclick="filterArtists('DNB',this)">🥁 D'N'B</button>
+      <button class="rank-tab" onclick="filterArtists('Hip-Hop',this)">🎤 Hip-Hop</button>
+      <button class="rank-tab" onclick="filterArtists('Pop',this)">🎵 Pop</button>
+      <button class="rank-tab" onclick="filterArtists('Rock',this)">🎸 Rock</button>
+      <button class="rank-tab" onclick="filterArtists('Electronic',this)">⚡ Electronic</button>
+    </div>
+
+    <div class="int-layout">
+      <!-- Ľavá: zoznam interpretov - dynamický -->
+      <div>
+        <div class="artists-scroll" id="artistsList" style="margin-bottom:14px;"></div>
+        <div class="booking-note">💌 Booking: <a href="mailto:cerno2611@gmail.com">cerno2611@gmail.com</a></div>
+      </div>
+      <div class="int-reg-panel">
+        <div class="int-reg-title">Registrácia <em>interpreta</em></div>
+        <div class="int-reg-sub">Zaregistruj sa ako DJ, hudobník alebo interpret. Po schválení sa objavíš na NightBase a kluby ťa môžu kontaktovať na booking.</div>
+        <div class="int-field"><label class="int-label">Umelecké meno / DJ name</label><input class="int-input" id="iName" placeholder="napr. DJ Merko, Anna K., Bass Duo..." /></div>
+        <div class="int-row2">
+          <div class="int-field"><label class="int-label">Email</label><input class="int-input" id="iEmail" type="email" placeholder="tvoj@email.sk" /></div>
+          <div class="int-field"><label class="int-label">Telefón (voliteľné)</label><input class="int-input" id="iPhone" placeholder="+421..." /></div>
+        </div>
+        <div class="int-field">
+          <label class="int-label">Žánre (vyber)</label>
+          <div class="int-genres" id="iGenres">
+            <span class="int-genre-chip" onclick="toggleGenre(this)">Techno</span>
+            <span class="int-genre-chip" onclick="toggleGenre(this)">House</span>
+            <span class="int-genre-chip" onclick="toggleGenre(this)">D'N'B</span>
+            <span class="int-genre-chip" onclick="toggleGenre(this)">Hip-Hop</span>
+            <span class="int-genre-chip" onclick="toggleGenre(this)">Pop</span>
+            <span class="int-genre-chip" onclick="toggleGenre(this)">Rock</span>
+            <span class="int-genre-chip" onclick="toggleGenre(this)">Electronic</span>
+            <span class="int-genre-chip" onclick="toggleGenre(this)">Minimal</span>
+            <span class="int-genre-chip" onclick="toggleGenre(this)">Trance</span>
+            <span class="int-genre-chip" onclick="toggleGenre(this)">Ambient</span>
+          </div>
+        </div>
+        <div class="int-field"><label class="int-label">Instagram / SoundCloud / Mixcloud</label><input class="int-input" id="iSocial" placeholder="@tvoj_profil alebo URL..." /></div>
+        <div class="int-field">
+          <label class="int-label">Krajina pôsobenia</label>
+          <select class="int-input" id="iRegion">
+            <option value="">— Vyber kraj —</option>
+            <option>Bratislavský</option><option>Trnavský</option><option>Trenčiansky</option>
+            <option>Nitriansky</option><option>Žilinský</option><option>Banskobystrický</option>
+            <option>Prešovský</option><option>Košický</option>
+          </select>
+        </div>
+        <div class="int-label" style="margin-bottom:8px;">Plán</div>
+        <div class="int-plans">
+          <div class="int-plan sel" id="iPlanFree" onclick="selectPlan('free')"><div class="int-plan-name">Free</div><div class="int-plan-price"><b>0 €</b>/mes</div><div style="font-size:10px;color:var(--muted);margin-top:4px;">Profil + 2 mixy</div></div>
+          <div class="int-plan" id="iPlanPro" onclick="selectPlan('pro')"><div class="int-plan-name">Artist Pro ⭐</div><div class="int-plan-price"><b>9 €</b>/mes</div><div style="font-size:10px;color:var(--muted);margin-top:4px;">Neobmedzené + TOP</div></div>
+        </div>
+        <button class="int-submit" onclick="submitArtistReg()">🎧 Zaregistrovať sa ako interpret</button>
+        <div class="int-success" id="iSuccess">✅ Registrácia odoslaná! Skontrolujeme tvoj profil a ozveme sa na email do 48 hodín.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: GASTRO ===== -->
+<div class="page" id="page-gastro">
+<style>
+.gastro-map-wrap{position:relative;width:100%;background:linear-gradient(180deg,rgba(20,20,26,0.9),rgba(13,13,17,0.98));border:1px solid var(--line-strong);border-radius:var(--r-xl);padding:14px;margin-bottom:18px;box-shadow:var(--shadow-card);}
+.gastro-map-wrap svg{width:100%;display:block;}
+.gastro-region{fill:rgba(50,50,62,0.75);stroke:rgba(255,255,255,0.22);stroke-width:1;stroke-linejoin:round;cursor:pointer;transition:fill .18s;}
+.gastro-region:hover{fill:rgba(225,11,31,0.45);}
+.gastro-region.active{fill:var(--red);stroke:#fff;stroke-width:1.5;filter:drop-shadow(0 0 8px rgba(225,11,31,0.6));}
+.gastro-city-dot{fill:#fff;stroke:rgba(0,0,0,0.5);stroke-width:0.8;pointer-events:none;}
+.gastro-city-label{fill:rgba(255,255,255,0.85);font-family:var(--sans);font-size:9px;font-weight:700;pointer-events:none;}
+.gastro-region-label{fill:rgba(255,255,255,0.35);font-family:var(--sans);font-size:7px;pointer-events:none;letter-spacing:0.05em;}
+.gastro-region-count{fill:var(--red-2);font-family:var(--display);font-size:14px;pointer-events:none;font-weight:bold;}
+.gastro-kraj-title{font-family:var(--display);font-size:clamp(20px,5vw,26px);letter-spacing:0.03em;margin-bottom:14px;}
+.gastro-kraj-title em{font-style:normal;color:var(--red-2);}
+.gastro-rest-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+@media(min-width:600px){.gastro-rest-grid{grid-template-columns:1fr 1fr;}}
+@media(min-width:900px){.gastro-rest-grid{grid-template-columns:repeat(3,1fr);}}
+.rest-card{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s;}
+.rest-card:hover{transform:translateY(-2px);border-color:var(--red);}
+.rest-card.premium{border-color:var(--red);box-shadow:0 0 0 1px var(--red),0 6px 20px rgba(225,11,31,0.18);}
+.rest-header{padding:14px;display:flex;gap:12px;align-items:flex-start;}
+.rest-icon{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,rgba(225,11,31,0.25),rgba(10,5,8,0.8));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.rest-info{flex:1;}
+.rest-name{font-weight:700;font-size:14px;margin-bottom:2px;}
+.rest-type{font-size:11px;color:var(--muted);margin-bottom:4px;}
+.rest-meta{display:flex;gap:8px;font-size:11px;color:var(--muted);}
+.rest-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:0.08em;text-transform:uppercase;}
+.rest-badge.prem{background:var(--red);color:#fff;}
+.rest-badge.free{background:rgba(255,255,255,0.08);color:var(--muted);}
+.rest-menu-toggle{width:100%;padding:8px 14px;text-align:left;font-size:12px;font-weight:600;color:var(--muted);border-top:1px solid var(--line);background:rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:color .15s;}
+.rest-menu-toggle:hover{color:var(--red-2);}
+.rest-menu{display:none;padding:10px 14px 14px;border-top:1px solid var(--line);}
+.rest-menu.open{display:block;}
+.menu-section{margin-bottom:10px;}
+.menu-section-title{font-size:10px;font-weight:700;color:var(--red-2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;}
+.menu-item{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.menu-item:last-child{border-bottom:none;}
+.menu-item-name{font-size:12px;color:var(--text);}
+.menu-item-price{font-size:12px;font-weight:700;color:var(--red-2);white-space:nowrap;margin-left:8px;}
+.gastro-hint{text-align:center;padding:32px 0;color:var(--muted);font-size:14px;}
+.gastro-hint-icon{font-size:36px;margin-bottom:8px;}
+</style>
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title">Gastro <em>mapa</em></h2>
+      <button class="section-link" onclick="showPage('home')">← Späť</button>
+    </div>
+    <div class="gastro-map-wrap">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">Klikni na kraj — zobrazie sa reštaurácie v danom regióne</p>
+      <div style="position:relative;">
+        <svg id="gastroMapSvg" viewBox="0 0 1000 488" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <path class="gastro-region" data-region="bratislavsky" d="M 60.2,387.5 L 50.8,381.2 L 44.9,381.6 L 49.6,366.8 L 46.5,356.6 L 54.7,357.0 L 57.4,347.2 L 50.0,343.7 L 44.9,347.2 L 43.8,353.9 L 30.9,344.9 L 29.3,316.7 L 21.5,311.3 L 23.8,303.4 L 12.1,290.1 L 17.6,282.3 L 16.8,272.9 L 34.0,251.8 L 33.6,238.1 L 46.1,244.4 L 50.0,253.8 L 52.3,246.0 L 58.6,246.0 L 64.1,251.4 L 78.1,249.1 L 103.1,229.5 L 106.6,240.1 L 90.2,254.2 L 98.0,262.0 L 90.2,272.9 L 102.7,283.1 L 109.0,298.0 L 116.8,303.4 L 112.9,319.9 L 122.3,326.9 L 113.7,335.5 L 119.9,339.4 L 121.5,348.0 L 106.2,357.8 L 97.7,349.2 L 98.0,360.5 L 83.2,363.7 L 88.7,371.5 L 71.1,385.2 L 60.2,387.5 Z"/>
+          <path class="gastro-region" data-region="trnavsky" d="M 145.3,461.0 L 131.2,444.6 L 121.5,445.0 L 117.6,433.3 L 105.9,428.6 L 97.3,407.4 L 85.2,394.5 L 74.2,393.0 L 70.7,385.6 L 88.7,371.5 L 83.2,366.8 L 85.2,361.7 L 98.0,360.5 L 97.7,349.2 L 106.2,357.8 L 121.5,348.0 L 119.9,339.4 L 113.7,335.5 L 122.3,326.9 L 112.9,319.9 L 116.8,303.4 L 109.0,298.0 L 102.7,283.1 L 90.2,272.9 L 98.0,262.8 L 90.2,254.2 L 99.2,243.6 L 105.1,242.4 L 105.9,232.3 L 101.6,229.5 L 79.7,248.3 L 67.2,251.4 L 58.6,246.0 L 50.0,246.7 L 48.4,242.8 L 47.7,246.0 L 32.4,237.0 L 39.5,226.8 L 41.0,217.4 L 47.3,212.7 L 49.6,201.0 L 66.8,186.9 L 71.1,177.9 L 85.2,170.1 L 97.7,174.8 L 115.2,188.5 L 108.6,197.5 L 119.9,193.2 L 129.3,208.0 L 125.4,219.0 L 133.6,237.4 L 145.3,235.0 L 150.8,227.2 L 166.4,225.6 L 173.4,235.8 L 185.2,235.0 L 209.0,247.9 L 204.7,256.1 L 196.1,253.8 L 188.7,259.6 L 187.9,269.8 L 204.3,287.0 L 187.9,305.8 L 179.3,322.2 L 179.3,341.0 L 183.2,349.6 L 178.1,354.7 L 171.1,352.3 L 170.3,361.7 L 162.1,361.3 L 169.9,373.8 L 168.4,381.6 L 175.8,382.0 L 179.3,387.9 L 179.3,415.3 L 174.6,420.0 L 173.8,429.3 L 159.8,438.7 L 158.2,445.8 L 153.9,449.3 L 150.8,446.2 L 147.3,448.1 L 145.3,461.0 Z"/>
+          <path class="gastro-region" data-region="trenciansky" d="M 273.4,283.5 L 264.1,282.7 L 259.0,269.0 L 248.8,264.3 L 248.8,258.1 L 254.3,251.0 L 240.2,240.1 L 235.2,228.8 L 215.6,221.7 L 216.8,242.4 L 209.4,248.3 L 185.2,235.0 L 173.4,235.8 L 166.4,225.6 L 150.8,227.2 L 145.3,235.0 L 133.6,237.4 L 125.4,219.0 L 128.5,206.5 L 119.5,192.8 L 110.9,197.5 L 107.4,195.5 L 125.8,181.8 L 132.0,181.8 L 136.7,190.4 L 148.4,189.6 L 155.5,182.6 L 171.9,181.0 L 185.9,167.0 L 200.8,167.0 L 210.9,144.3 L 226.6,146.6 L 240.2,137.6 L 259.0,82.1 L 290.6,73.1 L 305.9,105.6 L 323.0,123.6 L 319.9,130.6 L 324.6,140.8 L 323.0,153.3 L 310.2,158.4 L 300.4,168.1 L 314.1,170.9 L 320.3,163.8 L 321.1,167.8 L 339.8,170.1 L 336.3,197.1 L 346.5,204.9 L 348.8,215.8 L 357.4,225.2 L 340.2,242.4 L 335.2,255.3 L 325.8,251.4 L 311.7,267.9 L 289.8,270.2 L 273.4,283.5 Z"/>
+          <path class="gastro-region" data-region="nitriansky" d="M 246.1,476.7 L 208.6,465.7 L 193.0,468.1 L 187.5,464.9 L 177.3,468.1 L 171.1,464.9 L 164.8,468.1 L 144.9,461.4 L 147.3,448.1 L 150.8,446.2 L 153.9,449.3 L 158.2,445.8 L 159.8,438.7 L 173.8,429.3 L 174.6,420.0 L 179.3,415.3 L 179.3,387.9 L 175.8,382.0 L 168.4,381.6 L 169.9,373.8 L 162.1,361.3 L 170.3,361.7 L 171.1,352.3 L 178.1,354.7 L 183.2,349.6 L 179.3,341.0 L 179.3,322.2 L 187.9,305.8 L 204.3,287.0 L 187.9,269.8 L 188.7,259.6 L 196.1,253.8 L 204.7,256.1 L 216.0,244.0 L 215.6,221.7 L 235.2,228.8 L 240.2,240.1 L 254.3,251.0 L 248.8,258.1 L 248.8,264.3 L 259.0,269.0 L 264.1,282.7 L 273.4,283.5 L 286.7,271.8 L 294.1,271.4 L 291.8,282.3 L 300.4,282.3 L 299.6,302.7 L 305.9,315.2 L 296.5,326.9 L 297.7,330.4 L 307.8,323.4 L 319.5,324.9 L 326.6,310.1 L 332.0,307.0 L 336.3,308.9 L 351.2,335.5 L 349.6,344.9 L 344.1,347.2 L 344.1,362.1 L 338.3,371.9 L 345.3,370.3 L 359.4,376.6 L 368.0,369.5 L 385.5,368.3 L 382.4,373.0 L 384.0,385.6 L 373.8,393.4 L 372.7,399.2 L 342.2,403.9 L 338.7,417.6 L 327.0,420.7 L 330.9,429.3 L 327.0,445.0 L 335.5,453.6 L 336.7,460.2 L 322.7,460.2 L 313.3,470.4 L 303.9,473.5 L 271.1,471.2 L 246.1,476.7 Z"/>
+          <path class="gastro-region" data-region="zilinsky" d="M 377.3,227.2 L 371.1,227.2 L 364.1,218.6 L 359.4,222.5 L 354.7,220.9 L 348.8,215.8 L 346.5,204.9 L 336.3,197.1 L 339.8,170.1 L 321.1,167.8 L 320.3,163.8 L 314.1,170.9 L 300.4,168.1 L 310.2,158.4 L 323.0,153.3 L 324.6,140.8 L 319.9,133.7 L 323.0,123.6 L 305.9,105.6 L 291.0,73.5 L 301.2,63.3 L 301.2,57.1 L 307.8,55.9 L 323.8,39.9 L 323.0,32.1 L 326.6,29.3 L 356.2,35.6 L 369.5,30.1 L 389.8,30.9 L 394.9,50.8 L 391.8,58.7 L 395.3,62.2 L 405.5,63.0 L 409.4,59.0 L 432.0,62.2 L 444.1,33.6 L 462.5,32.5 L 468.4,18.8 L 478.9,14.5 L 488.7,22.7 L 489.5,41.4 L 494.9,53.2 L 505.1,56.3 L 502.7,65.7 L 514.1,73.1 L 529.3,68.8 L 527.7,96.2 L 530.9,100.9 L 519.9,118.1 L 530.5,124.7 L 540.6,124.7 L 544.5,141.2 L 550.8,138.8 L 555.5,145.1 L 566.0,147.8 L 562.1,167.4 L 553.5,173.6 L 566.8,193.9 L 560.2,198.2 L 553.9,195.1 L 530.5,196.7 L 525.8,193.6 L 512.5,197.5 L 493.8,184.2 L 455.5,186.5 L 434.4,201.4 L 429.3,199.4 L 430.1,193.9 L 425.8,191.2 L 395.3,192.8 L 385.5,201.8 L 387.1,223.7 L 377.3,227.2 Z"/>
+          <path class="gastro-region" data-region="banskobystricky" d="M 412.5,407.1 L 400.8,401.6 L 385.9,400.8 L 379.7,403.9 L 373.0,398.1 L 373.8,393.4 L 384.0,385.6 L 383.6,366.4 L 368.0,369.5 L 359.4,376.6 L 345.3,370.3 L 337.9,371.5 L 344.1,362.1 L 344.1,347.2 L 349.6,344.9 L 351.2,335.5 L 334.4,307.0 L 325.4,311.3 L 319.5,324.9 L 307.8,323.4 L 300.0,330.4 L 296.5,329.2 L 305.9,315.2 L 299.6,302.7 L 300.4,282.3 L 291.8,282.3 L 294.1,271.4 L 298.4,267.1 L 311.7,267.9 L 325.8,251.4 L 335.2,255.3 L 340.2,242.4 L 349.6,236.2 L 362.5,219.4 L 371.1,227.2 L 385.9,224.8 L 385.5,201.8 L 395.3,192.8 L 425.8,191.2 L 430.1,193.9 L 429.3,199.4 L 434.4,201.4 L 455.5,186.5 L 493.8,184.2 L 512.5,197.5 L 522.7,193.6 L 530.5,196.7 L 553.9,195.1 L 564.8,201.4 L 586.7,200.6 L 597.7,208.4 L 596.5,219.8 L 588.7,224.4 L 584.0,244.8 L 598.8,254.9 L 604.3,277.6 L 612.1,280.8 L 602.0,308.1 L 609.4,316.3 L 630.9,315.9 L 619.1,326.1 L 616.8,341.0 L 602.7,359.7 L 596.9,365.6 L 585.9,360.1 L 579.7,368.7 L 571.9,364.8 L 568.4,374.6 L 556.2,384.4 L 536.7,389.1 L 532.0,393.8 L 525.8,383.6 L 519.5,381.2 L 512.5,385.9 L 515.2,381.6 L 512.5,377.3 L 503.9,371.1 L 496.1,375.0 L 492.6,364.4 L 485.9,362.5 L 461.3,376.2 L 454.7,400.8 L 450.0,397.7 L 422.7,399.2 L 412.5,407.1 Z"/>
+          <path class="gastro-region" data-region="presovsky" d="M 845.3,249.9 L 814.8,239.7 L 805.5,217.0 L 789.8,215.5 L 786.7,227.2 L 768.0,232.7 L 764.5,228.4 L 766.4,217.8 L 760.2,215.5 L 756.2,218.6 L 750.8,210.8 L 742.2,213.1 L 732.0,210.0 L 722.7,195.1 L 700.0,190.4 L 698.4,185.7 L 690.6,181.8 L 689.1,189.6 L 683.6,190.4 L 676.6,185.0 L 664.1,195.1 L 658.6,185.7 L 653.1,186.5 L 646.9,180.3 L 641.4,179.5 L 638.3,186.5 L 633.6,179.5 L 629.7,179.5 L 609.0,190.8 L 615.2,197.9 L 601.6,210.8 L 586.7,200.6 L 562.5,200.6 L 559.8,198.6 L 566.8,191.6 L 553.5,172.1 L 561.3,168.9 L 566.0,147.8 L 555.5,145.1 L 550.8,138.8 L 544.5,141.2 L 541.0,125.1 L 550.8,115.4 L 557.0,115.4 L 575.8,132.6 L 588.7,99.3 L 607.0,88.8 L 619.5,92.7 L 624.2,75.5 L 628.1,78.6 L 643.8,75.5 L 659.4,84.9 L 666.4,84.9 L 668.8,75.5 L 674.2,79.4 L 686.7,77.0 L 698.0,90.7 L 698.8,97.0 L 707.8,95.0 L 709.0,100.9 L 713.3,101.3 L 716.4,107.5 L 729.7,107.5 L 736.7,96.6 L 748.4,92.7 L 750.4,89.2 L 744.1,80.6 L 746.1,77.8 L 754.7,77.0 L 768.0,85.6 L 778.1,71.6 L 793.0,75.5 L 806.2,84.9 L 837.5,77.0 L 844.5,84.9 L 857.8,91.1 L 862.5,100.5 L 872.7,92.7 L 881.2,101.3 L 889.8,102.8 L 900.4,118.1 L 904.3,136.9 L 909.4,140.4 L 928.1,150.5 L 934.4,149.0 L 937.5,156.8 L 947.7,161.5 L 960.2,159.1 L 966.4,170.1 L 974.2,169.3 L 980.5,174.8 L 990.2,172.8 L 986.3,192.4 L 975.4,197.1 L 966.0,210.4 L 965.2,222.1 L 958.6,228.0 L 937.5,227.2 L 934.4,210.0 L 929.7,210.0 L 916.0,221.3 L 914.8,231.1 L 905.5,232.7 L 886.7,231.1 L 878.1,220.1 L 861.7,214.7 L 857.4,216.6 L 860.5,243.2 L 845.3,249.9 Z"/>
+          <path class="gastro-region" data-region="kosicky" d="M 859.4,361.7 L 841.0,354.3 L 828.5,328.5 L 827.0,315.2 L 824.2,312.4 L 815.6,314.0 L 810.5,301.9 L 795.3,292.1 L 792.2,298.4 L 776.6,298.4 L 774.2,309.3 L 760.9,303.8 L 746.1,308.5 L 739.8,314.8 L 735.2,306.2 L 717.2,306.2 L 710.2,296.8 L 700.8,297.6 L 689.8,289.0 L 637.5,299.9 L 636.3,308.9 L 630.5,315.6 L 607.8,315.6 L 602.0,303.4 L 612.1,280.8 L 604.3,277.6 L 598.8,254.9 L 584.0,244.8 L 588.7,224.4 L 615.2,197.9 L 609.0,190.8 L 629.7,179.5 L 633.6,179.5 L 638.3,186.5 L 641.4,179.5 L 646.9,180.3 L 653.1,186.5 L 658.6,185.7 L 664.1,195.1 L 676.6,185.0 L 687.5,190.4 L 689.5,183.0 L 693.0,182.6 L 700.0,190.4 L 722.7,195.1 L 732.0,210.0 L 742.2,213.1 L 750.8,210.8 L 756.2,218.6 L 760.2,215.5 L 766.4,217.8 L 764.5,228.4 L 768.0,232.7 L 786.7,227.2 L 789.8,215.5 L 805.5,217.0 L 814.8,239.7 L 841.4,249.9 L 860.5,243.2 L 858.6,215.5 L 878.1,220.1 L 886.7,231.1 L 905.5,232.7 L 914.8,231.1 L 916.0,221.3 L 929.7,210.0 L 934.4,210.0 L 937.5,227.2 L 958.2,227.6 L 958.2,244.8 L 950.4,254.9 L 953.5,261.2 L 950.4,274.5 L 936.7,279.6 L 917.6,301.1 L 914.5,348.0 L 907.8,351.5 L 903.9,347.6 L 885.2,348.4 L 872.7,352.3 L 870.3,356.2 L 862.5,353.1 L 859.4,361.7 Z"/>
+          <circle class="gastro-city-dot" cx="51.6" cy="351.1" r="3"/><text class="gastro-city-label" x="56" y="347">Bratislava</text>
+          <circle class="gastro-city-dot" cx="136.7" cy="303.4" r="3"/><text class="gastro-city-label" x="141" y="299">Trnava</text>
+          <circle class="gastro-city-dot" cx="230.5" cy="179.1" r="3"/><text class="gastro-city-label" x="235" y="175">Trenčín</text>
+          <circle class="gastro-city-dot" cx="221.9" cy="326.9" r="3"/><text class="gastro-city-label" x="226" y="323">Nitra</text>
+          <circle class="gastro-city-dot" cx="350.0" cy="101.7" r="3"/><text class="gastro-city-label" x="355" y="97">Žilina</text>
+          <circle class="gastro-city-dot" cx="409.4" cy="230.7" r="3"/><text class="gastro-city-label" x="414" y="227">B. Bystrica</text>
+          <circle class="gastro-city-dot" cx="766.4" cy="186.9" r="3"/><text class="gastro-city-label" x="771" y="183">Prešov</text>
+          <circle class="gastro-city-dot" cx="761.7" cy="259.6" r="3"/><text class="gastro-city-label" x="766" y="256">Košice</text>
+          <text class="gastro-region-count" x="67" y="345" text-anchor="middle">2</text>
+          <text class="gastro-region-count" x="148" y="370" text-anchor="middle">2</text>
+          <text class="gastro-region-count" x="248" y="230" text-anchor="middle">3</text>
+          <text class="gastro-region-count" x="258" y="380" text-anchor="middle">2</text>
+          <text class="gastro-region-count" x="424" y="140" text-anchor="middle">3</text>
+          <text class="gastro-region-count" x="466" y="305" text-anchor="middle">3</text>
+          <text class="gastro-region-count" x="710" y="180" text-anchor="middle">2</text>
+          <text class="gastro-region-count" x="760" y="310" text-anchor="middle">3</text>
+        </svg>
+      </div>
+    </div>
+    <div id="gastroRestSection">
+      <div class="gastro-hint"><div class="gastro-hint-icon">🍽️</div><div>Klikni na kraj v mape a zobrazie sa reštaurácie v danom regióne</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: RÁDIO ===== -->
+<div class="page" id="page-radio">
+<style>
+.radio-pg{padding:4px 0;}
+.radio-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.rtab{padding:7px 16px;border-radius:999px;font-size:12px;font-weight:600;background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:all .15s;}
+.rtab:hover{color:#fff;background:rgba(255,255,255,0.08);}
+.rtab.on{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 4px 12px rgba(225,11,31,0.4);}
+.radio-grid2{display:grid;grid-template-columns:1fr;gap:10px;}
+@media(min-width:600px){.radio-grid2{grid-template-columns:1fr 1fr;}}
+@media(min-width:900px){.radio-grid2{grid-template-columns:repeat(3,1fr);}}
+.scard{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;transition:border-color .15s,transform .15s;cursor:pointer;}
+.scard:hover{border-color:rgba(225,11,31,0.5);transform:translateY(-2px);}
+.scard.on{border-color:var(--red-2);background:rgba(225,11,31,0.06);}
+.scard-top{display:flex;align-items:center;gap:12px;padding:14px;}
+.scard-ico{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--red),#7a0014);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.scard-info{flex:1;min-width:0;}
+.scard-name{font-weight:700;font-size:14px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.scard-desc{font-size:11px;color:var(--muted);}
+.scard-play{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--red-2),var(--red));border:none;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s;}
+.scard-play:hover{transform:scale(1.12);}
+.scard-yt{display:none;width:100%;height:0;padding-bottom:56.25%;position:relative;background:#000;}
+.scard-yt.open{display:block;}
+.scard-yt iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
+.rbar{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:680px;background:rgba(10,10,14,0.97);border:1px solid var(--red);border-radius:20px;padding:10px 16px;display:none;align-items:center;gap:12px;box-shadow:0 -4px 30px rgba(225,11,31,0.3);z-index:45;backdrop-filter:blur(12px);}
+.rbar.on{display:flex;}
+@media(min-width:900px){.rbar{bottom:16px;}}
+.rbar-ico{width:38px;height:38px;border-radius:8px;background:linear-gradient(135deg,var(--red),#7a0014);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.rbar-info{flex:1;min-width:0;}
+.rbar-name{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rbar-desc{font-size:11px;color:var(--muted);}
+.rbar-eq{display:flex;align-items:flex-end;gap:2px;height:18px;flex-shrink:0;}
+.rbar-eq span{width:3px;background:var(--red-2);border-radius:1px;animation:req 0.9s ease infinite alternate;}
+.rbar-eq span:nth-child(2){animation-delay:.25s;}.rbar-eq span:nth-child(3){animation-delay:.45s;}.rbar-eq span:nth-child(4){animation-delay:.1s;}
+@keyframes req{0%{height:3px;}100%{height:16px;}}
+.rbar-stop{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(255,255,255,0.08);border:1px solid var(--line);color:var(--text);cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.rbar-stop:hover{background:rgba(225,11,31,0.2);border-color:var(--red);}
+</style>
+  <div class="section radio-pg">
+    <div class="section-head">
+      <h2 class="section-title">Night<em>Rádio</em> 🎵</h2>
+      <button class="section-link" onclick="showPage('home')">← Späť</button>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Vyber žáner • klikni na stanicu • počúvaj 24/7 cez YouTube Live</p>
+    <div class="radio-tabs" id="radioTabs">
+      <button class="rtab on" onclick="switchRadioTab('pop',this)">🎤 Pop</button>
+      <button class="rtab" onclick="switchRadioTab('rock',this)">🎸 Rock</button>
+      <button class="rtab" onclick="switchRadioTab('hiphop',this)">🎧 Hip-Hop</button>
+      <button class="rtab" onclick="switchRadioTab('hits',this)">🔥 Top Hits</button>
+      <button class="rtab" onclick="switchRadioTab('80s',this)">📻 80s</button>
+      <button class="rtab" onclick="switchRadioTab('90s',this)">💿 90s</button>
+      <button class="rtab" onclick="switchRadioTab('dance',this)">💃 Dance/EDM</button>
+      <button class="rtab" onclick="switchRadioTab('jazz',this)">🎷 Jazz</button>
+      <button class="rtab" onclick="switchRadioTab('classical',this)">🎻 Klasika</button>
+      <button class="rtab" onclick="switchRadioTab('country',this)">🤠 Country</button>
+    </div>
+    <div class="radio-grid2" id="radioGrid"></div>
+  </div>
+  <div class="rbar" id="rbar">
+    <div class="rbar-ico" id="rbarIco">🎵</div>
+    <div class="rbar-info"><div class="rbar-name" id="rbarName">—</div><div class="rbar-desc" id="rbarDesc">—</div></div>
+    <div class="rbar-eq"><span></span><span></span><span></span><span></span></div>
+    <button class="rbar-stop" onclick="stopAllRadio()">⏹ Stop</button>
+  </div>
+</div>
+
+<!-- ===== PAGE: PAUŠÁLY ===== -->
+<div class="page" id="page-pausaly">
+<style>
+.plans-cat{margin-bottom:30px;}
+.plans-cat-title{font-family:var(--display);font-size:clamp(20px,5vw,26px);letter-spacing:0.03em;margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+.plans-cat-sub{font-size:12px;color:var(--muted);margin-bottom:14px;}
+.plans-row{display:grid;grid-template-columns:1fr;gap:12px;}
+@media(min-width:600px){.plans-row.cols2{grid-template-columns:1fr 1fr;}.plans-row.cols3{grid-template-columns:1fr 1fr 1fr;}}
+.pcard{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 16px;display:flex;flex-direction:column;gap:10px;position:relative;transition:transform .2s;}
+.pcard:hover{transform:translateY(-2px);}
+.pcard.star{border-color:var(--red);box-shadow:0 0 0 1px var(--red),0 8px 28px rgba(225,11,31,0.25);background:linear-gradient(160deg,rgba(225,11,31,0.1),var(--bg-2));}
+.pcard.gold{border-color:#f5c842;box-shadow:0 0 0 1px #f5c842,0 8px 24px rgba(245,200,66,0.2);background:linear-gradient(160deg,rgba(245,200,66,0.08),var(--bg-2));}
+.pcard.purple{border-color:#7b1fc8;box-shadow:0 0 0 1px #7b1fc8,0 8px 24px rgba(123,31,200,0.2);background:linear-gradient(160deg,rgba(123,31,200,0.1),var(--bg-2));}
+.pcard-badge{position:absolute;top:-9px;right:14px;font-size:10px;font-weight:800;letter-spacing:0.1em;padding:4px 10px;border-radius:6px;background:var(--red);color:#fff;text-transform:uppercase;}
+.pcard-badge.gold{background:#f5c842;color:#000;}
+.pcard-badge.purple{background:#7b1fc8;}
+.pcard-icon{font-size:32px;line-height:1;}
+.pcard-name{font-family:var(--display);font-size:22px;letter-spacing:0.03em;}
+.pcard-price{font-size:13px;color:var(--muted);}
+.pcard-price b{font-size:24px;color:var(--text);font-weight:800;}
+.pcard-features{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px;flex:1;}
+.pcard-features li{font-size:12px;color:var(--text);display:flex;gap:7px;align-items:flex-start;line-height:1.4;}
+.pcard-features li::before{content:"✓";color:#4caf50;font-weight:700;flex-shrink:0;}
+.pcard-features li.dim{color:var(--muted);}
+.pcard-features li.dim::before{content:"–";color:var(--dim);}
+.pcard-btn{width:100%;padding:11px;border-radius:9px;font-weight:700;font-size:13px;border:1px solid var(--line-strong);color:var(--text);background:rgba(255,255,255,0.04);transition:all .15s;cursor:pointer;margin-top:6px;}
+.pcard-btn:hover{background:rgba(255,255,255,0.1);}
+.pcard.star .pcard-btn{background:linear-gradient(180deg,var(--red-2),var(--red));border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(225,11,31,0.4);}
+.pcard.gold .pcard-btn{background:linear-gradient(180deg,#f5c842,#d4a514);border-color:transparent;color:#000;box-shadow:0 4px 14px rgba(245,200,66,0.4);}
+.pcard.purple .pcard-btn{background:linear-gradient(180deg,#9d3de0,#7b1fc8);border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(123,31,200,0.4);}
+</style>
+  <div class="section">
+    <div class="section-head"><h2 class="section-title">Paušály a <em>plány</em></h2><button class="section-link" onclick="showPage('home')">← Späť</button></div>
+
+    <!-- 🎧 INTERPRETI -->
+    <div class="plans-cat">
+      <div class="plans-cat-title">🎧 <span>Pre interpretov a DJ-ov</span></div>
+      <div class="plans-cat-sub">Buduj fanúšikovskú základňu, dostávaj bookingy</div>
+      <div class="plans-row cols3">
+        <div class="pcard">
+          <div class="pcard-icon">🎵</div>
+          <div class="pcard-name">Artist Free</div>
+          <div class="pcard-price"><b>0 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Profil na NightBase</li>
+            <li>1 odkaz (SoundCloud alebo IG)</li>
+            <li>Žánrové zaradenie</li>
+            <li>Booking email</li>
+            <li class="dim">Bez fotky a bio</li>
+          </ul>
+          <button class="pcard-btn" onclick="showPage('interpreti')">Zaregistrovať sa</button>
+        </div>
+        <div class="pcard">
+          <div class="pcard-icon">🎤</div>
+          <div class="pcard-name">Artist Pro</div>
+          <div class="pcard-price"><b>9 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Plný profil s fotkou a bio</li>
+            <li>SoundCloud + Instagram + ľubovoľný link</li>
+            <li>3× set (SoundCloud + IG link)</li>
+            <li>Booking email cez NightBase</li>
+            <li>Krajové zaradenie</li>
+            <li>Žánrové zaradenie</li>
+          </ul>
+          <button class="pcard-btn">Vybrať Pro</button>
+        </div>
+        <div class="pcard star">
+          <span class="pcard-badge">🔥 TOP</span>
+          <div class="pcard-icon">⭐</div>
+          <div class="pcard-name">Artist Premium</div>
+          <div class="pcard-price"><b>39 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Všetko z Artist Pro</li>
+            <li>Neobmedzené linky (Spotify, YouTube, web)</li>
+            <li>TOP pozícia v zozname interpretov</li>
+            <li>Zvýraznený profil na mape krajov</li>
+            <li>Promo banner na hlavnej strane</li>
+            <li>Štatistiky profilu a dosahu</li>
+            <li>Odporúčanie ku akciám v kraji</li>
+          </ul>
+          <button class="pcard-btn">Vybrať Premium</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🍽️ GASTRO -->
+    <div class="plans-cat">
+      <div class="plans-cat-title">🍽️ <span>Pre reštaurácie a gastro</span></div>
+      <div class="plans-cat-sub">Pritiahni hostí pred a po akciách v okolí</div>
+      <div class="plans-row cols2">
+        <div class="pcard">
+          <div class="pcard-icon">🍴</div>
+          <div class="pcard-name">Gastro Free</div>
+          <div class="pcard-price"><b>0 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Základný profil</li>
+            <li>1 fotka</li>
+            <li>1 link (bistro.sk, web, mapy)</li>
+            <li class="dim">Bez menu karty</li>
+            <li class="dim">Bez TOP pozície</li>
+          </ul>
+          <button class="pcard-btn" onclick="showPage('gastro')">Zaregistrovať sa</button>
+        </div>
+        <div class="pcard star">
+          <span class="pcard-badge">★ ODPORÚČANÉ</span>
+          <div class="pcard-icon">🍽️</div>
+          <div class="pcard-name">Gastro Premium</div>
+          <div class="pcard-price"><b>19 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Neobmedzené fotky</li>
+            <li>Ľubovoľné linky (bistro.sk, Wolt, Bolt Food)</li>
+            <li>TOP odporúčanie v kraji</li>
+            <li>Zobrazenie pri akciách v okolí</li>
+            <li>Menu karta v profile</li>
+            <li>Štatistiky návštevnosti</li>
+            <li>Badge „Odporúčame"</li>
+          </ul>
+          <button class="pcard-btn">Vybrať Premium</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🏨 HOTELY -->
+    <div class="plans-cat">
+      <div class="plans-cat-title">🏨 <span>Pre hotely, penzióny a ubytovne</span></div>
+      <div class="plans-cat-sub">Cieľ: hostia akcií ktorí potrebujú nocľah</div>
+      <div class="plans-row cols2">
+        <div class="pcard">
+          <div class="pcard-icon">🛏️</div>
+          <div class="pcard-name">Hotel Free</div>
+          <div class="pcard-price"><b>0 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Základný profil</li>
+            <li>1 fotka</li>
+            <li>1 telefónne číslo</li>
+            <li class="dim">Bez Booking.com / Airbnb linkov</li>
+            <li class="dim">Bez TOP pozície</li>
+          </ul>
+          <button class="pcard-btn" onclick="showPage('hotely')">Zaregistrovať sa</button>
+        </div>
+        <div class="pcard purple">
+          <span class="pcard-badge purple">★ ODPORÚČANÉ</span>
+          <div class="pcard-icon">🏨</div>
+          <div class="pcard-name">Hotel Premium</div>
+          <div class="pcard-price"><b>19 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Neobmedzené fotky</li>
+            <li>Booking.com / Airbnb / web linky</li>
+            <li>TOP odporúčanie v kraji</li>
+            <li>Zobrazenie pri akciách v okolí</li>
+            <li>Popis, hviezdičky, vybavenie</li>
+            <li>Štatistiky rezervácií</li>
+            <li>Badge „Partner"</li>
+          </ul>
+          <button class="pcard-btn">Vybrať Premium</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🚕 TAXI -->
+    <div class="plans-cat">
+      <div class="plans-cat-title">🚕 <span>Pre taxislužby</span></div>
+      <div class="plans-cat-sub">Buď viditeľný keď ľudia odchádzajú z klubu</div>
+      <div class="plans-row cols2">
+        <div class="pcard">
+          <div class="pcard-icon">🚕</div>
+          <div class="pcard-name">Taxi Free</div>
+          <div class="pcard-price"><b>0 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Názov služby</li>
+            <li>1 telefónne číslo</li>
+            <li>1 fotka</li>
+            <li class="dim">Bez TOP pozície</li>
+            <li class="dim">Bez Bolt linku</li>
+          </ul>
+          <button class="pcard-btn" onclick="showPage('taxi')">Zaregistrovať sa</button>
+        </div>
+        <div class="pcard gold">
+          <span class="pcard-badge gold">⭐ TOP</span>
+          <div class="pcard-icon">🚖</div>
+          <div class="pcard-name">Taxi Premium</div>
+          <div class="pcard-price"><b>19 €</b>/mesiac</div>
+          <ul class="pcard-features">
+            <li>Neobmedzené čísla a fotky</li>
+            <li>Linky (Bolt, web, app)</li>
+            <li>TOP pozícia v kraji</li>
+            <li>Prednosť v rebríčku „Top taxi"</li>
+            <li>Zobrazenie pri akciách v okolí</li>
+            <li>Štatistiky volaní</li>
+          </ul>
+          <button class="pcard-btn">Vybrať Premium</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== PAGE: MONETIZOVANIE ===== -->
+<div class="page" id="page-monetiz">
+  <div class="section">
+    <div class="section-head"><h2 class="section-title"><em>Monetizovanie</em></h2><button class="section-link" onclick="showPage('home')">← Späť</button></div>
+    <div class="mono-grid">
+      <div class="mono-card"><div class="mono-icon">🎟️</div><div><div class="mono-title">Predaj lístkov</div><div class="mono-desc">Predávaj vstupenky priamo cez NightBase. Provízia 3%.</div></div></div>
+      <div class="mono-card"><div class="mono-icon">📣</div><div><div class="mono-title">Sponzorované akcie</div><div class="mono-desc">TOP pozícia v rebríčkoch a na mape.</div></div></div>
+      <div class="mono-card"><div class="mono-icon">🍽️</div><div><div class="mono-title">Gastro Premium</div><div class="mono-desc">Zvýraznený profil reštaurácie pred akciami v kraji.</div></div></div>
+      <div class="mono-card"><div class="mono-icon">🎧</div><div><div class="mono-title">Artist boost</div><div class="mono-desc">Propaguj interpreta v správnych krajoch a žánroch.</div></div></div>
+      <div class="mono-card"><div class="mono-icon">📊</div><div><div class="mono-title">Analytika</div><div class="mono-desc">Sleduj návštevnosť, kliky a záujem fanúšikov.</div></div></div>
+      <div class="mono-card"><div class="mono-icon">📻</div><div><div class="mono-title">Rádio sponzoring</div><div class="mono-desc">Spons. spoty na NightBase rádiu.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: ÚČET ===== -->
+<div class="page" id="page-ucet">
+  <div class="section">
+    <div class="section-head"><h2 class="section-title">Registrácia a <em>správa</em></h2><button class="section-link" onclick="showPage('home')">← Späť</button></div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-title">Zaregistruj sa</div>
+        <div class="form-field"><label class="form-label">Meno / Klub</label><input class="form-input" placeholder="Tvoje meno alebo názov klubu"/></div>
+        <div class="form-field"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="email@example.com"/></div>
+        <div class="form-field"><label class="form-label">Heslo</label><input class="form-input" type="password" placeholder="••••••••"/></div>
+        <div class="form-field"><label class="form-label">Typ účtu</label>
+          <select class="form-input">
+            <option>Návštevník</option>
+            <option>Promotér / Klub</option>
+            <option>Interpret</option>
+            <option>Gastro podnik</option>
+            <option>Taxi</option>
+            <option>Hotel</option>
+          </select>
+        </div>
+        <button class="form-submit">Vytvoriť účet</button>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Admin — schvaľovanie</div>
+        <div class="admin-item"><div class="admin-dot"></div><div class="admin-info"><div class="admin-name">UNDERGROUND BB</div><div class="admin-sub">Klub 77 · Banská Bystrica</div></div><div class="admin-actions"><button class="admin-ok">✓</button><button class="admin-no">✗</button></div></div>
+        <div class="admin-item"><div class="admin-dot"></div><div class="admin-info"><div class="admin-name">POPRAD NIGHT</div><div class="admin-sub">Tatry Klub · Poprad</div></div><div class="admin-actions"><button class="admin-ok">✓</button><button class="admin-no">✗</button></div></div>
+        <div class="admin-item"><div class="admin-dot"></div><div class="admin-info"><div class="admin-name">JAZZ BASEMENT</div><div class="admin-sub">Jazz Club · Košice</div></div><div class="admin-actions"><button class="admin-ok">✓</button><button class="admin-no">✗</button></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: TAXI ===== -->
+<div class="page" id="page-taxi">
+<style>
+.taxi-map-wrap{position:relative;width:100%;background:linear-gradient(180deg,rgba(20,20,26,0.9),rgba(13,13,17,0.98));border:1px solid var(--line-strong);border-radius:var(--r-xl);padding:14px;margin-bottom:18px;box-shadow:var(--shadow-card);}
+.taxi-map-wrap svg{width:100%;display:block;}
+.taxi-region{fill:rgba(50,50,62,0.75);stroke:rgba(255,255,255,0.22);stroke-width:1;stroke-linejoin:round;cursor:pointer;transition:fill .18s;}
+.taxi-region:hover{fill:rgba(245,200,66,0.45);}
+.taxi-region.active{fill:#f5c842;stroke:#fff;stroke-width:1.5;filter:drop-shadow(0 0 8px rgba(245,200,66,0.6));}
+.taxi-city-dot{fill:#fff;stroke:rgba(0,0,0,0.5);stroke-width:0.8;pointer-events:none;}
+.taxi-city-label{fill:rgba(255,255,255,0.85);font-family:var(--sans);font-size:9px;font-weight:700;pointer-events:none;}
+.taxi-region-count{fill:#f5c842;font-family:var(--display);font-size:14px;pointer-events:none;font-weight:bold;}
+.taxi-kraj-title{font-family:var(--display);font-size:clamp(20px,5vw,26px);letter-spacing:0.03em;margin-bottom:14px;}
+.taxi-kraj-title em{font-style:normal;color:#f5c842;}
+.taxi-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+@media(min-width:600px){.taxi-grid{grid-template-columns:1fr 1fr;}}
+@media(min-width:900px){.taxi-grid{grid-template-columns:repeat(3,1fr);}}
+.taxi-card{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px;transition:transform .2s,border-color .2s;}
+.taxi-card:hover{transform:translateY(-2px);border-color:#f5c842;}
+.taxi-card.premium{border-color:#f5c842;box-shadow:0 0 0 1px #f5c842,0 6px 20px rgba(245,200,66,0.15);}
+.taxi-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;}
+.taxi-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#f5c842,#e0a020);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.taxi-info{flex:1;min-width:0;}
+.taxi-name{font-weight:700;font-size:15px;margin-bottom:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.taxi-city{font-size:11px;color:var(--muted);}
+.taxi-rating{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted);margin-top:4px;}
+.taxi-rating b{color:#f5c842;}
+.taxi-call{display:block;width:100%;padding:11px;border-radius:10px;font-weight:700;font-size:14px;background:linear-gradient(180deg,#4caf50,#2e8a3a);color:#fff;text-align:center;border:none;cursor:pointer;text-decoration:none;box-shadow:0 4px 12px rgba(76,175,80,0.3);transition:transform .15s;}
+.taxi-call:hover{transform:translateY(-1px);}
+.taxi-call:active{transform:scale(0.97);}
+.taxi-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:10px;padding:8px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.taxi-meta b{color:var(--text);font-weight:700;}
+.taxi-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.08em;text-transform:uppercase;background:#f5c842;color:#000;}
+.taxi-hint{text-align:center;padding:32px 0;color:var(--muted);font-size:14px;}
+.taxi-hint-icon{font-size:36px;margin-bottom:8px;}
+</style>
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title"><em>Taxi</em> 🚖</h2>
+      <button class="section-link" onclick="showPage('home')">← Späť</button>
+    </div>
+    <div class="taxi-map-wrap">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">Klikni na kraj — zobrazia sa taxi služby v danom regióne</p>
+      <div style="position:relative;">
+        <svg id="taxiMapSvg" viewBox="0 0 1000 488" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <path class="taxi-region" data-region="bratislavsky" d="M 60.2,387.5 L 50.8,381.2 L 44.9,381.6 L 49.6,366.8 L 46.5,356.6 L 54.7,357.0 L 57.4,347.2 L 50.0,343.7 L 44.9,347.2 L 43.8,353.9 L 30.9,344.9 L 29.3,316.7 L 21.5,311.3 L 23.8,303.4 L 12.1,290.1 L 17.6,282.3 L 16.8,272.9 L 34.0,251.8 L 33.6,238.1 L 46.1,244.4 L 50.0,253.8 L 52.3,246.0 L 58.6,246.0 L 64.1,251.4 L 78.1,249.1 L 103.1,229.5 L 106.6,240.1 L 90.2,254.2 L 98.0,262.0 L 90.2,272.9 L 102.7,283.1 L 109.0,298.0 L 116.8,303.4 L 112.9,319.9 L 122.3,326.9 L 113.7,335.5 L 119.9,339.4 L 121.5,348.0 L 106.2,357.8 L 97.7,349.2 L 98.0,360.5 L 83.2,363.7 L 88.7,371.5 L 71.1,385.2 L 60.2,387.5 Z"/>
+          <path class="taxi-region" data-region="trnavsky" d="M 145.3,461.0 L 131.2,444.6 L 121.5,445.0 L 117.6,433.3 L 105.9,428.6 L 97.3,407.4 L 85.2,394.5 L 74.2,393.0 L 70.7,385.6 L 88.7,371.5 L 83.2,366.8 L 85.2,361.7 L 98.0,360.5 L 97.7,349.2 L 106.2,357.8 L 121.5,348.0 L 119.9,339.4 L 113.7,335.5 L 122.3,326.9 L 112.9,319.9 L 116.8,303.4 L 109.0,298.0 L 102.7,283.1 L 90.2,272.9 L 98.0,262.8 L 90.2,254.2 L 99.2,243.6 L 105.1,242.4 L 105.9,232.3 L 101.6,229.5 L 79.7,248.3 L 67.2,251.4 L 58.6,246.0 L 50.0,246.7 L 48.4,242.8 L 47.7,246.0 L 32.4,237.0 L 39.5,226.8 L 41.0,217.4 L 47.3,212.7 L 49.6,201.0 L 66.8,186.9 L 71.1,177.9 L 85.2,170.1 L 97.7,174.8 L 115.2,188.5 L 108.6,197.5 L 119.9,193.2 L 129.3,208.0 L 125.4,219.0 L 133.6,237.4 L 145.3,235.0 L 150.8,227.2 L 166.4,225.6 L 173.4,235.8 L 185.2,235.0 L 209.0,247.9 L 204.7,256.1 L 196.1,253.8 L 188.7,259.6 L 187.9,269.8 L 204.3,287.0 L 187.9,305.8 L 179.3,322.2 L 179.3,341.0 L 183.2,349.6 L 178.1,354.7 L 171.1,352.3 L 170.3,361.7 L 162.1,361.3 L 169.9,373.8 L 168.4,381.6 L 175.8,382.0 L 179.3,387.9 L 179.3,415.3 L 174.6,420.0 L 173.8,429.3 L 159.8,438.7 L 158.2,445.8 L 153.9,449.3 L 150.8,446.2 L 147.3,448.1 L 145.3,461.0 Z"/>
+          <path class="taxi-region" data-region="trenciansky" d="M 273.4,283.5 L 264.1,282.7 L 259.0,269.0 L 248.8,264.3 L 248.8,258.1 L 254.3,251.0 L 240.2,240.1 L 235.2,228.8 L 215.6,221.7 L 216.8,242.4 L 209.4,248.3 L 185.2,235.0 L 173.4,235.8 L 166.4,225.6 L 150.8,227.2 L 145.3,235.0 L 133.6,237.4 L 125.4,219.0 L 128.5,206.5 L 119.5,192.8 L 110.9,197.5 L 107.4,195.5 L 125.8,181.8 L 132.0,181.8 L 136.7,190.4 L 148.4,189.6 L 155.5,182.6 L 171.9,181.0 L 185.9,167.0 L 200.8,167.0 L 210.9,144.3 L 226.6,146.6 L 240.2,137.6 L 259.0,82.1 L 290.6,73.1 L 305.9,105.6 L 323.0,123.6 L 319.9,130.6 L 324.6,140.8 L 323.0,153.3 L 310.2,158.4 L 300.4,168.1 L 314.1,170.9 L 320.3,163.8 L 321.1,167.8 L 339.8,170.1 L 336.3,197.1 L 346.5,204.9 L 348.8,215.8 L 357.4,225.2 L 340.2,242.4 L 335.2,255.3 L 325.8,251.4 L 311.7,267.9 L 289.8,270.2 L 273.4,283.5 Z"/>
+          <path class="taxi-region" data-region="nitriansky" d="M 246.1,476.7 L 208.6,465.7 L 193.0,468.1 L 187.5,464.9 L 177.3,468.1 L 171.1,464.9 L 164.8,468.1 L 144.9,461.4 L 147.3,448.1 L 150.8,446.2 L 153.9,449.3 L 158.2,445.8 L 159.8,438.7 L 173.8,429.3 L 174.6,420.0 L 179.3,415.3 L 179.3,387.9 L 175.8,382.0 L 168.4,381.6 L 169.9,373.8 L 162.1,361.3 L 170.3,361.7 L 171.1,352.3 L 178.1,354.7 L 183.2,349.6 L 179.3,341.0 L 179.3,322.2 L 187.9,305.8 L 204.3,287.0 L 187.9,269.8 L 188.7,259.6 L 196.1,253.8 L 204.7,256.1 L 216.0,244.0 L 215.6,221.7 L 235.2,228.8 L 240.2,240.1 L 254.3,251.0 L 248.8,258.1 L 248.8,264.3 L 259.0,269.0 L 264.1,282.7 L 273.4,283.5 L 286.7,271.8 L 294.1,271.4 L 291.8,282.3 L 300.4,282.3 L 299.6,302.7 L 305.9,315.2 L 296.5,326.9 L 297.7,330.4 L 307.8,323.4 L 319.5,324.9 L 326.6,310.1 L 332.0,307.0 L 336.3,308.9 L 351.2,335.5 L 349.6,344.9 L 344.1,347.2 L 344.1,362.1 L 338.3,371.9 L 345.3,370.3 L 359.4,376.6 L 368.0,369.5 L 385.5,368.3 L 382.4,373.0 L 384.0,385.6 L 373.8,393.4 L 372.7,399.2 L 342.2,403.9 L 338.7,417.6 L 327.0,420.7 L 330.9,429.3 L 327.0,445.0 L 335.5,453.6 L 336.7,460.2 L 322.7,460.2 L 313.3,470.4 L 303.9,473.5 L 271.1,471.2 L 246.1,476.7 Z"/>
+          <path class="taxi-region" data-region="zilinsky" d="M 377.3,227.2 L 371.1,227.2 L 364.1,218.6 L 359.4,222.5 L 354.7,220.9 L 348.8,215.8 L 346.5,204.9 L 336.3,197.1 L 339.8,170.1 L 321.1,167.8 L 320.3,163.8 L 314.1,170.9 L 300.4,168.1 L 310.2,158.4 L 323.0,153.3 L 324.6,140.8 L 319.9,133.7 L 323.0,123.6 L 305.9,105.6 L 291.0,73.5 L 301.2,63.3 L 301.2,57.1 L 307.8,55.9 L 323.8,39.9 L 323.0,32.1 L 326.6,29.3 L 356.2,35.6 L 369.5,30.1 L 389.8,30.9 L 394.9,50.8 L 391.8,58.7 L 395.3,62.2 L 405.5,63.0 L 409.4,59.0 L 432.0,62.2 L 444.1,33.6 L 462.5,32.5 L 468.4,18.8 L 478.9,14.5 L 488.7,22.7 L 489.5,41.4 L 494.9,53.2 L 505.1,56.3 L 502.7,65.7 L 514.1,73.1 L 529.3,68.8 L 527.7,96.2 L 530.9,100.9 L 519.9,118.1 L 530.5,124.7 L 540.6,124.7 L 544.5,141.2 L 550.8,138.8 L 555.5,145.1 L 566.0,147.8 L 562.1,167.4 L 553.5,173.6 L 566.8,193.9 L 560.2,198.2 L 553.9,195.1 L 530.5,196.7 L 525.8,193.6 L 512.5,197.5 L 493.8,184.2 L 455.5,186.5 L 434.4,201.4 L 429.3,199.4 L 430.1,193.9 L 425.8,191.2 L 395.3,192.8 L 385.5,201.8 L 387.1,223.7 L 377.3,227.2 Z"/>
+          <path class="taxi-region" data-region="banskobystricky" d="M 412.5,407.1 L 400.8,401.6 L 385.9,400.8 L 379.7,403.9 L 373.0,398.1 L 373.8,393.4 L 384.0,385.6 L 383.6,366.4 L 368.0,369.5 L 359.4,376.6 L 345.3,370.3 L 337.9,371.5 L 344.1,362.1 L 344.1,347.2 L 349.6,344.9 L 351.2,335.5 L 334.4,307.0 L 325.4,311.3 L 319.5,324.9 L 307.8,323.4 L 300.0,330.4 L 296.5,329.2 L 305.9,315.2 L 299.6,302.7 L 300.4,282.3 L 291.8,282.3 L 294.1,271.4 L 298.4,267.1 L 311.7,267.9 L 325.8,251.4 L 335.2,255.3 L 340.2,242.4 L 349.6,236.2 L 362.5,219.4 L 371.1,227.2 L 385.9,224.8 L 385.5,201.8 L 395.3,192.8 L 425.8,191.2 L 430.1,193.9 L 429.3,199.4 L 434.4,201.4 L 455.5,186.5 L 493.8,184.2 L 512.5,197.5 L 522.7,193.6 L 530.5,196.7 L 553.9,195.1 L 564.8,201.4 L 586.7,200.6 L 597.7,208.4 L 596.5,219.8 L 588.7,224.4 L 584.0,244.8 L 598.8,254.9 L 604.3,277.6 L 612.1,280.8 L 602.0,308.1 L 609.4,316.3 L 630.9,315.9 L 619.1,326.1 L 616.8,341.0 L 602.7,359.7 L 596.9,365.6 L 585.9,360.1 L 579.7,368.7 L 571.9,364.8 L 568.4,374.6 L 556.2,384.4 L 536.7,389.1 L 532.0,393.8 L 525.8,383.6 L 519.5,381.2 L 512.5,385.9 L 515.2,381.6 L 512.5,377.3 L 503.9,371.1 L 496.1,375.0 L 492.6,364.4 L 485.9,362.5 L 461.3,376.2 L 454.7,400.8 L 450.0,397.7 L 422.7,399.2 L 412.5,407.1 Z"/>
+          <path class="taxi-region" data-region="presovsky" d="M 845.3,249.9 L 814.8,239.7 L 805.5,217.0 L 789.8,215.5 L 786.7,227.2 L 768.0,232.7 L 764.5,228.4 L 766.4,217.8 L 760.2,215.5 L 756.2,218.6 L 750.8,210.8 L 742.2,213.1 L 732.0,210.0 L 722.7,195.1 L 700.0,190.4 L 698.4,185.7 L 690.6,181.8 L 689.1,189.6 L 683.6,190.4 L 676.6,185.0 L 664.1,195.1 L 658.6,185.7 L 653.1,186.5 L 646.9,180.3 L 641.4,179.5 L 638.3,186.5 L 633.6,179.5 L 629.7,179.5 L 609.0,190.8 L 615.2,197.9 L 601.6,210.8 L 586.7,200.6 L 562.5,200.6 L 559.8,198.6 L 566.8,191.6 L 553.5,172.1 L 561.3,168.9 L 566.0,147.8 L 555.5,145.1 L 550.8,138.8 L 544.5,141.2 L 541.0,125.1 L 550.8,115.4 L 557.0,115.4 L 575.8,132.6 L 588.7,99.3 L 607.0,88.8 L 619.5,92.7 L 624.2,75.5 L 628.1,78.6 L 643.8,75.5 L 659.4,84.9 L 666.4,84.9 L 668.8,75.5 L 674.2,79.4 L 686.7,77.0 L 698.0,90.7 L 698.8,97.0 L 707.8,95.0 L 709.0,100.9 L 713.3,101.3 L 716.4,107.5 L 729.7,107.5 L 736.7,96.6 L 748.4,92.7 L 750.4,89.2 L 744.1,80.6 L 746.1,77.8 L 754.7,77.0 L 768.0,85.6 L 778.1,71.6 L 793.0,75.5 L 806.2,84.9 L 837.5,77.0 L 844.5,84.9 L 857.8,91.1 L 862.5,100.5 L 872.7,92.7 L 881.2,101.3 L 889.8,102.8 L 900.4,118.1 L 904.3,136.9 L 909.4,140.4 L 928.1,150.5 L 934.4,149.0 L 937.5,156.8 L 947.7,161.5 L 960.2,159.1 L 966.4,170.1 L 974.2,169.3 L 980.5,174.8 L 990.2,172.8 L 986.3,192.4 L 975.4,197.1 L 966.0,210.4 L 965.2,222.1 L 958.6,228.0 L 937.5,227.2 L 934.4,210.0 L 929.7,210.0 L 916.0,221.3 L 914.8,231.1 L 905.5,232.7 L 886.7,231.1 L 878.1,220.1 L 861.7,214.7 L 857.4,216.6 L 860.5,243.2 L 845.3,249.9 Z"/>
+          <path class="taxi-region" data-region="kosicky" d="M 859.4,361.7 L 841.0,354.3 L 828.5,328.5 L 827.0,315.2 L 824.2,312.4 L 815.6,314.0 L 810.5,301.9 L 795.3,292.1 L 792.2,298.4 L 776.6,298.4 L 774.2,309.3 L 760.9,303.8 L 746.1,308.5 L 739.8,314.8 L 735.2,306.2 L 717.2,306.2 L 710.2,296.8 L 700.8,297.6 L 689.8,289.0 L 637.5,299.9 L 636.3,308.9 L 630.5,315.6 L 607.8,315.6 L 602.0,303.4 L 612.1,280.8 L 604.3,277.6 L 598.8,254.9 L 584.0,244.8 L 588.7,224.4 L 615.2,197.9 L 609.0,190.8 L 629.7,179.5 L 633.6,179.5 L 638.3,186.5 L 641.4,179.5 L 646.9,180.3 L 653.1,186.5 L 658.6,185.7 L 664.1,195.1 L 676.6,185.0 L 687.5,190.4 L 689.5,183.0 L 693.0,182.6 L 700.0,190.4 L 722.7,195.1 L 732.0,210.0 L 742.2,213.1 L 750.8,210.8 L 756.2,218.6 L 760.2,215.5 L 766.4,217.8 L 764.5,228.4 L 768.0,232.7 L 786.7,227.2 L 789.8,215.5 L 805.5,217.0 L 814.8,239.7 L 841.4,249.9 L 860.5,243.2 L 858.6,215.5 L 878.1,220.1 L 886.7,231.1 L 905.5,232.7 L 914.8,231.1 L 916.0,221.3 L 929.7,210.0 L 934.4,210.0 L 937.5,227.2 L 958.2,227.6 L 958.2,244.8 L 950.4,254.9 L 953.5,261.2 L 950.4,274.5 L 936.7,279.6 L 917.6,301.1 L 914.5,348.0 L 907.8,351.5 L 903.9,347.6 L 885.2,348.4 L 872.7,352.3 L 870.3,356.2 L 862.5,353.1 L 859.4,361.7 Z"/>
+          <circle class="taxi-city-dot" cx="51.6" cy="351.1" r="3"/><text class="taxi-city-label" x="56" y="347">Bratislava</text>
+          <circle class="taxi-city-dot" cx="136.7" cy="303.4" r="3"/><text class="taxi-city-label" x="141" y="299">Trnava</text>
+          <circle class="taxi-city-dot" cx="230.5" cy="179.1" r="3"/><text class="taxi-city-label" x="235" y="175">Trenčín</text>
+          <circle class="taxi-city-dot" cx="221.9" cy="326.9" r="3"/><text class="taxi-city-label" x="226" y="323">Nitra</text>
+          <circle class="taxi-city-dot" cx="350.0" cy="101.7" r="3"/><text class="taxi-city-label" x="355" y="97">Žilina</text>
+          <circle class="taxi-city-dot" cx="409.4" cy="230.7" r="3"/><text class="taxi-city-label" x="414" y="227">B. Bystrica</text>
+          <circle class="taxi-city-dot" cx="766.4" cy="186.9" r="3"/><text class="taxi-city-label" x="771" y="183">Prešov</text>
+          <circle class="taxi-city-dot" cx="761.7" cy="259.6" r="3"/><text class="taxi-city-label" x="766" y="256">Košice</text>
+          <text class="taxi-region-count" x="67" y="345" text-anchor="middle">3</text>
+          <text class="taxi-region-count" x="148" y="370" text-anchor="middle">2</text>
+          <text class="taxi-region-count" x="248" y="230" text-anchor="middle">2</text>
+          <text class="taxi-region-count" x="258" y="380" text-anchor="middle">2</text>
+          <text class="taxi-region-count" x="424" y="140" text-anchor="middle">2</text>
+          <text class="taxi-region-count" x="466" y="305" text-anchor="middle">2</text>
+          <text class="taxi-region-count" x="710" y="180" text-anchor="middle">2</text>
+          <text class="taxi-region-count" x="760" y="310" text-anchor="middle">3</text>
+        </svg>
+      </div>
+    </div>
+    <div id="taxiListSection">
+      <div class="taxi-hint"><div class="taxi-hint-icon">🚖</div><div>Klikni na kraj v mape a zobrazia sa taxi služby v danom regióne</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: HOTELY ===== -->
+<div class="page" id="page-hotely">
+<style>
+.hotel-map-wrap{position:relative;width:100%;background:linear-gradient(180deg,rgba(20,20,26,0.9),rgba(13,13,17,0.98));border:1px solid var(--line-strong);border-radius:var(--r-xl);padding:14px;margin-bottom:18px;box-shadow:var(--shadow-card);}
+.hotel-map-wrap svg{width:100%;display:block;}
+.hotel-region{fill:rgba(50,50,62,0.75);stroke:rgba(255,255,255,0.22);stroke-width:1;stroke-linejoin:round;cursor:pointer;transition:fill .18s;}
+.hotel-region:hover{fill:rgba(123,31,200,0.45);}
+.hotel-region.active{fill:#7b1fc8;stroke:#fff;stroke-width:1.5;filter:drop-shadow(0 0 8px rgba(123,31,200,0.7));}
+.hotel-city-dot{fill:#fff;stroke:rgba(0,0,0,0.5);stroke-width:0.8;pointer-events:none;}
+.hotel-city-label{fill:rgba(255,255,255,0.85);font-family:var(--sans);font-size:9px;font-weight:700;pointer-events:none;}
+.hotel-region-count{fill:#b27fe0;font-family:var(--display);font-size:14px;pointer-events:none;font-weight:bold;}
+.hotel-kraj-title{font-family:var(--display);font-size:clamp(20px,5vw,26px);letter-spacing:0.03em;margin-bottom:14px;}
+.hotel-kraj-title em{font-style:normal;color:#b27fe0;}
+.hotel-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+@media(min-width:600px){.hotel-grid{grid-template-columns:1fr 1fr;}}
+@media(min-width:900px){.hotel-grid{grid-template-columns:repeat(3,1fr);}}
+.hotel-card{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px;transition:transform .2s,border-color .2s;}
+.hotel-card:hover{transform:translateY(-2px);border-color:#7b1fc8;}
+.hotel-card.premium{border-color:#7b1fc8;box-shadow:0 0 0 1px #7b1fc8,0 6px 20px rgba(123,31,200,0.18);}
+.hotel-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;}
+.hotel-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#7b1fc8,#4a1180);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.hotel-info{flex:1;min-width:0;}
+.hotel-name{font-weight:700;font-size:15px;margin-bottom:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.hotel-city{font-size:11px;color:var(--muted);}
+.hotel-stars{font-size:13px;color:#f5c842;margin-top:2px;}
+.hotel-rating{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted);margin-top:4px;}
+.hotel-rating b{color:#b27fe0;}
+.hotel-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:10px;padding:8px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.hotel-meta b{color:var(--text);font-weight:700;}
+.hotel-price{font-size:13px;color:var(--text);}
+.hotel-price b{color:#b27fe0;font-size:16px;}
+.hotel-call{display:block;width:100%;padding:11px;border-radius:10px;font-weight:700;font-size:14px;background:linear-gradient(180deg,#7b1fc8,#4a1180);color:#fff;text-align:center;border:none;cursor:pointer;text-decoration:none;box-shadow:0 4px 12px rgba(123,31,200,0.4);transition:transform .15s;}
+.hotel-call:hover{transform:translateY(-1px);}
+.hotel-call:active{transform:scale(0.97);}
+.hotel-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.08em;text-transform:uppercase;background:#7b1fc8;color:#fff;}
+.hotel-hint{text-align:center;padding:32px 0;color:var(--muted);font-size:14px;}
+.hotel-hint-icon{font-size:36px;margin-bottom:8px;}
+</style>
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title"><em>Hotely</em> 🏨</h2>
+      <button class="section-link" onclick="showPage('home')">← Späť</button>
+    </div>
+    <div class="hotel-map-wrap">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">Klikni na kraj — zobrazia sa hotely v danom regióne</p>
+      <div style="position:relative;">
+        <svg id="hotelMapSvg" viewBox="0 0 1000 488" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <path class="hotel-region" data-region="bratislavsky" d="M 60.2,387.5 L 50.8,381.2 L 44.9,381.6 L 49.6,366.8 L 46.5,356.6 L 54.7,357.0 L 57.4,347.2 L 50.0,343.7 L 44.9,347.2 L 43.8,353.9 L 30.9,344.9 L 29.3,316.7 L 21.5,311.3 L 23.8,303.4 L 12.1,290.1 L 17.6,282.3 L 16.8,272.9 L 34.0,251.8 L 33.6,238.1 L 46.1,244.4 L 50.0,253.8 L 52.3,246.0 L 58.6,246.0 L 64.1,251.4 L 78.1,249.1 L 103.1,229.5 L 106.6,240.1 L 90.2,254.2 L 98.0,262.0 L 90.2,272.9 L 102.7,283.1 L 109.0,298.0 L 116.8,303.4 L 112.9,319.9 L 122.3,326.9 L 113.7,335.5 L 119.9,339.4 L 121.5,348.0 L 106.2,357.8 L 97.7,349.2 L 98.0,360.5 L 83.2,363.7 L 88.7,371.5 L 71.1,385.2 L 60.2,387.5 Z"/>
+          <path class="hotel-region" data-region="trnavsky" d="M 145.3,461.0 L 131.2,444.6 L 121.5,445.0 L 117.6,433.3 L 105.9,428.6 L 97.3,407.4 L 85.2,394.5 L 74.2,393.0 L 70.7,385.6 L 88.7,371.5 L 83.2,366.8 L 85.2,361.7 L 98.0,360.5 L 97.7,349.2 L 106.2,357.8 L 121.5,348.0 L 119.9,339.4 L 113.7,335.5 L 122.3,326.9 L 112.9,319.9 L 116.8,303.4 L 109.0,298.0 L 102.7,283.1 L 90.2,272.9 L 98.0,262.8 L 90.2,254.2 L 99.2,243.6 L 105.1,242.4 L 105.9,232.3 L 101.6,229.5 L 79.7,248.3 L 67.2,251.4 L 58.6,246.0 L 50.0,246.7 L 48.4,242.8 L 47.7,246.0 L 32.4,237.0 L 39.5,226.8 L 41.0,217.4 L 47.3,212.7 L 49.6,201.0 L 66.8,186.9 L 71.1,177.9 L 85.2,170.1 L 97.7,174.8 L 115.2,188.5 L 108.6,197.5 L 119.9,193.2 L 129.3,208.0 L 125.4,219.0 L 133.6,237.4 L 145.3,235.0 L 150.8,227.2 L 166.4,225.6 L 173.4,235.8 L 185.2,235.0 L 209.0,247.9 L 204.7,256.1 L 196.1,253.8 L 188.7,259.6 L 187.9,269.8 L 204.3,287.0 L 187.9,305.8 L 179.3,322.2 L 179.3,341.0 L 183.2,349.6 L 178.1,354.7 L 171.1,352.3 L 170.3,361.7 L 162.1,361.3 L 169.9,373.8 L 168.4,381.6 L 175.8,382.0 L 179.3,387.9 L 179.3,415.3 L 174.6,420.0 L 173.8,429.3 L 159.8,438.7 L 158.2,445.8 L 153.9,449.3 L 150.8,446.2 L 147.3,448.1 L 145.3,461.0 Z"/>
+          <path class="hotel-region" data-region="trenciansky" d="M 273.4,283.5 L 264.1,282.7 L 259.0,269.0 L 248.8,264.3 L 248.8,258.1 L 254.3,251.0 L 240.2,240.1 L 235.2,228.8 L 215.6,221.7 L 216.8,242.4 L 209.4,248.3 L 185.2,235.0 L 173.4,235.8 L 166.4,225.6 L 150.8,227.2 L 145.3,235.0 L 133.6,237.4 L 125.4,219.0 L 128.5,206.5 L 119.5,192.8 L 110.9,197.5 L 107.4,195.5 L 125.8,181.8 L 132.0,181.8 L 136.7,190.4 L 148.4,189.6 L 155.5,182.6 L 171.9,181.0 L 185.9,167.0 L 200.8,167.0 L 210.9,144.3 L 226.6,146.6 L 240.2,137.6 L 259.0,82.1 L 290.6,73.1 L 305.9,105.6 L 323.0,123.6 L 319.9,130.6 L 324.6,140.8 L 323.0,153.3 L 310.2,158.4 L 300.4,168.1 L 314.1,170.9 L 320.3,163.8 L 321.1,167.8 L 339.8,170.1 L 336.3,197.1 L 346.5,204.9 L 348.8,215.8 L 357.4,225.2 L 340.2,242.4 L 335.2,255.3 L 325.8,251.4 L 311.7,267.9 L 289.8,270.2 L 273.4,283.5 Z"/>
+          <path class="hotel-region" data-region="nitriansky" d="M 246.1,476.7 L 208.6,465.7 L 193.0,468.1 L 187.5,464.9 L 177.3,468.1 L 171.1,464.9 L 164.8,468.1 L 144.9,461.4 L 147.3,448.1 L 150.8,446.2 L 153.9,449.3 L 158.2,445.8 L 159.8,438.7 L 173.8,429.3 L 174.6,420.0 L 179.3,415.3 L 179.3,387.9 L 175.8,382.0 L 168.4,381.6 L 169.9,373.8 L 162.1,361.3 L 170.3,361.7 L 171.1,352.3 L 178.1,354.7 L 183.2,349.6 L 179.3,341.0 L 179.3,322.2 L 187.9,305.8 L 204.3,287.0 L 187.9,269.8 L 188.7,259.6 L 196.1,253.8 L 204.7,256.1 L 216.0,244.0 L 215.6,221.7 L 235.2,228.8 L 240.2,240.1 L 254.3,251.0 L 248.8,258.1 L 248.8,264.3 L 259.0,269.0 L 264.1,282.7 L 273.4,283.5 L 286.7,271.8 L 294.1,271.4 L 291.8,282.3 L 300.4,282.3 L 299.6,302.7 L 305.9,315.2 L 296.5,326.9 L 297.7,330.4 L 307.8,323.4 L 319.5,324.9 L 326.6,310.1 L 332.0,307.0 L 336.3,308.9 L 351.2,335.5 L 349.6,344.9 L 344.1,347.2 L 344.1,362.1 L 338.3,371.9 L 345.3,370.3 L 359.4,376.6 L 368.0,369.5 L 385.5,368.3 L 382.4,373.0 L 384.0,385.6 L 373.8,393.4 L 372.7,399.2 L 342.2,403.9 L 338.7,417.6 L 327.0,420.7 L 330.9,429.3 L 327.0,445.0 L 335.5,453.6 L 336.7,460.2 L 322.7,460.2 L 313.3,470.4 L 303.9,473.5 L 271.1,471.2 L 246.1,476.7 Z"/>
+          <path class="hotel-region" data-region="zilinsky" d="M 377.3,227.2 L 371.1,227.2 L 364.1,218.6 L 359.4,222.5 L 354.7,220.9 L 348.8,215.8 L 346.5,204.9 L 336.3,197.1 L 339.8,170.1 L 321.1,167.8 L 320.3,163.8 L 314.1,170.9 L 300.4,168.1 L 310.2,158.4 L 323.0,153.3 L 324.6,140.8 L 319.9,133.7 L 323.0,123.6 L 305.9,105.6 L 291.0,73.5 L 301.2,63.3 L 301.2,57.1 L 307.8,55.9 L 323.8,39.9 L 323.0,32.1 L 326.6,29.3 L 356.2,35.6 L 369.5,30.1 L 389.8,30.9 L 394.9,50.8 L 391.8,58.7 L 395.3,62.2 L 405.5,63.0 L 409.4,59.0 L 432.0,62.2 L 444.1,33.6 L 462.5,32.5 L 468.4,18.8 L 478.9,14.5 L 488.7,22.7 L 489.5,41.4 L 494.9,53.2 L 505.1,56.3 L 502.7,65.7 L 514.1,73.1 L 529.3,68.8 L 527.7,96.2 L 530.9,100.9 L 519.9,118.1 L 530.5,124.7 L 540.6,124.7 L 544.5,141.2 L 550.8,138.8 L 555.5,145.1 L 566.0,147.8 L 562.1,167.4 L 553.5,173.6 L 566.8,193.9 L 560.2,198.2 L 553.9,195.1 L 530.5,196.7 L 525.8,193.6 L 512.5,197.5 L 493.8,184.2 L 455.5,186.5 L 434.4,201.4 L 429.3,199.4 L 430.1,193.9 L 425.8,191.2 L 395.3,192.8 L 385.5,201.8 L 387.1,223.7 L 377.3,227.2 Z"/>
+          <path class="hotel-region" data-region="banskobystricky" d="M 412.5,407.1 L 400.8,401.6 L 385.9,400.8 L 379.7,403.9 L 373.0,398.1 L 373.8,393.4 L 384.0,385.6 L 383.6,366.4 L 368.0,369.5 L 359.4,376.6 L 345.3,370.3 L 337.9,371.5 L 344.1,362.1 L 344.1,347.2 L 349.6,344.9 L 351.2,335.5 L 334.4,307.0 L 325.4,311.3 L 319.5,324.9 L 307.8,323.4 L 300.0,330.4 L 296.5,329.2 L 305.9,315.2 L 299.6,302.7 L 300.4,282.3 L 291.8,282.3 L 294.1,271.4 L 298.4,267.1 L 311.7,267.9 L 325.8,251.4 L 335.2,255.3 L 340.2,242.4 L 349.6,236.2 L 362.5,219.4 L 371.1,227.2 L 385.9,224.8 L 385.5,201.8 L 395.3,192.8 L 425.8,191.2 L 430.1,193.9 L 429.3,199.4 L 434.4,201.4 L 455.5,186.5 L 493.8,184.2 L 512.5,197.5 L 522.7,193.6 L 530.5,196.7 L 553.9,195.1 L 564.8,201.4 L 586.7,200.6 L 597.7,208.4 L 596.5,219.8 L 588.7,224.4 L 584.0,244.8 L 598.8,254.9 L 604.3,277.6 L 612.1,280.8 L 602.0,308.1 L 609.4,316.3 L 630.9,315.9 L 619.1,326.1 L 616.8,341.0 L 602.7,359.7 L 596.9,365.6 L 585.9,360.1 L 579.7,368.7 L 571.9,364.8 L 568.4,374.6 L 556.2,384.4 L 536.7,389.1 L 532.0,393.8 L 525.8,383.6 L 519.5,381.2 L 512.5,385.9 L 515.2,381.6 L 512.5,377.3 L 503.9,371.1 L 496.1,375.0 L 492.6,364.4 L 485.9,362.5 L 461.3,376.2 L 454.7,400.8 L 450.0,397.7 L 422.7,399.2 L 412.5,407.1 Z"/>
+          <path class="hotel-region" data-region="presovsky" d="M 845.3,249.9 L 814.8,239.7 L 805.5,217.0 L 789.8,215.5 L 786.7,227.2 L 768.0,232.7 L 764.5,228.4 L 766.4,217.8 L 760.2,215.5 L 756.2,218.6 L 750.8,210.8 L 742.2,213.1 L 732.0,210.0 L 722.7,195.1 L 700.0,190.4 L 698.4,185.7 L 690.6,181.8 L 689.1,189.6 L 683.6,190.4 L 676.6,185.0 L 664.1,195.1 L 658.6,185.7 L 653.1,186.5 L 646.9,180.3 L 641.4,179.5 L 638.3,186.5 L 633.6,179.5 L 629.7,179.5 L 609.0,190.8 L 615.2,197.9 L 601.6,210.8 L 586.7,200.6 L 562.5,200.6 L 559.8,198.6 L 566.8,191.6 L 553.5,172.1 L 561.3,168.9 L 566.0,147.8 L 555.5,145.1 L 550.8,138.8 L 544.5,141.2 L 541.0,125.1 L 550.8,115.4 L 557.0,115.4 L 575.8,132.6 L 588.7,99.3 L 607.0,88.8 L 619.5,92.7 L 624.2,75.5 L 628.1,78.6 L 643.8,75.5 L 659.4,84.9 L 666.4,84.9 L 668.8,75.5 L 674.2,79.4 L 686.7,77.0 L 698.0,90.7 L 698.8,97.0 L 707.8,95.0 L 709.0,100.9 L 713.3,101.3 L 716.4,107.5 L 729.7,107.5 L 736.7,96.6 L 748.4,92.7 L 750.4,89.2 L 744.1,80.6 L 746.1,77.8 L 754.7,77.0 L 768.0,85.6 L 778.1,71.6 L 793.0,75.5 L 806.2,84.9 L 837.5,77.0 L 844.5,84.9 L 857.8,91.1 L 862.5,100.5 L 872.7,92.7 L 881.2,101.3 L 889.8,102.8 L 900.4,118.1 L 904.3,136.9 L 909.4,140.4 L 928.1,150.5 L 934.4,149.0 L 937.5,156.8 L 947.7,161.5 L 960.2,159.1 L 966.4,170.1 L 974.2,169.3 L 980.5,174.8 L 990.2,172.8 L 986.3,192.4 L 975.4,197.1 L 966.0,210.4 L 965.2,222.1 L 958.6,228.0 L 937.5,227.2 L 934.4,210.0 L 929.7,210.0 L 916.0,221.3 L 914.8,231.1 L 905.5,232.7 L 886.7,231.1 L 878.1,220.1 L 861.7,214.7 L 857.4,216.6 L 860.5,243.2 L 845.3,249.9 Z"/>
+          <path class="hotel-region" data-region="kosicky" d="M 859.4,361.7 L 841.0,354.3 L 828.5,328.5 L 827.0,315.2 L 824.2,312.4 L 815.6,314.0 L 810.5,301.9 L 795.3,292.1 L 792.2,298.4 L 776.6,298.4 L 774.2,309.3 L 760.9,303.8 L 746.1,308.5 L 739.8,314.8 L 735.2,306.2 L 717.2,306.2 L 710.2,296.8 L 700.8,297.6 L 689.8,289.0 L 637.5,299.9 L 636.3,308.9 L 630.5,315.6 L 607.8,315.6 L 602.0,303.4 L 612.1,280.8 L 604.3,277.6 L 598.8,254.9 L 584.0,244.8 L 588.7,224.4 L 615.2,197.9 L 609.0,190.8 L 629.7,179.5 L 633.6,179.5 L 638.3,186.5 L 641.4,179.5 L 646.9,180.3 L 653.1,186.5 L 658.6,185.7 L 664.1,195.1 L 676.6,185.0 L 687.5,190.4 L 689.5,183.0 L 693.0,182.6 L 700.0,190.4 L 722.7,195.1 L 732.0,210.0 L 742.2,213.1 L 750.8,210.8 L 756.2,218.6 L 760.2,215.5 L 766.4,217.8 L 764.5,228.4 L 768.0,232.7 L 786.7,227.2 L 789.8,215.5 L 805.5,217.0 L 814.8,239.7 L 841.4,249.9 L 860.5,243.2 L 858.6,215.5 L 878.1,220.1 L 886.7,231.1 L 905.5,232.7 L 914.8,231.1 L 916.0,221.3 L 929.7,210.0 L 934.4,210.0 L 937.5,227.2 L 958.2,227.6 L 958.2,244.8 L 950.4,254.9 L 953.5,261.2 L 950.4,274.5 L 936.7,279.6 L 917.6,301.1 L 914.5,348.0 L 907.8,351.5 L 903.9,347.6 L 885.2,348.4 L 872.7,352.3 L 870.3,356.2 L 862.5,353.1 L 859.4,361.7 Z"/>
+          <circle class="hotel-city-dot" cx="51.6" cy="351.1" r="3"/><text class="hotel-city-label" x="56" y="347">Bratislava</text>
+          <circle class="hotel-city-dot" cx="136.7" cy="303.4" r="3"/><text class="hotel-city-label" x="141" y="299">Trnava</text>
+          <circle class="hotel-city-dot" cx="230.5" cy="179.1" r="3"/><text class="hotel-city-label" x="235" y="175">Trenčín</text>
+          <circle class="hotel-city-dot" cx="221.9" cy="326.9" r="3"/><text class="hotel-city-label" x="226" y="323">Nitra</text>
+          <circle class="hotel-city-dot" cx="350.0" cy="101.7" r="3"/><text class="hotel-city-label" x="355" y="97">Žilina</text>
+          <circle class="hotel-city-dot" cx="409.4" cy="230.7" r="3"/><text class="hotel-city-label" x="414" y="227">B. Bystrica</text>
+          <circle class="hotel-city-dot" cx="766.4" cy="186.9" r="3"/><text class="hotel-city-label" x="771" y="183">Prešov</text>
+          <circle class="hotel-city-dot" cx="761.7" cy="259.6" r="3"/><text class="hotel-city-label" x="766" y="256">Košice</text>
+          <text class="hotel-region-count" x="67" y="345" text-anchor="middle">3</text>
+          <text class="hotel-region-count" x="148" y="370" text-anchor="middle">2</text>
+          <text class="hotel-region-count" x="248" y="230" text-anchor="middle">2</text>
+          <text class="hotel-region-count" x="258" y="380" text-anchor="middle">2</text>
+          <text class="hotel-region-count" x="424" y="140" text-anchor="middle">3</text>
+          <text class="hotel-region-count" x="466" y="305" text-anchor="middle">2</text>
+          <text class="hotel-region-count" x="710" y="180" text-anchor="middle">2</text>
+          <text class="hotel-region-count" x="760" y="310" text-anchor="middle">3</text>
+        </svg>
+      </div>
+    </div>
+    <div id="hotelListSection">
+      <div class="hotel-hint"><div class="hotel-hint-icon">🏨</div><div>Klikni na kraj v mape a zobrazia sa hotely v danom regióne</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: BILIARD ===== -->
+<div class="page" id="page-billiard">
+<style>
+.bil-wrap{padding:10px 0;}
+.bil-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap;}
+.bil-title{font-family:var(--display);font-size:clamp(22px,6vw,34px);letter-spacing:0.03em;}
+.bil-title em{font-style:normal;color:var(--red-2);}
+.bil-canvas-box{width:100%;background:#0a1a0a;border-radius:var(--r-lg);border:2px solid #3a2008;overflow:hidden;position:relative;touch-action:none;user-select:none;}
+#billiardCanvas{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair;}
+.bil-game{display:flex;flex-direction:column;gap:12px;}
+@media(min-width:700px){.bil-game{flex-direction:row;align-items:flex-start;}}
+.bil-sidebar{display:flex;flex-direction:column;gap:10px;}
+@media(min-width:700px){.bil-sidebar{width:260px;flex-shrink:0;}}
+.bil-power-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg-2);border-radius:8px;border:1px solid var(--line);}
+.bil-power-label{font-size:12px;color:var(--muted);white-space:nowrap;}
+.bil-power-bar{flex:1;height:10px;border-radius:5px;background:var(--bg-3);overflow:hidden;}
+.bil-power-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#4caf50,#ff9800,#e10b1f);transition:width .05s;}
+.bil-power-val{font-size:12px;font-weight:700;color:var(--red-2);min-width:36px;text-align:right;}
+.bil-info{font-size:12px;color:var(--muted);text-align:center;padding:6px;min-height:22px;}
+.bil-controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.bil-btn{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid var(--line-strong);color:var(--text);cursor:pointer;transition:all .15s;}
+.bil-btn:hover{background:rgba(255,255,255,0.12);}
+.bil-btn.red{background:rgba(225,11,31,0.15);border-color:rgba(225,11,31,0.4);color:var(--red-2);}
+.bil-btn.red:hover{background:rgba(225,11,31,0.3);}
+.bil-panel{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-md);padding:14px;}
+.bil-panel-title{font-family:var(--display);font-size:14px;letter-spacing:0.04em;color:var(--muted);margin-bottom:10px;}
+.bil-player-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);}
+.bil-player-row:last-child{border-bottom:none;}
+.bil-player-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.12);flex-shrink:0;transition:background .3s;}
+.bil-player-dot.on{background:var(--red-2);box-shadow:0 0 8px var(--red-2);}
+.bil-player-name{flex:1;font-weight:600;font-size:13px;}
+.bil-player-score{font-family:var(--display);font-size:22px;color:var(--red-2);}
+.bil-add-row{display:flex;gap:6px;}
+.bil-add-input{flex:1;padding:9px 10px;background:var(--bg-3);border:1px solid var(--line-strong);border-radius:7px;color:var(--text);font-size:13px;outline:none;}
+.bil-add-input:focus{border-color:var(--red);}
+.bil-add-btn{padding:9px 14px;background:var(--red);color:#fff;border:none;border-radius:7px;font-weight:700;font-size:13px;cursor:pointer;}
+.lb-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:12px;}
+.lb-row:last-child{border-bottom:none;}
+.lb-pos{font-family:var(--display);font-size:15px;color:var(--dim);width:18px;text-align:center;}
+.lb-pos.g{color:#f5c842;}
+.lb-name{flex:1;font-weight:600;}
+.lb-pts{font-weight:700;color:var(--red-2);}
+</style>
+  <div class="bil-wrap">
+    <div class="bil-topbar">
+      <div class="bil-title">🎱 Night<em>Biliard</em></div>
+      <button class="section-link" onclick="showPage('home')">← Späť</button>
+    </div>
+    <div class="bil-game">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;">
+        <div class="bil-canvas-box"><canvas id="billiardCanvas"></canvas></div>
+        <div class="bil-power-row">
+          <span class="bil-power-label">Sila</span>
+          <div class="bil-power-bar"><div class="bil-power-fill" id="bilPowerFill" style="width:0%"></div></div>
+          <span class="bil-power-val" id="bilPowerVal">0%</span>
+        </div>
+        <div class="bil-info" id="bilInfo">Pridaj hráčov → potom ťahaj od bielej gule</div>
+        <div class="bil-controls">
+          <button class="bil-btn" id="bilBtnNext">⏭ Ďalší hráč</button>
+          <button class="bil-btn red" id="bilBtnReset">🔄 Nová hra</button>
+        </div>
+      </div>
+      <div class="bil-sidebar">
+        <div class="bil-panel"><div class="bil-panel-title">SKÓRE HRÁČOV</div><div id="bilScores"><div style="color:var(--dim);font-size:12px;">Pridaj hráčov dolu ↓</div></div></div>
+        <div class="bil-panel"><div class="bil-panel-title">PRIDAŤ HRÁČA</div><div class="bil-add-row"><input class="bil-add-input" id="bilPlayerInput" placeholder="Meno hráča" maxlength="20"/><button class="bil-add-btn" id="bilBtnAdd">+</button></div></div>
+        <div class="bil-panel"><div class="bil-panel-title">🏆 TABUĽKA SLÁVY</div><div id="bilLeaderboard"><div style="color:var(--dim);font-size:12px;">Zatiaľ žiadne výsledky</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<!-- Mobile bottom nav -->
+<nav class="mobile-nav">
+  <button class="mobile-nav-item active" onclick="showPage('home',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="3,11 12,2 21,11"/><polyline points="3,11 3,20 9,20 9,14 15,14 15,20 21,20 21,11"/></svg>
+    Mapa
+  </button>
+  <button class="mobile-nav-item" onclick="showPage('taxi',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M7 17v-5l2-5h6l2 5v5M9 7V5h6v2"/><circle cx="7.5" cy="17.5" r="1.5"/><circle cx="16.5" cy="17.5" r="1.5"/></svg>
+    Taxi
+  </button>
+  <button class="mobile-nav-item" onclick="showPage('hotely',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21V12h6v9"/><path d="M3 21h18"/></svg>
+    Hotely
+  </button>
+  <button class="mobile-nav-item" onclick="showPage('interpreti',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+    Interpreti
+  </button>
+  <button class="mobile-nav-item" onclick="showPage('gastro',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+    Gastro
+  </button>
+  <button class="mobile-nav-item" onclick="showPage('rebricky',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+    Rebríčky
+  </button>
+</nav>
+
+<!-- Bottom sheet -->
+<div class="sheet-mask" id="sheetMask"></div>
+<aside class="sheet" id="regionSheet" aria-hidden="true" role="dialog">
+  <div class="sheet-handle"></div>
+  <h3 id="sheetTitle">Bratislavský kraj</h3>
+  <p class="sub">Akcie vo vybranom kraji</p>
+  <div class="sheet-events" id="sheetEvents"></div>
+</aside>
+
+<!-- PWA Install button (Android/Chrome) -->
+<button class="pwa-install" id="pwaInstallBtn" onclick="installPWA()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+  Pridať na plochu
+  <span class="pwa-install-close" onclick="event.stopPropagation();dismissPWA()">×</span>
+</button>
+
+<!-- iOS Safari install hint -->
+<div class="ios-hint" id="iosHint">
+  <button class="ios-hint-close" onclick="dismissIOSHint()">×</button>
+  <div class="ios-hint-title">📱 Nainštaluj NightBase na plochu</div>
+  Klikni na <b>Zdieľať</b> ikonu (⬆️) v Safari a vyber <b>"Pridať na plochu"</b>.
+</div>
+
+<script>
+function showPage(id, navEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pg = document.getElementById('page-' + id);
+  if (pg) pg.classList.add('active');
+  document.querySelectorAll('.htab').forEach(t => t.classList.remove('active'));
+  if (navEl) {
+    document.querySelectorAll('.mobile-nav-item').forEach(x => x.classList.remove('active'));
+    navEl.classList.add('active');
+  }
+  window.scrollTo(0, 0);
+  if (id === 'gastro') { setTimeout(initGastroMap, 80); }
+  if (id === 'taxi')   { setTimeout(initTaxiMap, 80); }
+  if (id === 'hotely') { setTimeout(initHotelMap, 80); }
+  if (id === 'rebricky'){ setTimeout(()=>{ if(typeof showRankCategory==='function') showRankCategory('eventy'); }, 80); }
+  if (id === 'interpreti'){ setTimeout(()=>{ if(typeof renderArtists==='function') renderArtists('all'); }, 80); }
+  if (id === 'radio')  { setTimeout(() => { if(typeof initRadioPage==='function') initRadioPage(); }, 80); }
+}
+
+const REGIONS = {
+  bratislavsky:{name:"Bratislavský kraj",events:[{t:"NIGHTSHIFT VOL. 14",m:"Subclub · 10. máj · 22:00",p:"15 €"},{t:"RED ROOM SESSIONS",m:"KC Dunaj · 17. máj · 21:00",p:"12 €"},{t:"AFTERHOURS BA",m:"Fuga · 24. máj · 23:00",p:"10 €"}]},
+  trnavsky:{name:"Trnavský kraj",events:[{t:"OLD TOWN BEATS",m:"Malý Berlín · 15. máj · 21:00",p:"8 €"},{t:"TT TECHNO NITE",m:"Skladisko · 22. máj · 22:00",p:"10 €"}]},
+  trenciansky:{name:"Trenčiansky kraj",events:[{t:"BUNKER PARTY",m:"ArtKlub · 12. máj · 21:30",p:"7 €"},{t:"DUBNICA NIGHT",m:"MsKS · 19. máj · 20:00",p:"5 €"}]},
+  nitriansky:{name:"Nitriansky kraj",events:[{t:"CASTLE RAVE",m:"Hidepark · 18. máj · 22:00",p:"9 €"},{t:"STUDENT FEST",m:"UKF Aula · 25. máj · 19:00",p:"Free"}]},
+  zilinsky:{name:"Žilinský kraj",events:[{t:"BASS RIOT",m:"Stanica · 24. máj · 22:30",p:"10 €"},{t:"ZA HOUSE NIGHT",m:"Smer Klub · 31. máj · 21:00",p:"8 €"}]},
+  banskobystricky:{name:"Banskobystrický kraj",events:[{t:"UNDERGROUND BB",m:"Klub 77 · 16. máj · 22:00",p:"8 €"},{t:"TÁLE FESTIVAL",m:"Tále resort · 30. máj · 18:00",p:"25 €"}]},
+  presovsky:{name:"Prešovský kraj",events:[{t:"EAST SIDE FEST",m:"Wave · 17. máj · 21:00",p:"9 €"},{t:"POPRAD NIGHT",m:"Tatry Klub · 24. máj · 20:00",p:"12 €"}]},
+  kosicky:{name:"Košický kraj",events:[{t:"STREET KINGS NITE",m:"Tabačka · 31. máj · 21:00",p:"14 €"},{t:"KE TECHNO",m:"Collosseum · 7. jún · 22:00",p:"11 €"},{t:"JAZZ BASEMENT",m:"Jazz Club · 14. jún · 20:00",p:"8 €"}]}
+};
+const sheet=document.getElementById("regionSheet"),mask=document.getElementById("sheetMask"),sheetTitle=document.getElementById("sheetTitle"),sheetEvents=document.getElementById("sheetEvents");
+function openRegion(key){const data=REGIONS[key];if(!data)return;sheetTitle.textContent=data.name;sheetEvents.innerHTML=data.events.length?data.events.map(e=>`<div class="sheet-event"><div class="sheet-event-thumb" style="background-image:linear-gradient(135deg,rgba(225,11,31,0.5),rgba(15,5,8,0.85)),url('party-people-bg.png');background-size:cover;"></div><div class="sheet-event-info"><h4>${e.t}</h4><div class="meta">${e.m}</div><div class="price">${e.p}</div></div></div>`).join(""):'<div class="sheet-empty">V tomto kraji zatiaľ nie sú akcie.</div>';sheet.classList.add("open");mask.classList.add("open");sheet.setAttribute("aria-hidden","false");}
+function closeSheet(){sheet.classList.remove("open");mask.classList.remove("open");sheet.setAttribute("aria-hidden","true");}
+document.querySelectorAll(".region").forEach(el=>{el.addEventListener("click",()=>{document.querySelectorAll(".region").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".legend-chip").forEach(x=>x.classList.remove("active"));el.classList.add("active");const k=el.getAttribute("data-region");const chip=document.querySelector(`.legend-chip[data-region="${k}"]`);if(chip)chip.classList.add("active");openRegion(k);});});
+document.querySelectorAll(".legend-chip").forEach(el=>{el.addEventListener("click",()=>{document.querySelectorAll(".legend-chip").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".region").forEach(x=>x.classList.remove("active"));el.classList.add("active");const k=el.getAttribute("data-region");const reg=document.querySelector(`.region[data-region="${k}"]`);if(reg)reg.classList.add("active");openRegion(k);});});
+mask.addEventListener("click",closeSheet);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet();});
+document.querySelectorAll(".rank-tab").forEach(tab=>{tab.addEventListener("click",()=>{document.querySelectorAll(".rank-tab").forEach(t=>t.classList.remove("active"));tab.classList.add("active");});});
+
+// ===== BILLIARD =====
+(function(){
+  const canvas=document.getElementById('billiardCanvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const W=800,H=440;canvas.width=W;canvas.height=H;
+  const PX=44,PY=44,TW=W-PX*2,TH=H-PY*2,BR=18,PR=16,FRICTION=0.988,MIN_VEL=0.06;
+  const POCKETS=[{x:PX,y:PY},{x:PX+TW/2,y:PY-5},{x:PX+TW,y:PY},{x:PX,y:PY+TH},{x:PX+TW/2,y:PY+TH+5},{x:PX+TW,y:PY+TH}];
+  const COLORS=['#f5f5f5','#f5c842','#1a55c8','#c41010','#7b1fc8','#e06b10','#1c8a3c','#6b1a1a','#111111','#f5c842','#1a55c8','#c41010','#7b1fc8','#e06b10','#1c8a3c','#6b1a1a'];
+  let balls=[],players=[],currentPlayer=0,aimStart=null,aimCurrent=null,isAiming=false,power=0,gameStarted=false,pocketedThisTurn=0;
+  let lb=[];try{lb=JSON.parse(localStorage.getItem('bil_lb')||'[]');}catch(e){}
+  function initBalls(){balls=[];balls.push({x:PX+TW*0.25,y:PY+TH/2,vx:0,vy:0,r:BR,color:COLORS[0],num:0,pocketed:false,stripe:false});const rx=PX+TW*0.65,ry=PY+TH/2;[[8],[1,9],[6,2,10],[11,7,3,4],[12,5,13,14,15]].forEach((row,ri)=>{row.forEach((num,ci)=>{balls.push({x:rx+ri*(BR*2+0.5),y:ry+(ci-(row.length-1)/2)*(BR*2+0.5),vx:0,vy:0,r:BR,color:COLORS[num],num,pocketed:false,stripe:num>8});});});}
+  function allStopped(){return balls.every(b=>b.pocketed||(Math.abs(b.vx)<MIN_VEL&&Math.abs(b.vy)<MIN_VEL));}
+  function getPos(e){const rect=canvas.getBoundingClientRect();const sx=W/rect.width,sy=H/rect.height;const src=e.changedTouches?e.changedTouches[0]:(e.touches?e.touches[0]:e);return{x:(src.clientX-rect.left)*sx,y:(src.clientY-rect.top)*sy};}
+  function startAim(e){e.preventDefault();if(!gameStarted||!allStopped())return;const cue=balls.find(b=>b.num===0&&!b.pocketed);if(!cue)return;isAiming=true;aimStart=getPos(e);aimCurrent=aimStart;}
+  function moveAim(e){e.preventDefault();if(!isAiming)return;aimCurrent=getPos(e);const dx=aimStart.x-aimCurrent.x,dy=aimStart.y-aimCurrent.y;power=Math.min(Math.hypot(dx,dy)/160,1);const pf=document.getElementById('bilPowerFill'),pv=document.getElementById('bilPowerVal');if(pf)pf.style.width=(power*100)+'%';if(pv)pv.textContent=Math.round(power*100)+'%';}
+  function endAim(e){e.preventDefault();if(!isAiming)return;isAiming=false;const pos=getPos(e);const cue=balls.find(b=>b.num===0&&!b.pocketed);if(!cue||power<0.02){power=0;return;}const dx=aimStart.x-pos.x,dy=aimStart.y-pos.y,dist=Math.hypot(dx,dy);if(dist<4){power=0;return;}const spd=power*24;cue.vx=(dx/dist)*spd;cue.vy=(dy/dist)*spd;pocketedThisTurn=0;power=0;const pf=document.getElementById('bilPowerFill'),pv=document.getElementById('bilPowerVal');if(pf)pf.style.width='0%';if(pv)pv.textContent='0%';setInfo('⚡ Výstrel!');}
+  canvas.addEventListener('touchstart',startAim,{passive:false});canvas.addEventListener('touchmove',moveAim,{passive:false});canvas.addEventListener('touchend',endAim,{passive:false});
+  canvas.addEventListener('mousedown',startAim);canvas.addEventListener('mousemove',moveAim);canvas.addEventListener('mouseup',endAim);
+  function physics(){balls.forEach(b=>{if(b.pocketed)return;b.x+=b.vx;b.y+=b.vy;b.vx*=FRICTION;b.vy*=FRICTION;if(Math.abs(b.vx)<MIN_VEL)b.vx=0;if(Math.abs(b.vy)<MIN_VEL)b.vy=0;const l=PX+b.r,r=PX+TW-b.r,t=PY+b.r,bo=PY+TH-b.r;if(b.x<l){b.x=l;b.vx=Math.abs(b.vx)*0.78;}if(b.x>r){b.x=r;b.vx=-Math.abs(b.vx)*0.78;}if(b.y<t){b.y=t;b.vy=Math.abs(b.vy)*0.78;}if(b.y>bo){b.y=bo;b.vy=-Math.abs(b.vy)*0.78;}POCKETS.forEach(p=>{if(Math.hypot(b.x-p.x,b.y-p.y)<PR+b.r*0.6){b.pocketed=true;if(b.num===0){setTimeout(()=>{b.pocketed=false;b.x=PX+TW*0.2;b.y=PY+TH/2;b.vx=0;b.vy=0;},600);setInfo('❌ Scratch! Biela guľa v diere.');}else{pocketedThisTurn++;if(players.length>0){players[currentPlayer].score++;renderScores();setInfo('✅ Guľa č.'+b.num+'! +1 pre '+players[currentPlayer].name);}}}});});for(let i=0;i<balls.length;i++){for(let j=i+1;j<balls.length;j++){const a=balls[i],b=balls[j];if(a.pocketed||b.pocketed)continue;const dx=b.x-a.x,dy=b.y-a.y,dist=Math.hypot(dx,dy),minD=a.r+b.r-1;if(dist<minD&&dist>0.01){const nx=dx/dist,ny=dy/dist,ov=(minD-dist)/2;a.x-=nx*ov;a.y-=ny*ov;b.x+=nx*ov;b.y+=ny*ov;const dv=(a.vx-b.vx)*nx+(a.vy-b.vy)*ny;if(dv>0){a.vx-=dv*nx;a.vy-=dv*ny;b.vx+=dv*nx;b.vy+=dv*ny;}}}}}
+  let prevStopped=true;
+  function checkTurn(){const stopped=allStopped();if(prevStopped!==stopped&&stopped&&players.length>0){if(pocketedThisTurn===0)setInfo('🎯 Rad: '+players[currentPlayer].name+' — ťahaj od bielej gule');else setInfo('🎯 Stále ty: '+players[currentPlayer].name+' — super!');}prevStopped=stopped;}
+  function drawTable(){const railGrad=ctx.createLinearGradient(0,0,0,H);railGrad.addColorStop(0,'#5a2a0a');railGrad.addColorStop(0.5,'#7a3a12');railGrad.addColorStop(1,'#5a2a0a');ctx.fillStyle=railGrad;ctx.fillRect(0,0,W,H);const feltGrad=ctx.createRadialGradient(W/2,H/2,20,W/2,H/2,W/2);feltGrad.addColorStop(0,'#1e6a1e');feltGrad.addColorStop(1,'#0f3e0f');ctx.fillStyle=feltGrad;ctx.fillRect(PX,PY,TW,TH);ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=1;ctx.strokeRect(PX,PY,TW,TH);ctx.setLineDash([6,6]);ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.beginPath();ctx.moveTo(W/2,PY);ctx.lineTo(W/2,PY+TH);ctx.stroke();ctx.beginPath();ctx.arc(W/2,PY+TH/2,55,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);const bx=PX+TW*0.25;ctx.beginPath();ctx.moveTo(bx,PY);ctx.lineTo(bx,PY+TH);ctx.stroke();ctx.beginPath();ctx.arc(bx,PY+TH/2,45,Math.PI/2,Math.PI*1.5);ctx.stroke();POCKETS.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,PR+3,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fill();const pg=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,PR);pg.addColorStop(0,'#000');pg.addColorStop(1,'#1a0800');ctx.beginPath();ctx.arc(p.x,p.y,PR,0,Math.PI*2);ctx.fillStyle=pg;ctx.fill();ctx.strokeStyle='rgba(140,70,15,0.9)';ctx.lineWidth=2;ctx.stroke();});}
+  function drawBall(b){if(b.pocketed)return;ctx.beginPath();ctx.arc(b.x+2,b.y+3,b.r,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,0.3)';ctx.fill();if(b.stripe){ctx.save();ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.clip();ctx.fillStyle='#f0f0f0';ctx.fillRect(b.x-b.r,b.y-b.r,b.r*2,b.r*2);ctx.fillStyle=b.color;ctx.fillRect(b.x-b.r,b.y-b.r*0.4,b.r*2,b.r*0.8);ctx.restore();ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.strokeStyle='rgba(0,0,0,0.25)';ctx.lineWidth=0.8;ctx.stroke();}else{const g=ctx.createRadialGradient(b.x-b.r*0.35,b.y-b.r*0.35,b.r*0.05,b.x,b.y,b.r);g.addColorStop(0,'rgba(255,255,255,0.45)');g.addColorStop(0.4,b.color);g.addColorStop(1,'rgba(0,0,0,0.45)');ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.strokeStyle='rgba(0,0,0,0.2)';ctx.lineWidth=0.8;ctx.stroke();}if(b.num>0){const nr=b.r*0.46;ctx.beginPath();ctx.arc(b.x,b.y,nr,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.92)';ctx.fill();ctx.fillStyle='#111';ctx.font='bold '+(nr*1.2)+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(b.num,b.x,b.y);}ctx.beginPath();ctx.arc(b.x-b.r*0.3,b.y-b.r*0.32,b.r*0.22,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.28)';ctx.fill();}
+  function drawAimLine(){if(!isAiming||!aimStart||!aimCurrent)return;const cue=balls.find(b=>b.num===0&&!b.pocketed);if(!cue)return;const dx=aimStart.x-aimCurrent.x,dy=aimStart.y-aimCurrent.y,dist=Math.hypot(dx,dy);if(dist<4)return;const nx=dx/dist,ny=dy/dist;ctx.save();ctx.setLineDash([8,8]);ctx.strokeStyle='rgba(255,255,255,0.6)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cue.x,cue.y);ctx.lineTo(cue.x+nx*130,cue.y+ny*130);ctx.stroke();ctx.setLineDash([]);const alpha=0.3+power*0.7;ctx.strokeStyle='rgba(225,11,31,'+alpha+')';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(aimStart.x,aimStart.y);ctx.lineTo(aimCurrent.x,aimCurrent.y);ctx.stroke();ctx.restore();}
+  function loop(){if(!allStopped())physics();checkTurn();ctx.clearRect(0,0,W,H);drawTable();balls.forEach(drawBall);drawAimLine();requestAnimationFrame(loop);}
+  function setInfo(msg){const el=document.getElementById('bilInfo');if(el)el.textContent=msg;}
+  function renderScores(){const el=document.getElementById('bilScores');if(!el)return;if(!players.length){el.innerHTML='<div style="color:var(--dim);font-size:12px;">Pridaj hráčov dolu ↓</div>';return;}el.innerHTML=players.map((p,i)=>'<div class="bil-player-row"><div class="bil-player-dot '+(i===currentPlayer?'on':'')+'"></div><div class="bil-player-name">'+p.name+'</div><div class="bil-player-score">'+p.score+'</div></div>').join('');}
+  function renderLB(){const el=document.getElementById('bilLeaderboard');if(!el)return;const s=[...lb].sort((a,b)=>b.score-a.score).slice(0,8);if(!s.length){el.innerHTML='<div style="color:var(--dim);font-size:12px;">Zatiaľ žiadne výsledky</div>';return;}el.innerHTML=s.map((e,i)=>'<div class="lb-row"><div class="lb-pos '+(i===0?'g':'')+'">'+( i+1)+'</div><div class="lb-name">'+e.name+'</div><div class="lb-pts">'+e.score+' b</div></div>').join('');}
+  function saveLB(){players.forEach(p=>{if(!p.score)return;const ex=lb.find(e=>e.name===p.name);if(ex){if(p.score>ex.score)ex.score=p.score;}else lb.push({name:p.name,score:p.score});});try{localStorage.setItem('bil_lb',JSON.stringify(lb));}catch(e){}renderLB();}
+  document.getElementById('bilBtnAdd')?.addEventListener('click',()=>{const inp=document.getElementById('bilPlayerInput');const name=(inp?.value||'').trim();if(!name)return;players.push({name,score:0});inp.value='';gameStarted=true;currentPlayer=players.length-1;renderScores();setInfo('🎱 '+name+' pridaný! Rad: '+players[currentPlayer].name+' — ťahaj od bielej gule');});
+  document.getElementById('bilPlayerInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('bilBtnAdd')?.click();});
+  document.getElementById('bilBtnNext')?.addEventListener('click',()=>{if(!players.length){setInfo('Najprv pridaj hráčov!');return;}currentPlayer=(currentPlayer+1)%players.length;renderScores();setInfo('🎯 Rad: '+players[currentPlayer].name);});
+  document.getElementById('bilBtnReset')?.addEventListener('click',()=>{saveLB();players.forEach(p=>p.score=0);currentPlayer=0;pocketedThisTurn=0;power=0;initBalls();renderScores();const pf=document.getElementById('bilPowerFill'),pv=document.getElementById('bilPowerVal');if(pf)pf.style.width='0%';if(pv)pv.textContent='0%';setInfo('🎱 Nová hra! Ťahaj od bielej gule.');});
+  initBalls();renderScores();renderLB();setInfo('Pridaj hráčov → potom ťahaj od bielej gule pre výstrel');loop();
+})();
+
+// ===== GASTRO =====
+(function(){
+  const GASTRO_DATA={bratislavsky:{name:'Bratislavský kraj',restaurants:[{name:'Mestský Pivovar',type:'🍺 Pivovar & Reštaurácia',rating:'4.8',hours:'Po-Ne 11:00–23:00',premium:true,menu:{'Polievky':[{name:'Hovädzí vývar s rezancami',price:'4.90 €'},{name:'Krémová hríbová polievka',price:'5.50 €'}],'Hlavné jedlá':[{name:'Pečená rebierka s kapustou a knedľou',price:'16.90 €'},{name:'Pstruh na masle s bylinkami',price:'18.50 €'},{name:'Rizoto s hubami a parmezánom',price:'13.90 €'}],'Dezerty':[{name:'Štrúdľa s vanilkovou zmrzlinou',price:'5.90 €'},{name:'Čokoládová fontána',price:'7.50 €'}],'Nápoje':[{name:'Domáce pivo 0.5l',price:'3.50 €'},{name:'Víno (pohár)',price:'4.00 €'}]}},{name:'Cvernovka Bistro',type:'☕ Bistro & Brunch',rating:'4.6',hours:'Po-Ne 08:00–24:00',premium:true,menu:{'Raňajky & Brunch':[{name:'Avokádo toast s vajcom',price:'8.90 €'},{name:'Granola s ovocím a jogurtom',price:'6.50 €'}],'Burgerové menu':[{name:'Smashed Burger (2x patty)',price:'14.90 €'},{name:'Vegán Black Bean Burger',price:'13.50 €'}],'Nápoje':[{name:'Flat White',price:'3.20 €'},{name:'Matcha Latte',price:'4.50 €'}]}}]},trnavsky:{name:'Trnavský kraj',restaurants:[{name:'Reštaurácia Korunka',type:'🍽️ Slovenská kuchyňa',rating:'4.4',hours:'Po-Pi 10:00–21:00, So-Ne 11:00–22:00',premium:false,menu:{'Denné menu':[{name:'Bravčový rezeň s hranolkami',price:'9.90 €'},{name:'Kapustnica s klobásou',price:'5.50 €'}],'Á la carte':[{name:'Svíčková na smotane',price:'14.50 €'},{name:'Halušky s bryndzou a slaninou',price:'10.90 €'},{name:'Pečená kachňa s červenou kapustou',price:'17.90 €'}]}},{name:'Pizza Roma',type:'🍕 Talianska pizzeria',rating:'4.2',hours:'Po-Ne 11:00–22:00',premium:false,menu:{'Pizze':[{name:'Margherita',price:'8.50 €'},{name:'Quattro Formaggi',price:'11.90 €'},{name:'Prosciutto e Funghi',price:'12.50 €'}],'Cestoviny':[{name:'Spaghetti Carbonara',price:'11.50 €'},{name:'Penne Arrabbiata',price:'10.50 €'}]}}]},trenciansky:{name:'Trenčiansky kraj',restaurants:[{name:'NightBase Grill & Bar',type:'🥩 Grill & Bar',rating:'4.7',hours:'Ut-Ne 15:00–02:00',premium:true,menu:{'Grill':[{name:'T-Bone Steak 400g',price:'28.90 €'},{name:'Kuracíe krídelká (1kg)',price:'16.50 €'},{name:'Grilované zeleniny tanier',price:'11.90 €'}],'Burgery':[{name:'Double Bacon Burger',price:'15.90 €'},{name:'Crispy Chicken Burger',price:'13.90 €'}],'Bar nápoje':[{name:'Koktail dňa',price:'7.90 €'},{name:'Pivo čapované 0.5l',price:'2.80 €'}]}},{name:'Slovenská Krčma',type:'🥘 Tradičná kuchyňa',rating:'4.3',hours:'Po-Ne 10:00–22:00',premium:false,menu:{'Tradičné jedlá':[{name:'Bryndzové halušky',price:'9.90 €'},{name:'Kapustová polievka',price:'4.90 €'},{name:'Pečené kura na paprike',price:'14.50 €'}]}},{name:'Sushi & Asian Fusion',type:'🍱 Ázijská kuchyňa',rating:'4.5',hours:'Ut-Ne 12:00–22:00',premium:true,menu:{'Sushi sety':[{name:'Nigiri set 12ks',price:'18.90 €'},{name:'California roll 8ks',price:'12.50 €'},{name:'Dragon roll 8ks',price:'14.90 €'}],'Teplé jedlá':[{name:'Pad Thai s krevetami',price:'15.90 €'},{name:'Teriyaki losos s ryžou',price:'17.50 €'}]}}]},nitriansky:{name:'Nitriansky kraj',restaurants:[{name:'Vinárska Pivnica',type:'🍷 Vinárstvo & Reštaurácia',rating:'4.6',hours:'St-Ne 15:00–23:00',premium:true,menu:{'Syry & Charcuterie':[{name:'Syrový tanier (výber 5 syrov)',price:'14.90 €'},{name:'Charcuterie board',price:'18.90 €'}],'Teplé jedlá':[{name:'Jahňacina s rozmarínom',price:'22.90 €'},{name:'Kačací confit s remuládou',price:'19.50 €'}],'Vína (pohár)':[{name:'Welschriesling Nitra 2022',price:'5.50 €'},{name:'Frankovka Modrá',price:'6.00 €'}]}},{name:'Farmárska Jedáleň',type:'🌱 Farm to table',rating:'4.4',hours:'Po-Pia 10:00–20:00',premium:false,menu:{'Sezónne menu':[{name:'Polievka dňa (farmárska)',price:'4.50 €'},{name:'Pečená zelenina s quinoa',price:'11.90 €'},{name:'Sviečková z miestneho chovu',price:'16.90 €'}]}}]},zilinsky:{name:'Žilinský kraj',restaurants:[{name:'Tatranský Šúpoľ',type:'🏔️ Horská reštaurácia',rating:'4.5',hours:'Po-Ne 09:00–22:00',premium:true,menu:{'Raňajky':[{name:'Tradičná slovenská raňajky',price:'8.90 €'},{name:'Ovesná kaša s lesným ovocím',price:'5.90 €'}],'Obed & Večera':[{name:'Pstruh z Demänovky na masle',price:'19.90 €'},{name:'Jahňací guláš s chlebom',price:'16.50 €'},{name:'Parené knedlíky so slivkovým lekvárom',price:'8.90 €'}]}},{name:'Stanica Street Food',type:'🌮 Street Food & Burgery',rating:'4.3',hours:'Po-Ne 11:00–23:00',premium:false,menu:{'Street Food':[{name:'Pulled pork taco (3ks)',price:'11.90 €'},{name:'Smash burger + hranolky',price:'13.90 €'},{name:'Hot Dog s křenem',price:'6.90 €'}]}},{name:'ZA Ramen & Noodles',type:'🍜 Ramen bar',rating:'4.6',hours:'Ut-Ne 12:00–22:00',premium:true,menu:{'Ramen':[{name:'Tonkotsu Ramen (bravčové)',price:'14.90 €'},{name:'Miso Ramen (vegán)',price:'13.50 €'},{name:'Spicy Shoyu Ramen',price:'14.50 €'}],'Prílohy':[{name:'Gyoza (6ks)',price:'7.90 €'},{name:'Karaage kuracíe',price:'8.90 €'}]}}]},banskobystricky:{name:'Banskobystrický kraj',restaurants:[{name:'Klub 77 Kitchen',type:'🍔 Club Kitchen & Bar',rating:'4.4',hours:'Št-Ne 17:00–02:00',premium:true,menu:{'Pred-party jedlo':[{name:'Nachos s guacamole a salsa',price:'9.90 €'},{name:'Buffalo Wings (1kg)',price:'18.90 €'},{name:'Club sandwich',price:'12.50 €'}],'Bar food':[{name:'Miniburgery 3ks',price:'14.90 €'},{name:'Halloumi fries',price:'8.50 €'}]}},{name:'Horehronie Bistro',type:'🌲 Lesná kuchyňa',rating:'4.5',hours:'St-Po 11:00–21:00',premium:false,menu:{'Divina':[{name:'Jelení guláš s knedľou',price:'18.90 €'},{name:'Diviačie rebierka na vínnej omáčke',price:'22.50 €'}],'Ryby':[{name:'Grilovaný kapor s varenými zemiakmi',price:'14.90 €'},{name:'Pstruhová nátierka s chlebom',price:'7.90 €'}]}},{name:'Tále Après-Ski Bar',type:'⛷️ Après-ski & Gastro',rating:'4.7',hours:'Po-Ne 12:00–23:00',premium:true,menu:{'Raclette & Fondue':[{name:'Syrové fondue pre 2',price:'26.90 €'},{name:'Raclette set pre 2',price:'24.90 €'}],'Teplé nápoje':[{name:'Zvárané víno',price:'4.50 €'},{name:'Horúca čokoláda s rumom',price:'5.00 €'}]}}]},presovsky:{name:'Prešovský kraj',restaurants:[{name:'Wave Kitchen',type:'🎵 Music Bar & Food',rating:'4.5',hours:'Ut-Ne 15:00–02:00',premium:true,menu:{'Tapas & Zdieľanie':[{name:'Tanier so šunkou a syrom',price:'13.90 €'},{name:'Bruschetta trio',price:'9.90 €'},{name:'Krevetky v cesnakovom masle',price:'15.90 €'}],'Hlavné':[{name:'Ribeye steak 300g s omáčkou',price:'29.90 €'},{name:'Risotto s hľuzovkou',price:'18.50 €'}]}},{name:'Šariš Bistro',type:'🥙 Šarišská kuchyňa',rating:'4.2',hours:'Po-Ne 09:00–21:00',premium:false,menu:{'Šarišské špeciality':[{name:'Šarišský piroh (5ks)',price:'8.90 €'},{name:'Fazuľová polievka',price:'4.50 €'},{name:'Pečená hus s knedľou a kapustou',price:'17.90 €'}]}}]},kosicky:{name:'Košický kraj',restaurants:[{name:'Tabačka Kulturfabrik Bar',type:'🎨 Art Bar & Kitchen',rating:'4.7',hours:'Po-Ne 12:00–02:00',premium:true,menu:{'Street & Finger food':[{name:'Hummus s pitou a zeleninou',price:'9.90 €'},{name:'Tacos al pastor (3ks)',price:'13.50 €'},{name:'Shakshuka s chlebom',price:'11.90 €'}],'Burgery':[{name:'KE Smash Burger + fries',price:'15.90 €'},{name:'Mushroom & Swiss Burger',price:'14.50 €'}],'Craft Beer':[{name:'Košický Pivovar IPA 0.4l',price:'4.50 €'},{name:'Remeselné pivo dňa',price:'4.00 €'}]}},{name:'Collosseum Grill',type:'🥩 Premium Grill',rating:'4.6',hours:'Ut-Ne 16:00–23:00',premium:true,menu:{'Grilované mäso':[{name:'Côte de boeuf 600g',price:'38.90 €'},{name:'Lamb chops (3ks)',price:'28.90 €'},{name:'Mixed grill platter pre 2',price:'54.90 €'}],'Šaláty':[{name:'Caesar šalát s kuracím',price:'12.90 €'},{name:'Steak šalát',price:'15.90 €'}]}},{name:'Jazz Club Bistro',type:'🎷 Jazz & Fine Dining',rating:'4.8',hours:'St-Ne 18:00–01:00',premium:true,menu:{'Predjedlá':[{name:'Foie gras na brioche',price:'18.90 €'},{name:'Carpaccio z lososa',price:'14.50 €'}],'Hlavné jedlá':[{name:'Filet mignon so špenátom',price:'34.90 €'},{name:'Morčacie prsia na proseccu',price:'22.90 €'},{name:'Grilovaný losos s citrónovým rizotom',price:'24.90 €'}],'Dezerty':[{name:'Crème brûlée',price:'8.90 €'},{name:'Čokoládová lávová torta',price:'9.50 €'}]}}]}};
+  window.initGastroMap=function(){document.querySelectorAll('.gastro-region').forEach(el=>{el.addEventListener('click',()=>{document.querySelectorAll('.gastro-region').forEach(r=>r.classList.remove('active'));el.classList.add('active');showGastroRestaurants(el.getAttribute('data-region'));});});};
+  function showGastroRestaurants(regionKey){const data=GASTRO_DATA[regionKey];const container=document.getElementById('gastroRestSection');if(!data||!container)return;let html=`<h3 class="gastro-kraj-title"><em>${data.name}</em> — Reštaurácie</h3><div class="gastro-rest-grid">`;data.restaurants.forEach((r,idx)=>{const menuId=`menu_${regionKey}_${idx}`;let menuHtml='';Object.entries(r.menu).forEach(([section,items])=>{menuHtml+=`<div class="menu-section"><div class="menu-section-title">${section}</div>`;items.forEach(item=>{menuHtml+=`<div class="menu-item"><span class="menu-item-name">${item.name}</span><span class="menu-item-price">${item.price}</span></div>`;});menuHtml+='</div>';});html+=`<div class="rest-card ${r.premium?'premium':''}"><div class="rest-header"><div class="rest-icon">${r.type.split(' ')[0]}</div><div class="rest-info"><div class="rest-name">${r.name} <span class="rest-badge ${r.premium?'prem':'free'}">${r.premium?'★ Premium':'Free'}</span></div><div class="rest-type">${r.type.substring(r.type.indexOf(' ')+1)}</div><div class="rest-meta"><span>⭐ ${r.rating}</span><span>🕐 ${r.hours}</span></div></div></div><button class="rest-menu-toggle" onclick="toggleMenu('${menuId}')"><span>🍴 Zobraziť menu</span><span id="arrow_${menuId}">▼</span></button><div class="rest-menu" id="${menuId}">${menuHtml}</div></div>`;});html+='</div>';container.innerHTML=html;container.scrollIntoView({behavior:'smooth',block:'start'});}
+  window.toggleMenu=function(id){const el=document.getElementById(id);const arrow=document.getElementById('arrow_'+id);if(el){el.classList.toggle('open');if(arrow)arrow.textContent=el.classList.contains('open')?'▲':'▼';}};
+  if(document.getElementById('page-gastro')?.classList.contains('active'))initGastroMap();
+})();
+
+// ===== RÁDIO =====
+(function(){
+  const STATIONS={pop:[{name:'PopHits Radio',desc:'Best Pop Hits 24/7',vid:'36YnV9STBqc',ico:'🎤'},{name:'Hit Music Only',desc:'Top 40 Pop Nonstop',vid:'HoRX6yBCHpY',ico:'🎤'},{name:'Pop Generations',desc:'Pop Classics & New',vid:'4xDzrJKXOOY',ico:'🎤'}],rock:[{name:'Classic Rock Radio',desc:'Rock Legends 24/7',vid:'YHSHf4bUbSA',ico:'🎸'},{name:'Rock Hits Nonstop',desc:'Best of Rock',vid:'gE4RHzLynJk',ico:'🎸'},{name:'Metal & Rock',desc:'Heavy & Alt Rock',vid:'7NOSDKb0HlU',ico:'🎸'}],hiphop:[{name:'Hip Hop Nation',desc:'Rap & Hip Hop 24/7',vid:'hHW1oY26kxQ',ico:'🎧'},{name:'Trap Music Radio',desc:'Trap Beats Nonstop',vid:'5qap5aO4i9A',ico:'🎧'},{name:'Old School Hip Hop',desc:'90s & 2000s Hip Hop',vid:'c_9q1D0Wsgc',ico:'🎧'}],hits:[{name:'Top 40 Radio',desc:'Billboard Charts 24/7',vid:'Na0w3Mz46GA',ico:'🔥'},{name:'Global Hits',desc:'Worldwide #1 Hits',vid:'jfKfPfyJRdk',ico:'🔥'},{name:'Dance Hits Radio',desc:'Club & Dance Charts',vid:'K4TOrB7at0Y',ico:'🔥'}],'80s':[{name:'80s Pop Radio',desc:'Best of the 80s',vid:'4fndeDfaWCg',ico:'📻'},{name:'80s Hits Nonstop',desc:'80s Pop & Rock Classics',vid:'Tkg2nF1PfNI',ico:'📻'},{name:'Retro 80s',desc:'80s Rewind 24/7',vid:'56SXgdTk5W4',ico:'📻'}],'90s':[{name:'90s Radio',desc:'90s Hits All Day',vid:'riyBv2BtXE0',ico:'💿'},{name:'90s Pop Hits',desc:'Best 90s Pop & R&B',vid:'0VFG5vC2Vy0',ico:'💿'},{name:'Retro 90s',desc:'90s Eurodance & Pop',vid:'YkMETK7B8sg',ico:'💿'}],dance:[{name:'EDM Radio',desc:'Electronic Dance 24/7',vid:'jfKfPfyJRdk',ico:'💃'},{name:'Club Bangers',desc:'Club Music Nonstop',vid:'K4TOrB7at0Y',ico:'💃'},{name:'House Music Radio',desc:'Deep & Progressive House',vid:'36YnV9STBqc',ico:'💃'}],jazz:[{name:'Jazz 24 Radio',desc:'Jazz Standards 24/7',vid:'Dx5qFachd3A',ico:'🎷'},{name:'Smooth Jazz',desc:'Relaxing Jazz & Blues',vid:'DSGyEsJ17cI',ico:'🎷'},{name:'Late Night Jazz',desc:'Jazz for Night Owls',vid:'rUxyKA_-grg',ico:'🎷'}],classical:[{name:'Classical Music',desc:'Orchestra & Piano 24/7',vid:'SfY3cW56-c8',ico:'🎻'},{name:'Piano Radio',desc:'Solo Piano Masterpieces',vid:'SlfcFbz4H4U',ico:'🎻'},{name:'Opera & Classical',desc:'Opera & Symphonies',vid:'jAZ8X0-HMis',ico:'🎻'}],country:[{name:'Country Radio',desc:'Country Hits 24/7',vid:'6V_mHoKDpMw',ico:'🤠'},{name:'Country Gold',desc:'Classic Country Legends',vid:'lp9soZMHqMQ',ico:'🤠'},{name:'New Country',desc:'Modern Country Hits',vid:'J6-bkPkZhIE',ico:'🤠'}]};
+  let activeTab='pop',openStation=null;
+  window.switchRadioTab=function(tab,el){activeTab=tab;document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('on'));if(el)el.classList.add('on');renderRadioGrid(tab);};
+  function renderRadioGrid(tab){const grid=document.getElementById('radioGrid');if(!grid)return;const stations=STATIONS[tab]||[];grid.innerHTML=stations.map((s,i)=>`<div class="scard ${openStation?.tab===tab&&openStation?.idx===i?'on':''}" id="sc_${tab}_${i}"><div class="scard-top"><div class="scard-ico">${s.ico}</div><div class="scard-info"><div class="scard-name">${s.name}</div><div class="scard-desc">${s.desc}</div></div><button class="scard-play" onclick="toggleStation('${tab}',${i})">${openStation?.tab===tab&&openStation?.idx===i?'⏸':'▶'}</button></div><div class="scard-yt ${openStation?.tab===tab&&openStation?.idx===i?'open':''}" id="yt_${tab}_${i}">${openStation?.tab===tab&&openStation?.idx===i?`<iframe src="https://www.youtube.com/embed/${s.vid}?autoplay=1&mute=0&controls=1&modestbranding=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`:''}</div></div>`).join('');}
+  window.toggleStation=function(tab,idx){const s=(STATIONS[tab]||[])[idx];if(!s)return;if(openStation?.tab===tab&&openStation?.idx===idx){openStation=null;renderRadioGrid(tab);document.getElementById('rbar')?.classList.remove('on');return;}openStation={tab,idx};renderRadioGrid(tab);const rbar=document.getElementById('rbar');if(rbar)rbar.classList.add('on');const rbarIco=document.getElementById('rbarIco');const rbarName=document.getElementById('rbarName');const rbarDesc=document.getElementById('rbarDesc');if(rbarIco)rbarIco.textContent=s.ico;if(rbarName)rbarName.textContent=s.name;if(rbarDesc)rbarDesc.textContent=s.desc;setTimeout(()=>{document.getElementById(`sc_${tab}_${idx}`)?.scrollIntoView({behavior:'smooth',block:'nearest'});},100);};
+  window.stopAllRadio=function(){openStation=null;renderRadioGrid(activeTab);document.getElementById('rbar')?.classList.remove('on');};
+  window.initRadioPage=function(){renderRadioGrid('pop');document.querySelectorAll('.rtab').forEach((t,i)=>{t.classList.toggle('on',i===0);});activeTab='pop';};
+  if(document.getElementById('page-radio')?.classList.contains('active'))initRadioPage();
+})();
+
+window.toggleGenre=function(el){el.classList.toggle('sel');};
+window.selectPlan=function(plan){document.getElementById('iPlanFree').classList.toggle('sel',plan==='free');document.getElementById('iPlanPro').classList.toggle('sel',plan==='pro');};
+window.submitArtistReg=function(){const name=document.getElementById('iName')?.value.trim();const email=document.getElementById('iEmail')?.value.trim();const region=document.getElementById('iRegion')?.value;const genres=[...document.querySelectorAll('.int-genre-chip.sel')].map(e=>e.textContent).join(', ');if(!name||!email){alert('Vyplň aspoň umelecké meno a email.');return;}if(!email.includes('@')){alert('Zadaj platný email.');return;}const success=document.getElementById('iSuccess');if(success)success.classList.add('show');const plan=document.getElementById('iPlanPro')?.classList.contains('sel')?'Artist Pro (9€/mes)':'Free';const social=document.getElementById('iSocial')?.value.trim()||'—';const phone=document.getElementById('iPhone')?.value.trim()||'—';const body=encodeURIComponent(`REGISTRÁCIA INTERPRETA\n\nMeno: ${name}\nEmail: ${email}\nTelefón: ${phone}\nŽánre: ${genres||'—'}\nKraj: ${region||'—'}\nSociálne siete: ${social}\nPlán: ${plan}`);setTimeout(()=>{const a=document.createElement('a');a.href=`mailto:cerno2611@gmail.com?subject=Registrácia interpreta: ${encodeURIComponent(name)}&body=${body}`;a.click();},800);};
+
+// ===== TAXI =====
+const TAXI_DATA = {
+  bratislavsky:{name:'Bratislavský kraj',list:[
+    {name:'NightBase Taxi BA',city:'Bratislava · 24/7',rating:'4.9',rides:'1280',start:'2.50 €',km:'0.90 €',phone:'+421900111222',premium:true},
+    {name:'BA Express Taxi',city:'Bratislava · 24/7',rating:'4.6',rides:'820',start:'2.20 €',km:'0.85 €',phone:'+421900111223',premium:false},
+    {name:'Free Taxi BA',city:'Bratislava-Petržalka · 24/7',rating:'4.4',rides:'410',start:'2.00 €',km:'0.80 €',phone:'+421900111224',premium:false}
+  ]},
+  trnavsky:{name:'Trnavský kraj',list:[
+    {name:'Trnava Taxi',city:'Trnava · 24/7',rating:'4.5',rides:'380',start:'2.00 €',km:'0.80 €',phone:'+421901111111',premium:true},
+    {name:'TT City Taxi',city:'Trnava · 06:00–02:00',rating:'4.3',rides:'210',start:'1.90 €',km:'0.75 €',phone:'+421901111112',premium:false}
+  ]},
+  trenciansky:{name:'Trenčiansky kraj',list:[
+    {name:'Trenčín Taxi',city:'Trenčín · 24/7',rating:'4.7',rides:'540',start:'2.00 €',km:'0.80 €',phone:'+421901222333',premium:true},
+    {name:'Dubnica Taxi',city:'Dubnica n. Váhom · 24/7',rating:'4.4',rides:'180',start:'1.90 €',km:'0.75 €',phone:'+421901222334',premium:false}
+  ]},
+  nitriansky:{name:'Nitriansky kraj',list:[
+    {name:'Nitra Express Taxi',city:'Nitra · 24/7',rating:'4.4',rides:'210',start:'2.00 €',km:'0.85 €',phone:'+421903444555',premium:false},
+    {name:'Castle Taxi',city:'Nitra · 24/7',rating:'4.6',rides:'340',start:'2.10 €',km:'0.85 €',phone:'+421903444556',premium:true}
+  ]},
+  zilinsky:{name:'Žilinský kraj',list:[
+    {name:'City Taxi Žilina',city:'Žilina · 06:00–02:00',rating:'4.5',rides:'320',start:'2.20 €',km:'0.85 €',phone:'+421902333444',premium:false},
+    {name:'Tatry Taxi',city:'L. Mikuláš · 24/7',rating:'4.7',rides:'450',start:'2.30 €',km:'0.90 €',phone:'+421902333445',premium:true}
+  ]},
+  banskobystricky:{name:'Banskobystrický kraj',list:[
+    {name:'BB Taxi',city:'B. Bystrica · 24/7',rating:'4.5',rides:'380',start:'2.00 €',km:'0.85 €',phone:'+421903555666',premium:true},
+    {name:'Zvolen Taxi',city:'Zvolen · 24/7',rating:'4.3',rides:'190',start:'1.90 €',km:'0.80 €',phone:'+421903555667',premium:false}
+  ]},
+  presovsky:{name:'Prešovský kraj',list:[
+    {name:'Prešov Taxi',city:'Prešov · 24/7',rating:'4.3',rides:'180',start:'2.00 €',km:'0.80 €',phone:'+421905666777',premium:false},
+    {name:'Tatra Taxi PP',city:'Poprad · 24/7',rating:'4.6',rides:'280',start:'2.20 €',km:'0.85 €',phone:'+421905666778',premium:true}
+  ]},
+  kosicky:{name:'Košický kraj',list:[
+    {name:'East Taxi KE',city:'Košice · 24/7',rating:'4.8',rides:'890',start:'2.30 €',km:'0.90 €',phone:'+421904555666',premium:true},
+    {name:'Košice City Taxi',city:'Košice · 24/7',rating:'4.5',rides:'520',start:'2.10 €',km:'0.85 €',phone:'+421904555667',premium:false},
+    {name:'Michalovce Taxi',city:'Michalovce · 24/7',rating:'4.2',rides:'150',start:'1.90 €',km:'0.75 €',phone:'+421904555668',premium:false}
+  ]}
+};
+
+window.initTaxiMap = function() {
+  document.querySelectorAll('.taxi-region').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.taxi-region').forEach(r => r.classList.remove('active'));
+      el.classList.add('active');
+      showTaxiList(el.getAttribute('data-region'));
+    });
+  });
+};
+
+function showTaxiList(regionKey) {
+  const data = TAXI_DATA[regionKey];
+  const container = document.getElementById('taxiListSection');
+  if (!data || !container) return;
+  let html = `<h3 class="taxi-kraj-title"><em>${data.name}</em> — Taxi služby</h3><div class="taxi-grid">`;
+  data.list.forEach(t => {
+    html += `<div class="taxi-card ${t.premium?'premium':''}">
+      <div class="taxi-head">
+        <div class="taxi-icon">🚖</div>
+        <div class="taxi-info">
+          <div class="taxi-name">${t.name} ${t.premium?'<span class="taxi-badge">Partner</span>':''}</div>
+          <div class="taxi-city">${t.city}</div>
+          <div class="taxi-rating">⭐ <b>${t.rating}</b> · ${t.rides} jázd</div>
+        </div>
+      </div>
+      <div class="taxi-meta"><span>Štart: <b>${t.start}</b></span><span>Za km: <b>${t.km}</b></span></div>
+      <a href="tel:${t.phone}" class="taxi-call">📞 Zavolať ${t.phone}</a>
+    </div>`;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+  container.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ===== HOTELY =====
+const HOTEL_DATA = {
+  bratislavsky:{name:'Bratislavský kraj',list:[
+    {name:'Grand Hotel River Park',city:'Bratislava',stars:5,rating:'4.8',price:'180',phone:'+421901100100',premium:true},
+    {name:'Hotel Devín',city:'Bratislava-Staré Mesto',stars:4,rating:'4.5',price:'95',phone:'+421901100101',premium:true},
+    {name:'Apollo Hotel',city:'Bratislava-Ružinov',stars:4,rating:'4.4',price:'85',phone:'+421901100102',premium:false}
+  ]},
+  trnavsky:{name:'Trnavský kraj',list:[
+    {name:'Hotel Holiday Inn',city:'Trnava',stars:4,rating:'4.3',price:'78',phone:'+421901200200',premium:false},
+    {name:'Hotel Empire',city:'Trnava-Centrum',stars:3,rating:'4.1',price:'55',phone:'+421901200201',premium:false}
+  ]},
+  trenciansky:{name:'Trenčiansky kraj',list:[
+    {name:'Hotel Elizabeth',city:'Trenčín',stars:4,rating:'4.6',price:'90',phone:'+421901300300',premium:true},
+    {name:'Hotel Magnus',city:'Trenčianske Teplice',stars:4,rating:'4.4',price:'75',phone:'+421901300301',premium:false}
+  ]},
+  nitriansky:{name:'Nitriansky kraj',list:[
+    {name:'Hotel Mikado',city:'Nitra',stars:4,rating:'4.5',price:'80',phone:'+421901400400',premium:true},
+    {name:'Hotel Olympia',city:'Nitra-Centrum',stars:3,rating:'4.2',price:'58',phone:'+421901400401',premium:false}
+  ]},
+  zilinsky:{name:'Žilinský kraj',list:[
+    {name:'Grand Hotel Praha',city:'Tatranská Lomnica',stars:5,rating:'4.9',price:'220',phone:'+421901500500',premium:true},
+    {name:'Hotel Diplomat',city:'Žilina',stars:4,rating:'4.5',price:'85',phone:'+421901500501',premium:false}
+  ]},
+  banskobystricky:{name:'Banskobystrický kraj',list:[
+    {name:'Hotel Lux',city:'B. Bystrica',stars:4,rating:'4.5',price:'82',phone:'+421901600600',premium:true},
+    {name:'Tále Resort & Spa',city:'Tále',stars:4,rating:'4.7',price:'120',phone:'+421901600601',premium:true},
+    {name:'Hotel Arcade',city:'B. Bystrica',stars:3,rating:'4.3',price:'62',phone:'+421901600602',premium:false}
+  ]},
+  presovsky:{name:'Prešovský kraj',list:[
+    {name:'Hotel Dukla',city:'Prešov',stars:4,rating:'4.4',price:'70',phone:'+421901700700',premium:true},
+    {name:'Grand Hotel Kempinski',city:'Štrbské Pleso',stars:5,rating:'4.9',price:'250',phone:'+421901700701',premium:true}
+  ]},
+  kosicky:{name:'Košický kraj',list:[
+    {name:'Hotel Yasmin',city:'Košice',stars:4,rating:'4.6',price:'95',phone:'+421901800800',premium:true},
+    {name:'DoubleTree by Hilton',city:'Košice',stars:4,rating:'4.7',price:'110',phone:'+421901800801',premium:true},
+    {name:'Hotel Ambassador',city:'Košice-Centrum',stars:3,rating:'4.3',price:'68',phone:'+421901800802',premium:false}
+  ]}
+};
+
+window.initHotelMap = function() {
+  document.querySelectorAll('.hotel-region').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.hotel-region').forEach(r => r.classList.remove('active'));
+      el.classList.add('active');
+      showHotelList(el.getAttribute('data-region'));
+    });
+  });
+};
+
+function showHotelList(regionKey) {
+  const data = HOTEL_DATA[regionKey];
+  const container = document.getElementById('hotelListSection');
+  if (!data || !container) return;
+  let html = `<h3 class="hotel-kraj-title"><em>${data.name}</em> — Hotely</h3><div class="hotel-grid">`;
+  data.list.forEach(h => {
+    const stars = '★'.repeat(h.stars) + '☆'.repeat(5-h.stars);
+    html += `<div class="hotel-card ${h.premium?'premium':''}">
+      <div class="hotel-head">
+        <div class="hotel-icon">🏨</div>
+        <div class="hotel-info">
+          <div class="hotel-name">${h.name} ${h.premium?'<span class="hotel-badge">Partner</span>':''}</div>
+          <div class="hotel-city">${h.city}</div>
+          <div class="hotel-stars">${stars}</div>
+          <div class="hotel-rating">⭐ <b>${h.rating}</b> · Hodnotenie hostí</div>
+        </div>
+      </div>
+      <div class="hotel-meta"><span class="hotel-price">od <b>${h.price} €</b>/noc</span><span>${h.stars}★ hotel</span></div>
+      <a href="tel:${h.phone}" class="hotel-call">📞 Rezervovať ${h.phone}</a>
+    </div>`;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+  container.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ===== REBRÍČKY =====
+const RANK_DATA = {
+  eventy: [
+    {n:'NIGHTSHIFT VOL. 14', s:'Subclub · Bratislava', score:'★ 4.9'},
+    {n:'BASS RIOT', s:'Stanica · Žilina', score:'★ 4.7'},
+    {n:'EAST SIDE FEST', s:'Wave · Prešov', score:'★ 4.6'},
+    {n:'TÁLE FESTIVAL', s:'Tále resort · BB kraj', score:'★ 4.5'},
+    {n:'CASTLE RAVE', s:'Hidepark · Nitra', score:'★ 4.4'},
+    {n:'RED ROOM SESSIONS', s:'KC Dunaj · Bratislava', score:'★ 4.3'}
+  ],
+  kluby: [
+    {n:'SUBCLUB', s:'Bratislava · Techno', score:'★ 4.8'},
+    {n:'STANICA ZA', s:'Žilina · D\'N\'B / Bass', score:'★ 4.7'},
+    {n:'KLUB 77', s:'B. Bystrica · House', score:'★ 4.6'},
+    {n:'WAVE PRESOV', s:'Prešov · Multigenre', score:'★ 4.5'},
+    {n:'TABAČKA', s:'Košice · Indie / Art', score:'★ 4.5'},
+    {n:'KC DUNAJ', s:'Bratislava · Underground', score:'★ 4.4'}
+  ],
+  interpreti: [
+    {n:'DJ MERKO', s:'Techno · House', score:'★ 4.9'},
+    {n:'VOJTKO', s:'D\'N\'B · Jungle', score:'★ 4.8'},
+    {n:'ANNA K.', s:'Deep House', score:'★ 4.7'},
+    {n:'BASS DUO', s:'Bass · Electronic', score:'★ 4.6'},
+    {n:'MC NOVAK', s:'Hip-Hop', score:'★ 4.5'},
+    {n:'DJ SLOVAK', s:'Pop · Hits', score:'★ 4.4'}
+  ],
+  taxi: [
+    {n:'NIGHTBASE TAXI BA', s:'Bratislava · 1280 jázd', score:'★ 4.9'},
+    {n:'EAST TAXI KE', s:'Košice · 890 jázd', score:'★ 4.8'},
+    {n:'TRENČÍN TAXI', s:'Trenčín · 540 jázd', score:'★ 4.7'},
+    {n:'TATRY TAXI', s:'L. Mikuláš · 450 jázd', score:'★ 4.7'},
+    {n:'CITY TAXI ŽILINA', s:'Žilina · 320 jázd', score:'★ 4.5'},
+    {n:'CASTLE TAXI', s:'Nitra · 340 jázd', score:'★ 4.6'}
+  ],
+  hotely: [
+    {n:'GRAND HOTEL KEMPINSKI', s:'Štrbské Pleso · 5★', score:'★ 4.9'},
+    {n:'GRAND HOTEL RIVER PARK', s:'Bratislava · 5★', score:'★ 4.8'},
+    {n:'TÁLE RESORT & SPA', s:'Tále · 4★', score:'★ 4.7'},
+    {n:'DOUBLETREE BY HILTON', s:'Košice · 4★', score:'★ 4.7'},
+    {n:'HOTEL ELIZABETH', s:'Trenčín · 4★', score:'★ 4.6'},
+    {n:'HOTEL YASMIN', s:'Košice · 4★', score:'★ 4.6'}
+  ],
+  gastro: [
+    {n:'JAZZ CLUB BISTRO', s:'Košice · Fine Dining', score:'★ 4.8'},
+    {n:'MESTSKÝ PIVOVAR', s:'Bratislava · Pivovar', score:'★ 4.8'},
+    {n:'TABAČKA KULTURFABRIK', s:'Košice · Art Bar', score:'★ 4.7'},
+    {n:'NIGHTBASE GRILL & BAR', s:'Trenčín · Grill', score:'★ 4.7'},
+    {n:'TÁLE APRÈS-SKI BAR', s:'Tále · Après-ski', score:'★ 4.7'},
+    {n:'CVERNOVKA BISTRO', s:'Bratislava · Brunch', score:'★ 4.6'}
+  ]
+};
+
+window.showRankCategory = function(cat, btn) {
+  if (btn) {
+    document.querySelectorAll('#rankTabs .rank-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  const list = document.getElementById('rankList');
+  if (!list) return;
+  const items = RANK_DATA[cat] || [];
+  list.innerHTML = items.map((item, i) =>
+    `<div class="rank-item">
+      <div class="rank-num ${i===0?'gold':''}">${i+1}</div>
+      <div class="rank-info">
+        <div class="rank-name">${item.n}</div>
+        <div class="rank-sub">${item.s}</div>
+      </div>
+      <div class="rank-score">${item.score}</div>
+    </div>`
+  ).join('');
+};
+
+// ===== INTERPRETI FILTER =====
+const ARTISTS_DATA = [
+  {name:'DJ Merko',  emoji:'🎧', genres:['Techno','House'],            tag:'Techno · House',    pro:true,  rating:4.9, fans:'12.4k'},
+  {name:'Vojtko',    emoji:'🎵', genres:['DNB'],                       tag:"D'N'B · Jungle",    pro:true,  rating:4.8, fans:'8.7k'},
+  {name:'Anna K.',   emoji:'🎤', genres:['House'],                     tag:'House · Deep',      pro:false, rating:4.7, fans:'5.2k'},
+  {name:'Bass Duo',  emoji:'🎶', genres:['Electronic','DNB'],          tag:'Bass · Electronic', pro:false, rating:4.6, fans:'4.1k'},
+  {name:'MC Novak',  emoji:'🎙️', genres:['Hip-Hop'],                  tag:'Hip-Hop · Rap',     pro:true,  rating:4.5, fans:'9.3k'},
+  {name:'DJ Slovak', emoji:'💿', genres:['Pop'],                       tag:'Pop · Hits',        pro:false, rating:4.4, fans:'6.8k'},
+  {name:'Rock Stars',emoji:'🎸', genres:['Rock'],                      tag:'Rock · Indie',      pro:false, rating:4.3, fans:'3.5k'},
+  {name:'Techno X',  emoji:'⚡', genres:['Techno','Electronic'],       tag:'Techno · Hardcore', pro:true,  rating:4.8, fans:'7.1k'},
+  {name:'House Lab', emoji:'🏠', genres:['House','Electronic'],        tag:'Deep House',        pro:false, rating:4.5, fans:'2.9k'},
+  {name:'DnB Crew',  emoji:'🥁', genres:['DNB'],                       tag:"D'N'B · Liquid",    pro:false, rating:4.4, fans:'2.1k'},
+  {name:'Pop Queen', emoji:'👑', genres:['Pop'],                       tag:'Pop · Mainstream',  pro:true,  rating:4.7, fans:'15.2k'},
+  {name:'Techno Master', emoji:'🎛️', genres:['Techno'],               tag:'Industrial Techno', pro:true,  rating:4.9, fans:'11.0k'},
+  {name:'Rap Kings', emoji:'🔥', genres:['Hip-Hop'],                   tag:'Trap · Rap',        pro:false, rating:4.2, fans:'4.8k'},
+  {name:'Rock Legend', emoji:'🤘', genres:['Rock'],                    tag:'Classic Rock',      pro:true,  rating:4.6, fans:'8.0k'}
+];
+
+window.filterArtists = function(genre, btn) {
+  if (btn) {
+    document.querySelectorAll('#artistFilterTabs .rank-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  renderArtists(genre);
+};
+
+window.renderArtists = function(genre) {
+  const list = document.getElementById('artistsList');
+  if (!list) return;
+  let filtered = genre === 'all' ? [...ARTISTS_DATA] : ARTISTS_DATA.filter(a => a.genres.includes(genre));
+  // Triediť od najlepšieho ratingu
+  filtered.sort((a,b) => b.rating - a.rating);
+  if (!filtered.length) {
+    list.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center;font-size:13px;">Žiadni interpreti v tomto žánri.</div>';
+    return;
+  }
+  list.innerHTML = filtered.map((a,i) =>
+    `<div class="artist-card">
+      <div class="artist-photo" style="position:relative;">
+        ${a.emoji}
+        ${i<3?`<div style="position:absolute;top:6px;left:6px;background:${i===0?'#f5c842':i===1?'#c0c0c0':'#cd7f32'};color:#000;font-family:var(--display);font-size:12px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.4);">#${i+1}</div>`:''}
+      </div>
+      <div class="artist-body">
+        <div class="artist-name">${a.name}</div>
+        <div class="artist-genre">${a.tag}</div>
+        <div style="display:flex;align-items:center;gap:6px;margin:4px 0 6px;font-size:11px;">
+          <span style="color:#f5c842;font-weight:700;">⭐ ${a.rating}</span>
+          <span style="color:var(--muted);">· ${a.fans} fans</span>
+        </div>
+        <div class="artist-badges"><span class="badge ${a.pro?'badge-pro':'badge-free'}">${a.pro?'PRO':'Free'}</span></div>
+      </div>
+    </div>`
+  ).join('');
+};
+
+// ===== PWA INSTALL =====
+let deferredPrompt = null;
+
+// Detect if already installed (running in standalone mode)
+function isStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches ||
+         window.navigator.standalone === true;
+}
+
+// iOS detection
+function isIOS() {
+  return /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (!isStandalone()) {
+    if (localStorage.getItem('pwaBannerDismissed') !== 'true') {
+      document.getElementById('pwaBanner').style.display = 'block';
+    }
+    if (localStorage.getItem('pwaDismissed') !== 'true') {
+      document.getElementById('pwaInstallBtn')?.classList.add('show');
+    }
+  }
+});
+
+window.installPWA = async function() {
+  if (deferredPrompt) {
+    // Browser supports auto-install (Android Chrome, Edge)
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      document.getElementById('pwaInstallBtn')?.classList.remove('show');
+      document.getElementById('pwaBanner').style.display = 'none';
+    }
+    deferredPrompt = null;
+  } else if (isIOS()) {
+    // iOS Safari — show manual hint
+    document.getElementById('iosHint')?.classList.add('show');
+  }
+  // For other browsers without prompt support — do nothing,
+  // browser will show native "Add to home screen" in its menu
+};
+
+window.dismissPWA = function() {
+  document.getElementById('pwaInstallBtn')?.classList.remove('show');
+  localStorage.setItem('pwaDismissed', 'true');
+};
+
+window.dismissIOSHint = function() {
+  document.getElementById('iosHint')?.classList.remove('show');
+  localStorage.setItem('iosHintDismissed', 'true');
+};
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('pwaInstallBtn')?.classList.remove('show');
+  document.getElementById('iosHint')?.classList.remove('show');
+  document.getElementById('pwaBanner').style.display = 'none';
+  deferredPrompt = null;
+});
+
+window.dismissBanner = function() {
+  document.getElementById('pwaBanner').style.display = 'none';
+  localStorage.setItem('pwaBannerDismissed', 'true');
+};
+
+// Show install button on page load if not installed
+window.addEventListener('load', () => {
+  if (isStandalone()) return; // Already installed - hide everything
+
+  const dismissed = localStorage.getItem('pwaDismissed') === 'true';
+  const bannerDismissed = localStorage.getItem('pwaBannerDismissed') === 'true';
+
+  // iOS Safari — always show banner+button (manual install via Share menu)
+  if (isIOS()) {
+    if (!bannerDismissed) {
+      document.getElementById('pwaBanner').style.display = 'block';
+    }
+    if (!dismissed) {
+      setTimeout(() => {
+        document.getElementById('pwaInstallBtn')?.classList.add('show');
+      }, 1500);
+    }
+  }
+  // Android/Desktop — banner+button shows ONLY when beforeinstallprompt fired
+  // (handled by the beforeinstallprompt listener above)
+});
+</script>
+</body>
+</html>
