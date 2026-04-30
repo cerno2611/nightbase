@@ -6,61 +6,12 @@
 <meta http-equiv="cache-control" content="no-cache,no-store,must-revalidate"/>
 <meta name="theme-color" content="#0a0a0c"/>
 <title>NightBase — Objav. Zaži. Vyber si.</title>
+<link rel="manifest" href="/manifest.json"/>
 <link rel="apple-touch-icon" href="nightbase-logo.png"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="NightBase"/>
 <meta name="mobile-web-app-capable" content="yes"/>
-<script>
-// Inline manifest — nevyžaduje externý manifest.json
-const manifestData = {
-  name: "NightBase — Objav. Zaži. Vyber si.",
-  short_name: "NightBase",
-  description: "Slovenská appka pre nočný život — akcie, kluby, gastro, taxi a hotely.",
-  start_url: "/",
-  scope: "/",
-  display: "standalone",
-  orientation: "portrait",
-  background_color: "#07070a",
-  theme_color: "#0a0a0c",
-  lang: "sk",
-  icons: [
-    { src: "nightbase-logo.png", sizes: "192x192", type: "image/png", purpose: "any" },
-    { src: "nightbase-logo.png", sizes: "512x512", type: "image/png", purpose: "any maskable" }
-  ]
-};
-const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/manifest+json'});
-const manifestURL = URL.createObjectURL(manifestBlob);
-const manifestLink = document.createElement('link');
-manifestLink.rel = 'manifest';
-manifestLink.href = manifestURL;
-document.currentScript.after(manifestLink);
-
-// Inline service worker — nevyžaduje externý sw.js
-if ('serviceWorker' in navigator) {
-  const swCode = `
-const CACHE = 'nightbase-v2';
-const ASSETS = ['/', '/nightbase-preview.html', '/nightbase-logo.png', '/party-people-bg.png'];
-self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS).catch(()=>{})));
-  self.skipWaiting();
-});
-self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
-  self.clients.claim();
-});
-self.addEventListener('fetch', e => {
-  if(e.request.method!=='GET') return;
-  e.respondWith(caches.match(e.request).then(cached => cached || fetch(e.request).catch(()=>caches.match('/'))));
-});
-  `;
-  const swBlob = new Blob([swCode], {type: 'application/javascript'});
-  const swURL = URL.createObjectURL(swBlob);
-  navigator.serviceWorker.register(swURL, {scope: '/'})
-    .then(() => console.log('NightBase SW registered'))
-    .catch(e => console.log('SW failed:', e));
-}
-</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -1809,6 +1760,14 @@ window.renderArtists = function(genre) {
 
 // ===== PWA INSTALL =====
 let deferredPrompt = null;
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js', {scope: '/'})
+      .then(() => console.log('SW OK'))
+      .catch(e => console.log('SW fail:', e));
+  });
+}
 
 // Detect if already installed (running in standalone mode)
 function isStandalone() {
