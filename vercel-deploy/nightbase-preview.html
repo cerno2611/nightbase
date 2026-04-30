@@ -6,12 +6,6 @@
 <meta http-equiv="cache-control" content="no-cache,no-store,must-revalidate"/>
 <meta name="theme-color" content="#0a0a0c"/>
 <title>NightBase — Objav. Zaži. Vyber si.</title>
-<link rel="manifest" href="/manifest.json"/>
-<link rel="apple-touch-icon" href="nightbase-logo.png"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="NightBase"/>
-<meta name="mobile-web-app-capable" content="yes"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -366,27 +360,8 @@ h1,h2,h3,h4,p{margin:0;}
 .power-bar{flex:1;height:8px;border-radius:4px;background:var(--bg-3);overflow:hidden;}
 .power-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#4caf50,#ff9800,#e10b1f);transition:width .1s;}
 /* PWA Install button */
-.pwa-install{
-  position:fixed;bottom:80px;right:14px;z-index:55;
-  display:none;align-items:center;gap:8px;
-  padding:11px 16px;border-radius:999px;
-  background:linear-gradient(180deg,var(--red-2),var(--red));
-  color:#fff;font-weight:700;font-size:13px;
-  box-shadow:0 6px 20px rgba(225,11,31,0.5);
-  border:1px solid rgba(255,255,255,0.18);
-  cursor:pointer;animation:pwaPulse 2.4s ease-in-out infinite;
-}
-.pwa-install.show{display:flex;}
-.pwa-install svg{width:16px;height:16px;}
-.pwa-install-close{
-  position:absolute;top:-6px;right:-6px;width:20px;height:20px;
-  border-radius:50%;background:#1c1c24;color:#fff;
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:700;border:1px solid var(--line-strong);
-  cursor:pointer;
-}
-@keyframes pwaPulse{0%,100%{box-shadow:0 6px 20px rgba(225,11,31,0.5);}50%{box-shadow:0 6px 28px rgba(225,11,31,0.85);}}
-@media(min-width:900px){.pwa-install{bottom:20px;right:20px;}}
+50%{box-shadow:0 6px 28px rgba(225,11,31,0.85);}}
+@media(min-width:900px){}
 
 /* Install instructions sheet (universal for all browsers) */
 .install-sheet-mask{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,0);pointer-events:none;transition:background .25s;}
@@ -552,19 +527,6 @@ h1,h2,h3,h4,p{margin:0;}
       <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">krajov Slovenska</div></div>
       <div class="stat-item"><div class="stat-num">20+</div><div class="stat-label">žánrov</div></div>
       <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">interpretov</div></div>
-    </div>
-  </div>
-
-  <!-- INSTALL BANNER — zobrazí sa keď je PWA inštalovateľná -->
-  <div id="pwaBanner" style="display:none;margin:18px 0;border-radius:var(--r-xl);overflow:hidden;">
-    <div style="background:linear-gradient(135deg,rgba(225,11,31,0.18),rgba(14,14,20,0.98));border:1px solid rgba(225,11,31,0.5);border-radius:var(--r-xl);padding:14px 16px;display:flex;align-items:center;gap:12px;position:relative;">
-      <div style="font-size:32px;flex-shrink:0;">📱</div>
-      <div style="flex:1;min-width:0;">
-        <div style="font-weight:700;font-size:14px;color:#fff;margin-bottom:2px;">Pridaj appku na plochu</div>
-        <div style="font-size:12px;color:var(--muted);">Rýchly prístup · funguje offline</div>
-      </div>
-      <button onclick="installPWA()" style="background:linear-gradient(180deg,var(--red-2),var(--red));color:#fff;border:none;padding:9px 16px;border-radius:9px;font-weight:700;font-size:13px;white-space:nowrap;cursor:pointer;flex-shrink:0;">Inštalovať</button>
-      <button onclick="dismissBanner()" style="position:absolute;top:6px;right:6px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:2px 6px;">×</button>
     </div>
   </div>
 
@@ -1371,18 +1333,7 @@ h1,h2,h3,h4,p{margin:0;}
   <div class="sheet-events" id="sheetEvents"></div>
 </aside>
 
-<!-- PWA Install button (Android/Chrome) -->
-<button class="pwa-install" id="pwaInstallBtn" onclick="installPWA()">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
-  Pridať na plochu
-  <span class="pwa-install-close" onclick="event.stopPropagation();dismissPWA()">×</span>
-</button>
-
-<!-- iOS Safari install hint -->
-<div class="ios-hint" id="iosHint">
-  <button class="ios-hint-close" onclick="dismissIOSHint()">×</button>
-  <div class="ios-hint-title">📱 Nainštaluj NightBase na plochu</div>
-  Klikni na <b>Zdieľať</b> ikonu (⬆️) v Safari a vyber <b>"Pridať na plochu"</b>.
+Klikni na <b>Zdieľať</b> ikonu (⬆️) v Safari a vyber <b>"Pridať na plochu"</b>.
 </div>
 
 <script>
@@ -1758,102 +1709,6 @@ window.renderArtists = function(genre) {
   ).join('');
 };
 
-// ===== PWA INSTALL =====
-let deferredPrompt = null;
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js', {scope: '/'})
-      .then(() => console.log('SW OK'))
-      .catch(e => console.log('SW fail:', e));
-  });
-}
-
-// Detect if already installed (running in standalone mode)
-function isStandalone() {
-  return window.matchMedia('(display-mode: standalone)').matches ||
-         window.navigator.standalone === true;
-}
-
-// iOS detection
-function isIOS() {
-  return /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
-}
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  if (!isStandalone()) {
-    if (localStorage.getItem('pwaBannerDismissed') !== 'true') {
-      document.getElementById('pwaBanner').style.display = 'block';
-    }
-    if (localStorage.getItem('pwaDismissed') !== 'true') {
-      document.getElementById('pwaInstallBtn')?.classList.add('show');
-    }
-  }
-});
-
-window.installPWA = async function() {
-  if (deferredPrompt) {
-    // Browser supports auto-install (Android Chrome, Edge)
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      document.getElementById('pwaInstallBtn')?.classList.remove('show');
-      document.getElementById('pwaBanner').style.display = 'none';
-    }
-    deferredPrompt = null;
-  } else if (isIOS()) {
-    // iOS Safari — show manual hint
-    document.getElementById('iosHint')?.classList.add('show');
-  }
-  // For other browsers without prompt support — do nothing,
-  // browser will show native "Add to home screen" in its menu
-};
-
-window.dismissPWA = function() {
-  document.getElementById('pwaInstallBtn')?.classList.remove('show');
-  localStorage.setItem('pwaDismissed', 'true');
-};
-
-window.dismissIOSHint = function() {
-  document.getElementById('iosHint')?.classList.remove('show');
-  localStorage.setItem('iosHintDismissed', 'true');
-};
-
-window.addEventListener('appinstalled', () => {
-  document.getElementById('pwaInstallBtn')?.classList.remove('show');
-  document.getElementById('iosHint')?.classList.remove('show');
-  document.getElementById('pwaBanner').style.display = 'none';
-  deferredPrompt = null;
-});
-
-window.dismissBanner = function() {
-  document.getElementById('pwaBanner').style.display = 'none';
-  localStorage.setItem('pwaBannerDismissed', 'true');
-};
-
-// Show install button on page load if not installed
-window.addEventListener('load', () => {
-  if (isStandalone()) return; // Already installed - hide everything
-
-  const dismissed = localStorage.getItem('pwaDismissed') === 'true';
-  const bannerDismissed = localStorage.getItem('pwaBannerDismissed') === 'true';
-
-  // iOS Safari — always show banner+button (manual install via Share menu)
-  if (isIOS()) {
-    if (!bannerDismissed) {
-      document.getElementById('pwaBanner').style.display = 'block';
-    }
-    if (!dismissed) {
-      setTimeout(() => {
-        document.getElementById('pwaInstallBtn')?.classList.add('show');
-      }, 1500);
-    }
-  }
-  // Android/Desktop — banner+button shows ONLY when beforeinstallprompt fired
-  // (handled by the beforeinstallprompt listener above)
-});
 </script>
 </body>
 </html>
