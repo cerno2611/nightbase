@@ -373,6 +373,73 @@ h1,h2,h3,h4,p{margin:0;}
 .power-bar{flex:1;height:8px;border-radius:4px;background:var(--bg-3);overflow:hidden;}
 .power-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#4caf50,#ff9800,#e10b1f);transition:width .1s;}
 .shot-info{font-size:12px;color:var(--muted);text-align:center;}
+
+/* ===== RATING & COMMENTS ===== */
+.rating-stars{display:flex;gap:3px;cursor:pointer;}
+.rating-star{font-size:20px;color:rgba(255,255,255,0.15);transition:color .1s;line-height:1;}
+.rating-star.on{color:#f5c832;}
+.rating-star:hover,.rating-star:hover ~ .rating-star{color:rgba(245,200,50,0.4);}
+.rating-mini{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:#f5c832;}
+.rating-mini span{color:var(--muted);font-weight:400;font-size:11px;}
+.comment-list{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
+.comment-item{background:var(--bg-3);border-radius:var(--r-md);padding:12px 14px;}
+.comment-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.comment-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--red),#7a0014);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+.comment-name{font-weight:700;font-size:12px;}
+.comment-date{font-size:10px;color:var(--muted);margin-left:auto;}
+.comment-stars{font-size:11px;color:#f5c832;}
+.comment-text{font-size:12px;color:rgba(255,255,255,0.75);line-height:1.5;}
+.comment-form{background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:var(--r-md);padding:14px;margin-top:14px;}
+.comment-form-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;}
+.comment-textarea{width:100%;background:var(--bg-3);border:1px solid var(--line-strong);border-radius:8px;color:var(--text);font-size:13px;padding:10px 12px;resize:vertical;min-height:70px;outline:none;font-family:inherit;}
+.comment-textarea:focus{border-color:var(--red-2);}
+.comment-submit{margin-top:8px;padding:9px 18px;border-radius:8px;font-weight:700;font-size:13px;background:linear-gradient(180deg,var(--red-2),var(--red));border:none;color:#fff;cursor:pointer;}
+.login-gate{background:rgba(225,11,31,0.06);border:1px solid rgba(225,11,31,0.2);border-radius:var(--r-md);padding:14px;text-align:center;font-size:13px;color:var(--muted);}
+.login-gate a{color:var(--red-2);font-weight:700;cursor:pointer;text-decoration:none;}
+
+/* ===== EVENT DETAIL MODAL ===== */
+.event-detail{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);overflow-y:auto;padding:20px 16px 40px;display:none;justify-content:center;align-items:flex-start;}
+.event-detail.open{display:flex;}
+.ed-box{width:100%;max-width:720px;background:rgba(12,12,16,0.99);border:1px solid var(--line-strong);border-radius:var(--r-xl);overflow:hidden;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.8);}
+.ed-close{position:absolute;top:14px;right:14px;z-index:2;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid var(--line);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.ed-close:hover{background:rgba(225,11,31,0.3);}
+.ed-hero{height:200px;background:linear-gradient(135deg,rgba(225,11,31,0.5),rgba(10,5,8,0.9));position:relative;display:flex;align-items:flex-end;padding:20px 24px;}
+.ed-hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 30%,rgba(12,12,16,0.95));}
+.ed-hero-content{position:relative;z-index:1;}
+.ed-title{font-family:var(--display);font-size:clamp(24px,6vw,36px);letter-spacing:0.03em;line-height:1;}
+.ed-tag{display:inline-block;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;}
+.ed-body{padding:20px 24px;}
+.ed-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px;}
+.ed-meta-item{background:var(--bg-3);border-radius:8px;padding:10px 12px;}
+.ed-meta-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;}
+.ed-meta-value{font-size:13px;font-weight:600;}
+.ed-section{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;margin-top:18px;}
+.ed-msg-btn{width:100%;padding:12px;border-radius:10px;font-weight:700;font-size:14px;background:linear-gradient(135deg,rgba(225,11,31,0.15),rgba(225,11,31,0.08));border:1px solid rgba(225,11,31,0.4);color:var(--red-2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;margin-bottom:12px;}
+.ed-msg-btn:hover{background:rgba(225,11,31,0.25);}
+
+/* ===== MESSAGING ===== */
+.msg-modal{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px;}
+.msg-modal.open{display:flex;}
+.msg-box{width:100%;max-width:500px;background:rgba(12,12,16,0.99);border:1px solid var(--line-strong);border-radius:var(--r-xl);overflow:hidden;}
+.msg-header{padding:18px 20px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;}
+.msg-header-info{flex:1;}
+.msg-header-title{font-family:var(--display);font-size:18px;letter-spacing:0.03em;}
+.msg-header-sub{font-size:11px;color:var(--muted);}
+.msg-close{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid var(--line);color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.msg-body{padding:16px 20px;}
+.msg-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;display:block;}
+.msg-input{width:100%;background:var(--bg-3);border:1px solid var(--line-strong);border-radius:9px;color:var(--text);font-size:14px;padding:10px 12px;outline:none;margin-bottom:10px;}
+.msg-input:focus{border-color:var(--red-2);}
+.msg-textarea{width:100%;background:var(--bg-3);border:1px solid var(--line-strong);border-radius:9px;color:var(--text);font-size:13px;padding:10px 12px;resize:vertical;min-height:100px;outline:none;font-family:inherit;margin-bottom:10px;}
+.msg-textarea:focus{border-color:var(--red-2);}
+.msg-send{width:100%;padding:12px;border-radius:10px;font-weight:700;font-size:14px;background:linear-gradient(180deg,var(--red-2),var(--red));border:none;color:#fff;cursor:pointer;box-shadow:0 4px 14px rgba(225,11,31,0.4);}
+.msg-success{display:none;padding:12px;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.4);border-radius:9px;color:#81c784;font-size:13px;text-align:center;margin-top:8px;}
+.msg-success.show{display:block;}
+.msg-login-note{font-size:12px;color:var(--muted);text-align:center;padding:20px;line-height:1.6;}
+.msg-login-note a{color:var(--red-2);font-weight:700;cursor:pointer;}
+
+/* Event card rating badge */
+.event-rating-badge{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.75);border:1px solid rgba(245,200,50,0.4);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;color:#f5c832;display:flex;align-items:center;gap:3px;}
 </style>
 </head>
 <body>
@@ -386,8 +453,9 @@ h1,h2,h3,h4,p{margin:0;}
     </div>
     <!-- Desktop tab nav (right side) -->
     <div class="header-tabs">
-      <button class="htab" onclick="showPage('gastro')">🍽️ Gastro</button>
       <button class="htab" onclick="showPage('interpreti')">🎧 Interpreti</button>
+      <button class="htab" onclick="showPage('gastro')">🍽️ Gastro</button>
+      <button class="htab" onclick="showPage('hotely')">🏨 Hotely</button>
       <button class="htab" onclick="showPage('taxi')">🚕 Taxi</button>
       <button class="htab" onclick="showPage('rebricky')">🏆 Rebríčky</button>
       <button class="htab" onclick="showPage('merch')">👕 Merch</button>
@@ -481,43 +549,14 @@ h1,h2,h3,h4,p{margin:0;}
   <!-- AKCIE -->
   <section class="section" id="akcie">
     <div class="section-head">
-      <h2 class="section-title">Naj<em>bližšie</em> akcie</h2>
-      <a class="section-link" href="#">Všetky →</a>
+      <h2 class="section-title">🔥 Naj<em>bližšie</em> &amp; najlepšie</h2>
+      <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);">
+        <span>★ Zoradené podľa hodnotenia + dátumu</span>
+      </div>
     </div>
-    <div class="events-scroll">
-      <article class="event-card">
-        <div class="event-cover" style="background-image:linear-gradient(135deg,rgba(225,11,31,0.6),rgba(10,5,8,0.85)),url('party-people-bg.png');background-size:cover;">
-          <span class="event-tag">Techno</span>
-          <div class="event-date-badge">10<span>MÁJ</span></div>
-        </div>
-        <div class="event-body">
-          <div class="event-title">NIGHTSHIFT VOL. 14</div>
-          <div class="event-meta"><span class="event-dot"></span>Subclub · Bratislava · 22:00</div>
-          <div class="event-foot"><span class="event-price">15 €</span><button class="event-btn">Detail</button></div>
-        </div>
-      </article>
-      <article class="event-card">
-        <div class="event-cover" style="background-image:linear-gradient(160deg,rgba(180,11,31,0.55),rgba(5,5,10,0.85)),url('party-people-bg.png');background-size:cover;">
-          <span class="event-tag">House</span>
-          <div class="event-date-badge">17<span>MÁJ</span></div>
-        </div>
-        <div class="event-body">
-          <div class="event-title">RED ROOM SESSIONS</div>
-          <div class="event-meta"><span class="event-dot"></span>KC Dunaj · Bratislava · 21:00</div>
-          <div class="event-foot"><span class="event-price">12 €</span><button class="event-btn">Detail</button></div>
-        </div>
-      </article>
-      <article class="event-card">
-        <div class="event-cover" style="background-image:linear-gradient(135deg,rgba(200,11,31,0.5),rgba(8,5,10,0.9)),url('party-people-bg.png');background-size:cover;">
-          <span class="event-tag">D'N'B</span>
-          <div class="event-date-badge">24<span>MÁJ</span></div>
-        </div>
-        <div class="event-body">
-          <div class="event-title">BASS RIOT ZA</div>
-          <div class="event-meta"><span class="event-dot"></span>Stanica · Žilina · 22:30</div>
-          <div class="event-foot"><span class="event-price">10 €</span><button class="event-btn">Detail</button></div>
-        </div>
-      </article>
+    <!-- Events generované JS — zoradené podľa dátumu a ratingu -->
+    <div class="events-scroll" id="homeEventsGrid">
+      <!-- render by JS -->
     </div>
   </section>
 
@@ -939,6 +978,243 @@ h1,h2,h3,h4,p{margin:0;}
   </div>
 
 </div>
+<!-- ===== PAGE: HOTELY ===== -->
+<div class="page" id="page-hotely">
+<style>
+/* HOTELY */
+.hotel-hero{
+  background:linear-gradient(135deg,rgba(100,160,255,0.08),rgba(10,10,14,0.6));
+  border:1px solid rgba(100,160,255,0.18);border-radius:var(--r-xl);
+  padding:22px;margin-bottom:20px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.hotel-hero-icon{font-size:48px;flex-shrink:0;}
+.hotel-hero h2{font-family:var(--display);font-size:clamp(20px,5vw,30px);letter-spacing:0.03em;margin-bottom:4px;}
+.hotel-hero h2 em{font-style:normal;color:#6ab0ff;}
+.hotel-hero p{font-size:13px;color:var(--muted);line-height:1.6;margin:0;}
+
+/* Filter */
+.hotel-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.hotel-chip{padding:5px 12px;border-radius:999px;font-size:11px;font-weight:600;background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:all .15s;}
+.hotel-chip:hover{color:#fff;}
+.hotel-chip.on{background:rgba(100,160,255,0.15);border-color:rgba(100,160,255,0.5);color:#6ab0ff;}
+
+.hotel-layout{display:grid;grid-template-columns:1fr;gap:20px;}
+@media(min-width:900px){.hotel-layout{grid-template-columns:1fr 380px;}}
+
+/* Hotel cards */
+.hotel-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:16px;}
+@media(min-width:500px){.hotel-grid{grid-template-columns:1fr 1fr;}}
+@media(min-width:900px){.hotel-grid{grid-template-columns:repeat(3,1fr);}}
+
+.hotel-card{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);
+  overflow:hidden;transition:border-color .2s,transform .2s;cursor:pointer;
+}
+.hotel-card:hover{border-color:rgba(100,160,255,0.4);transform:translateY(-2px);}
+.hotel-card.prem{
+  border-color:rgba(100,160,255,0.45);
+  box-shadow:0 0 0 1px rgba(100,160,255,0.2),0 6px 20px rgba(100,160,255,0.07);
+}
+.hotel-card-img{
+  height:130px;background:linear-gradient(135deg,rgba(100,160,255,0.15),rgba(10,10,14,0.9));
+  display:flex;align-items:center;justify-content:center;font-size:40px;
+  position:relative;overflow:hidden;
+}
+.hotel-card-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.hotel-card-badge{
+  position:absolute;top:8px;left:8px;
+  font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  padding:3px 8px;border-radius:4px;
+}
+.hotel-card-badge.prem{background:rgba(100,160,255,0.25);color:#6ab0ff;border:1px solid rgba(100,160,255,0.4);}
+.hotel-card-badge.free{background:rgba(255,255,255,0.08);color:var(--muted);}
+.hotel-card-body{padding:12px;}
+.hotel-card-name{font-weight:700;font-size:14px;margin-bottom:3px;}
+.hotel-card-kraj{font-size:11px;color:var(--muted);margin-bottom:6px;}
+.hotel-card-stars{color:#f5c832;font-size:12px;margin-bottom:6px;}
+.hotel-card-links{display:flex;flex-wrap:wrap;gap:5px;}
+.hotel-link-btn{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;
+  background:rgba(100,160,255,0.1);border:1px solid rgba(100,160,255,0.25);
+  color:#6ab0ff;text-decoration:none;transition:all .15s;
+}
+.hotel-link-btn:hover{background:rgba(100,160,255,0.25);}
+
+/* Registrácia */
+.hotel-reg{
+  background:linear-gradient(160deg,rgba(100,160,255,0.07),var(--bg-2));
+  border:1px solid rgba(100,160,255,0.22);border-radius:var(--r-xl);padding:22px;
+}
+.hotel-reg-title{font-family:var(--display);font-size:22px;letter-spacing:0.03em;margin-bottom:4px;}
+.hotel-reg-title em{font-style:normal;color:#6ab0ff;}
+.hotel-reg-sub{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5;}
+.hotel-input{width:100%;padding:10px 13px;background:var(--bg-3);border:1px solid var(--line-strong);border-radius:9px;color:var(--text);font-size:14px;outline:none;transition:border-color .15s;margin-bottom:10px;}
+.hotel-input:focus{border-color:#6ab0ff;}
+.hotel-label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:5px;letter-spacing:0.06em;text-transform:uppercase;}
+.hotel-plans-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;}
+.hotel-plan{padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg-3);cursor:pointer;transition:all .15s;}
+.hotel-plan:hover{border-color:rgba(100,160,255,0.4);}
+.hotel-plan.sel{border-color:rgba(100,160,255,0.6);background:rgba(100,160,255,0.07);}
+.hotel-plan-name{font-weight:700;font-size:13px;margin-bottom:2px;}
+.hotel-plan-price b{font-size:20px;color:#6ab0ff;}
+.hotel-plan-price{font-size:12px;color:var(--muted);}
+.hotel-plan-feat{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4;}
+.hotel-submit{width:100%;padding:13px;border-radius:10px;font-weight:700;font-size:14px;background:linear-gradient(135deg,#4a90d9,#2a6ab0);border:none;color:#fff;cursor:pointer;transition:opacity .15s;margin-top:8px;}
+.hotel-submit:hover{opacity:0.88;}
+.hotel-success{display:none;padding:14px;background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.4);border-radius:10px;color:#81c784;font-size:13px;text-align:center;margin-top:10px;}
+.hotel-success.show{display:block;}
+</style>
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title">🏨 <em>Hotely</em></h2>
+      <button class="section-link" onclick="showPage('home')">← Späť</button>
+    </div>
+
+    <div class="hotel-hero">
+      <div class="hotel-hero-icon">🏨</div>
+      <div>
+        <h2>Ubytovanie na noc po <em>akcii</em></h2>
+        <p>Hotely, penzióny a ubytovne v blízkosti najlepších klubov. Zavolaj priamo alebo si rezervuj cez booking.com a ďalšie platformy. Vyber kraj a nájdi ubytovanie.</p>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="hotel-filter" id="hotelFilter">
+      <button class="hotel-chip on" onclick="filterHotel('all',this)">🗺️ Všetky kraje</button>
+      <button class="hotel-chip" onclick="filterHotel('ba',this)">Bratislavský</button>
+      <button class="hotel-chip" onclick="filterHotel('tt',this)">Trnavský</button>
+      <button class="hotel-chip" onclick="filterHotel('tn',this)">Trenčiansky</button>
+      <button class="hotel-chip" onclick="filterHotel('nr',this)">Nitriansky</button>
+      <button class="hotel-chip" onclick="filterHotel('za',this)">Žilinský</button>
+      <button class="hotel-chip" onclick="filterHotel('bb',this)">Banskobystrický</button>
+      <button class="hotel-chip" onclick="filterHotel('po',this)">Prešovský</button>
+      <button class="hotel-chip" onclick="filterHotel('ke',this)">Košický</button>
+    </div>
+
+    <div class="hotel-layout">
+      <!-- Ľavá: zoznam hotelov -->
+      <div>
+        <div class="hotel-grid" id="hotelGrid">
+
+          <!-- Premium hotel BA -->
+          <div class="hotel-card prem" data-kraj="ba">
+            <div class="hotel-card-img">
+              🏨
+              <span class="hotel-card-badge prem">★ Premium</span>
+            </div>
+            <div class="hotel-card-body">
+              <div class="hotel-card-name">Hotel Night BA</div>
+              <div class="hotel-card-stars">★★★★</div>
+              <div class="hotel-card-kraj">📍 Bratislavský kraj · centrum</div>
+              <div class="hotel-card-links">
+                <a class="hotel-link-btn" href="tel:+421900100200">📞 +421 900 100 200</a>
+                <a class="hotel-link-btn" href="https://booking.com" target="_blank">🔗 Booking.com</a>
+                <a class="hotel-link-btn" href="https://hotel-night-ba.sk" target="_blank">🌐 Web</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Free hotel KE -->
+          <div class="hotel-card" data-kraj="ke">
+            <div class="hotel-card-img">
+              🛏️
+              <span class="hotel-card-badge free">Free</span>
+            </div>
+            <div class="hotel-card-body">
+              <div class="hotel-card-name">Penzión Stará Brána KE</div>
+              <div class="hotel-card-stars">★★★</div>
+              <div class="hotel-card-kraj">📍 Košický kraj</div>
+              <div class="hotel-card-links">
+                <a class="hotel-link-btn" href="tel:+421950789456">📞 +421 950 789 456</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Placeholder -->
+          <div class="hotel-card" style="opacity:0.42;cursor:default;align-items:center;justify-content:center;flex-direction:column;gap:8px;min-height:160px;display:flex;text-align:center;padding:16px;">
+            <div style="font-size:28px;">🏨</div>
+            <div style="font-size:12px;color:var(--muted);">Tu môže byť váš hotel</div>
+            <button style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;background:rgba(100,160,255,0.15);border:1px solid rgba(100,160,255,0.4);color:#6ab0ff;cursor:pointer;opacity:1;" onclick="document.getElementById('hotelRegForm').scrollIntoView({behavior:'smooth'})">Registrovať sa</button>
+          </div>
+
+        </div>
+        <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:4px;">Všetky ubytovanie sú manuálne overené pred zverejnením.</p>
+      </div>
+
+      <!-- Pravá: registrácia -->
+      <div id="hotelRegForm">
+        <div class="hotel-reg">
+          <div class="hotel-reg-title">Registrácia <em>ubytovne</em></div>
+          <div class="hotel-reg-sub">Hotel, penzión, hostel alebo apartmány — zaregistruj sa a získaj nových hostí priamo z NightBase po akciách.</div>
+
+          <label class="hotel-label">Názov hotela / penziónu</label>
+          <input class="hotel-input" id="htName" placeholder="napr. Hotel Centrum, Penzión Na Kopci..."/>
+
+          <label class="hotel-label">Telefónne číslo *</label>
+          <input class="hotel-input" id="htPhone" type="tel" placeholder="+421..."/>
+
+          <label class="hotel-label">Kraj</label>
+          <select class="hotel-input" id="htKraj">
+            <option value="">— Vyber kraj —</option>
+            <option>Bratislavský</option><option>Trnavský</option><option>Trenčiansky</option>
+            <option>Nitriansky</option><option>Žilinský</option><option>Banskobystrický</option>
+            <option>Prešovský</option><option>Košický</option>
+          </select>
+
+          <label class="hotel-label">Email</label>
+          <input class="hotel-input" id="htEmail" type="email" placeholder="hotel@email.sk"/>
+
+          <!-- Plány -->
+          <label class="hotel-label" style="margin-bottom:8px;">Vyber plán</label>
+          <div class="hotel-plans-row">
+            <div class="hotel-plan sel" id="htPlanFree" onclick="selectHotelPlan('free')">
+              <div class="hotel-plan-name">Free</div>
+              <div class="hotel-plan-price"><b>0 €</b><span>/mes</span></div>
+              <div class="hotel-plan-feat">Názov + 1 číslo + 1 fotka</div>
+            </div>
+            <div class="hotel-plan" id="htPlanPrem" onclick="selectHotelPlan('prem')">
+              <div class="hotel-plan-name">Premium ⭐</div>
+              <div class="hotel-plan-price"><b>19 €</b><span>/mes</span></div>
+              <div class="hotel-plan-feat">Neobm. fotky · booking.com link · akýkoľvek link · TOP v kraji</div>
+            </div>
+          </div>
+
+          <!-- Premium polia -->
+          <div id="htPremFields" style="display:none;">
+            <label class="hotel-label">Link na Booking.com / Airbnb (voliteľné)</label>
+            <input class="hotel-input" id="htBooking" type="url" placeholder="https://booking.com/hotel/..."/>
+            <label class="hotel-label">Vlastná web stránka (voliteľné)</label>
+            <input class="hotel-input" id="htWeb" type="url" placeholder="https://vas-hotel.sk"/>
+            <label class="hotel-label">Počet hviezdičiek</label>
+            <select class="hotel-input" id="htStars">
+              <option value="">— Vyber —</option>
+              <option>★ (1 hviezdička)</option>
+              <option>★★ (2 hviezdičky)</option>
+              <option>★★★ (3 hviezdičky)</option>
+              <option>★★★★ (4 hviezdičky)</option>
+              <option>★★★★★ (5 hviezdičiek)</option>
+              <option>Bez kategórie / Penzión / Hostel</option>
+            </select>
+            <label class="hotel-label">Krátky popis (voliteľné)</label>
+            <input class="hotel-input" id="htDesc" placeholder="napr. Centrum mesta, parking zdarma, 24/7 recepcia..."/>
+          </div>
+
+          <button class="hotel-submit" onclick="submitHotelReg()">🏨 Zaregistrovať ubytovanie</button>
+          <div class="hotel-success" id="htSuccess">✅ Registrácia odoslaná! Ozveme sa do 24 hodín.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pridaj tiež do Paušálov -->
+    <div style="margin-top:24px;padding:14px 18px;background:rgba(100,160,255,0.06);border:1px solid rgba(100,160,255,0.2);border-radius:var(--r-lg);font-size:13px;color:var(--muted);">
+      💡 Chceš vedieť viac o plánoch a cenách? <button onclick="showPage('pausaly')" style="background:none;border:none;color:#6ab0ff;font-weight:700;cursor:pointer;font-size:13px;text-decoration:underline;">Zobraziť všetky paušály →</button>
+    </div>
+  </div>
+</div>
+
+
 <!-- ===== PAGE: TAXI ===== -->
 <div class="page" id="page-taxi">
 <style>
@@ -1143,7 +1419,7 @@ h1,h2,h3,h4,p{margin:0;}
             <div class="taxi-plan" id="txPlanPrem" onclick="selectTaxiPlan('prem')">
               <div class="taxi-plan-name">Premium ⭐</div>
               <div class="taxi-plan-price"><b>19 €</b><span>/mes</span></div>
-              <div class="taxi-plan-feat">Neobm. čísla + fotky · TOP v kraji · prednosť v rebríčku</div>
+              <div class="taxi-plan-feat">Neobm. čísla + fotky + link (Bolt, Wolt...) · TOP v kraji</div>
             </div>
           </div>
 
@@ -1155,6 +1431,8 @@ h1,h2,h3,h4,p{margin:0;}
             <input class="taxi-input" id="txPhone3" type="tel" placeholder="+421..."/>
             <label class="taxi-label">Typ vozidla / info</label>
             <input class="taxi-input" id="txCar" placeholder="napr. Mercedes E, 4 os., 24/7..."/>
+            <label class="taxi-label">Link (Bolt, vlastná web, app...)</label>
+            <input class="taxi-input" id="txLink" type="url" placeholder="https://bolt.eu alebo vaša stránka..."/>
           </div>
 
           <button class="taxi-submit" onclick="submitTaxiReg()">🚕 Zaregistrovať taxislužbu</button>
@@ -1273,97 +1551,54 @@ h1,h2,h3,h4,p{margin:0;}
 <div class="page" id="page-radio">
 <style>
 .radio-pg{padding:4px 0;}
-.radio-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.radio-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
 .rtab{padding:7px 16px;border-radius:999px;font-size:12px;font-weight:600;
-  background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--muted);
-  cursor:pointer;transition:all .15s;}
+  background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:all .15s;}
 .rtab:hover{color:#fff;background:rgba(255,255,255,0.08);}
 .rtab.on{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 4px 12px rgba(225,11,31,0.4);}
-/* Station grid */
-.radio-grid2{display:grid;grid-template-columns:1fr;gap:10px;}
-@media(min-width:600px){.radio-grid2{grid-template-columns:1fr 1fr;}}
-@media(min-width:900px){.radio-grid2{grid-template-columns:repeat(3,1fr);}}
-.scard{
-  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);
-  overflow:hidden;transition:border-color .15s,transform .15s;cursor:pointer;
-}
-.scard:hover{border-color:rgba(225,11,31,0.5);transform:translateY(-2px);}
-.scard.on{border-color:var(--red-2);background:rgba(225,11,31,0.06);}
-.scard-top{display:flex;align-items:center;gap:12px;padding:14px;}
-.scard-ico{width:46px;height:46px;border-radius:10px;
-  background:linear-gradient(135deg,var(--red),#7a0014);
-  display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-.scard-info{flex:1;min-width:0;}
-.scard-name{font-weight:700;font-size:14px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.scard-desc{font-size:11px;color:var(--muted);}
-.scard-play{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--red-2),var(--red));
-  border:none;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;transition:transform .15s;}
-.scard-play:hover{transform:scale(1.12);}
-/* YouTube embed inside card */
-.scard-yt{display:none;width:100%;height:0;padding-bottom:56.25%;position:relative;background:#000;}
-.scard-yt.open{display:block;}
-.scard-yt iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
-/* Player bar */
-.rbar{
-  position:fixed;bottom:60px;left:50%;transform:translateX(-50%);
-  width:calc(100% - 24px);max-width:680px;
-  background:rgba(10,10,14,0.97);border:1px solid var(--red);border-radius:20px;
-  padding:10px 16px;display:none;align-items:center;gap:12px;
-  box-shadow:0 -4px 30px rgba(225,11,31,0.3);z-index:45;backdrop-filter:blur(12px);
-}
-.rbar.on{display:flex;}
-@media(min-width:900px){.rbar{bottom:16px;}}
-.rbar-ico{width:38px;height:38px;border-radius:8px;background:linear-gradient(135deg,var(--red),#7a0014);
-  display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-.rbar-info{flex:1;min-width:0;}
-.rbar-name{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.rbar-desc{font-size:11px;color:var(--muted);}
-.rbar-eq{display:flex;align-items:flex-end;gap:2px;height:18px;flex-shrink:0;}
-.rbar-eq span{width:3px;background:var(--red-2);border-radius:1px;animation:req 0.9s ease infinite alternate;}
-.rbar-eq span:nth-child(2){animation-delay:.25s;}.rbar-eq span:nth-child(3){animation-delay:.45s;}.rbar-eq span:nth-child(4){animation-delay:.1s;}
-@keyframes req{0%{height:3px;}100%{height:16px;}}
-.rbar-stop{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;
-  background:rgba(255,255,255,0.08);border:1px solid var(--line);color:var(--text);
-  cursor:pointer;white-space:nowrap;flex-shrink:0;}
-.rbar-stop:hover{background:rgba(225,11,31,0.2);border-color:var(--red);}
+.radio-stations2{display:grid;grid-template-columns:1fr;gap:10px;}
+@media(min-width:600px){.radio-stations2{grid-template-columns:1fr 1fr;}}
+@media(min-width:900px){.radio-stations2{grid-template-columns:repeat(3,1fr);}}
+.rstation{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;transition:border-color .15s;}
+.rstation:hover{border-color:rgba(225,11,31,0.4);}
+.rstation-head{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer;}
+.rstation-ico{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--red),#7a0014);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.rstation-info{flex:1;min-width:0;}
+.rstation-name{font-weight:700;font-size:14px;margin-bottom:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rstation-desc{font-size:11px;color:var(--muted);}
+.rstation-play{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--red-2),var(--red));border:none;color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s;}
+.rstation-play:hover{transform:scale(1.1);}
+.rstation-embed{display:none;padding:0 0 14px;}
+.rstation-embed.open{display:block;}
+.rstation-embed iframe{width:100%;border:none;display:block;}
+.rnote{background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 14px;font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6;}
+.rnote strong{color:var(--text);}
 </style>
   <div class="section radio-pg">
     <div class="section-head">
-      <h2 class="section-title">Night<em>Rádio</em> 🎵</h2>
+      <h2 class="section-title">Night<em>Rádio</em> 📻</h2>
       <button class="section-link" onclick="showPage('home')">← Späť</button>
     </div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">
-      Vyber žáner • klikni na stanicu • počúvaj 24/7 cez YouTube Live
-    </p>
 
-    <div class="radio-tabs" id="radioTabs">
-      <button class="rtab on" onclick="switchRadioTab('pop',this)">🎤 Pop</button>
-      <button class="rtab" onclick="switchRadioTab('rock',this)">🎸 Rock</button>
-      <button class="rtab" onclick="switchRadioTab('hiphop',this)">🎧 Hip-Hop</button>
-      <button class="rtab" onclick="switchRadioTab('hits',this)">🔥 Top Hits</button>
-      <button class="rtab" onclick="switchRadioTab('80s',this)">📻 80s</button>
-      <button class="rtab" onclick="switchRadioTab('90s',this)">💿 90s</button>
-      <button class="rtab" onclick="switchRadioTab('dance',this)">💃 Dance/EDM</button>
-      <button class="rtab" onclick="switchRadioTab('jazz',this)">🎷 Jazz</button>
-      <button class="rtab" onclick="switchRadioTab('classical',this)">🎻 Klasika</button>
-      <button class="rtab" onclick="switchRadioTab('country',this)">🤠 Country</button>
+    <div class="rnote">
+      <strong>Ako to funguje:</strong> Klikni na ▶ a spustí sa YouTube prehrávač priamo v karte. 
+      Každá stanica je overený YouTube kanál s 24/7 vysielaním. Zvuk vypni tlačidlom 🔇 priamo v prehrávači.
     </div>
 
-    <div class="radio-grid2" id="radioGrid">
-      <!-- generované JS -->
+    <div class="radio-tabs">
+      <button class="rtab on" onclick="switchRadio2('pop',this)">🎤 Pop</button>
+      <button class="rtab" onclick="switchRadio2('rock',this)">🎸 Rock</button>
+      <button class="rtab" onclick="switchRadio2('hiphop',this)">🎧 Hip-Hop</button>
+      <button class="rtab" onclick="switchRadio2('dance',this)">💃 Dance</button>
+      <button class="rtab" onclick="switchRadio2('80s',this)">📻 80s</button>
+      <button class="rtab" onclick="switchRadio2('90s',this)">💿 90s</button>
+      <button class="rtab" onclick="switchRadio2('jazz',this)">🎷 Jazz &amp; Chill</button>
+      <button class="rtab" onclick="switchRadio2('lofi',this)">🌙 Lo-fi</button>
     </div>
-  </div>
 
-  <!-- Player bar -->
-  <div class="rbar" id="rbar">
-    <div class="rbar-ico" id="rbarIco">🎵</div>
-    <div class="rbar-info">
-      <div class="rbar-name" id="rbarName">—</div>
-      <div class="rbar-desc" id="rbarDesc">—</div>
+    <div class="radio-stations2" id="radioStations2">
+      <!-- JS rendered -->
     </div>
-    <div class="rbar-eq"><span></span><span></span><span></span><span></span></div>
-    <button class="rbar-stop" onclick="stopAllRadio()">⏹ Stop</button>
   </div>
 </div>
 <!-- ===== PAGE: PAUŠÁLY ===== -->
@@ -1452,7 +1687,7 @@ h1,h2,h3,h4,p{margin:0;}
           <div class="pcard-price"><b>19 €</b><span>/mesiac</span></div>
           <ul class="pcard-features">
             <li>Neobmedzené pridávanie akcií</li>
-            <li>Profil klubu s fotkami</li>
+            <li>Profil klubu s fotkami a ľubovoľnými linkami</li>
             <li>TOP odporúčanie v danom kraji</li>
             <li>Predaj vstupeniek (3% provízia)</li>
             <li>Štatistiky návštevnosti</li>
@@ -1487,7 +1722,7 @@ h1,h2,h3,h4,p{margin:0;}
           <div class="pcard-price"><b>9 €</b><span>/mesiac</span></div>
           <ul class="pcard-features">
             <li>Plný profil s fotkou a bio</li>
-            <li>SoundCloud + Instagram + web</li>
+            <li>SoundCloud + Instagram + hocijaký link</li>
             <li>Neobmedzené sety a mixy</li>
             <li>Booking formulár</li>
             <li>Krajové zaradenie</li>
@@ -1502,6 +1737,7 @@ h1,h2,h3,h4,p{margin:0;}
           <div class="pcard-price"><b>29 €</b><span>/mesiac</span></div>
           <ul class="pcard-features">
             <li>Všetko z Artist Pro</li>
+            <li>Neobmedzené linky — Spotify, YouTube, web...</li>
             <li>TOP pozícia v zozname interpretov</li>
             <li>Zvýraznený profil na mape krajov</li>
             <li>Promo banner na hlavnej strane</li>
@@ -1560,7 +1796,7 @@ h1,h2,h3,h4,p{margin:0;}
           <ul class="pcard-features">
             <li>Základný profil podniku</li>
             <li>1 profilová fotka</li>
-            <li>Odkaz na web alebo mapu</li>
+            <li>1 vlastný link (bistro.sk, web, mapy...)</li>
             <li>Zaradenie do gastro sekcie</li>
             <li class="dim">Galéria fotiek</li>
             <li class="dim">TOP odporúčanie</li>
@@ -1574,6 +1810,7 @@ h1,h2,h3,h4,p{margin:0;}
           <div class="pcard-price"><b>19 €</b><span>/mesiac</span></div>
           <ul class="pcard-features">
             <li>Neobmedzená galéria fotiek</li>
+            <li>Ľubovoľné linky — bistro.sk, Wolt, Bolt Food, web...</li>
             <li>TOP odporúčanie v danom kraji</li>
             <li>Zobrazenie pri akciách v okolí</li>
             <li>Menu karta v profile</li>
@@ -1581,6 +1818,44 @@ h1,h2,h3,h4,p{margin:0;}
             <li>Badge „Odporúčame" na mape</li>
           </ul>
           <button class="pcard-btn" onclick="showPage('ucet')">Vybrať plán</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOTELY -->
+    <div class="plans-category">
+      <div class="plans-cat-title">🏨 Pre hotely, penzióny a ubytovne</div>
+      <div class="plans-row cols2">
+        <div class="pcard">
+          <div class="pcard-icon">🛏️</div>
+          <div class="pcard-name">Hotel Free</div>
+          <div class="pcard-price"><b>0 €</b><span>/mesiac</span></div>
+          <ul class="pcard-features">
+            <li>Základný profil ubytovne</li>
+            <li>1 profilová fotka</li>
+            <li>1 telefónne číslo</li>
+            <li>Zaradenie do hotelového zoznamu</li>
+            <li class="dim">Galéria fotiek</li>
+            <li class="dim">Booking.com / web link</li>
+            <li class="dim">TOP odporúčanie</li>
+          </ul>
+          <button class="pcard-btn" onclick="showPage('hotely')">Zaregistrovať sa</button>
+        </div>
+        <div class="pcard star">
+          <span class="pcard-badge">★ ODPORÚČANÉ</span>
+          <div class="pcard-icon">🏨</div>
+          <div class="pcard-name">Hotel Premium</div>
+          <div class="pcard-price"><b>19 €</b><span>/mesiac</span></div>
+          <ul class="pcard-features">
+            <li>Neobmedzená galéria fotiek</li>
+            <li>Booking.com, Airbnb, vlastný web — ľubovoľné linky</li>
+            <li>TOP odporúčanie v danom kraji</li>
+            <li>Zobrazenie pri akciách v okolí</li>
+            <li>Popis, hviezdičky, kategória</li>
+            <li>Štatistiky návštevnosti profilu</li>
+            <li>Badge „Odporúčame" na mape</li>
+          </ul>
+          <button class="pcard-btn" onclick="showPage('hotely')">Vybrať plán</button>
         </div>
       </div>
     </div>
@@ -2123,6 +2398,129 @@ h1,h2,h3,h4,p{margin:0;}
   </div>
 </div>
 
+
+<!-- ===== EVENT DETAIL MODAL ===== -->
+<div class="event-detail" id="eventDetailModal" onclick="closeEventIfBg(event)">
+  <div class="ed-box">
+    <button class="ed-close" onclick="closeEventDetail()">✕</button>
+    <div class="ed-hero">
+      <div class="ed-hero-overlay"></div>
+      <div class="ed-hero-content">
+        <div class="ed-tag" id="edTag">Techno</div>
+        <div class="ed-title" id="edTitle">NIGHTSHIFT VOL. 14</div>
+      </div>
+    </div>
+    <div class="ed-body">
+      <div class="ed-meta-grid">
+        <div class="ed-meta-item"><div class="ed-meta-label">📍 Miesto</div><div class="ed-meta-value" id="edVenue">Subclub · Bratislava</div></div>
+        <div class="ed-meta-item"><div class="ed-meta-label">📅 Dátum</div><div class="ed-meta-value" id="edDate">10. máj 2026</div></div>
+        <div class="ed-meta-item"><div class="ed-meta-label">🕙 Čas</div><div class="ed-meta-value" id="edTime">22:00</div></div>
+        <div class="ed-meta-item"><div class="ed-meta-label">💶 Vstupné</div><div class="ed-meta-value" id="edPrice">15 €</div></div>
+      </div>
+
+      <!-- Rating -->
+      <div class="ed-section">Hodnotenie</div>
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+        <div class="rating-mini" id="edRatingDisplay">
+          <span style="font-size:20px;">★</span>
+          <span id="edRatingVal">4.9</span>
+          <span id="edRatingCount">(24 hodnotení)</span>
+        </div>
+      </div>
+      <div id="edRateSection">
+        <div id="edRateGate" class="login-gate">
+          Pre hodnotenie sa musíš <a onclick="closeEventDetail();showPage('ucet')">prihlásiť</a>.
+        </div>
+        <div id="edRateForm" style="display:none;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Tvoje hodnotenie:</div>
+          <div class="rating-stars" id="edStarPicker">
+            <span class="rating-star" data-v="1">★</span>
+            <span class="rating-star" data-v="2">★</span>
+            <span class="rating-star" data-v="3">★</span>
+            <span class="rating-star" data-v="4">★</span>
+            <span class="rating-star" data-v="5">★</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Správa organizátorovi -->
+      <div class="ed-section" style="margin-top:18px;">Kontakt organizátora</div>
+      <button class="ed-msg-btn" id="edMsgBtn" onclick="openMsgModal()">
+        ✉️ Napísať organizátorovi
+      </button>
+
+      <!-- Komentáre -->
+      <div class="ed-section">Komentáre</div>
+      <div class="comment-list" id="edComments">
+        <div class="comment-item">
+          <div class="comment-header">
+            <div class="comment-avatar">M</div>
+            <div>
+              <div class="comment-name">Marek K.</div>
+              <div class="comment-stars">★★★★★</div>
+            </div>
+            <div class="comment-date">2 dni</div>
+          </div>
+          <div class="comment-text">Skvelá akcia, atmosféra top, DJka dala mega set. Určite prídem znova!</div>
+        </div>
+        <div class="comment-item">
+          <div class="comment-header">
+            <div class="comment-avatar">Z</div>
+            <div>
+              <div class="comment-name">Zuzka T.</div>
+              <div class="comment-stars">★★★★☆</div>
+            </div>
+            <div class="comment-date">5 dní</div>
+          </div>
+          <div class="comment-text">Dobrý zvuk, len vstupné mohlo byť trochu nižšie. Inak super zážitok.</div>
+        </div>
+      </div>
+
+      <!-- Formulár komentára -->
+      <div id="edCommentGate" class="login-gate" style="margin-top:12px;">
+        Pre komentovanie sa musíš <a onclick="closeEventDetail();showPage('ucet')">prihlásiť</a>.
+      </div>
+      <div id="edCommentForm" class="comment-form" style="display:none;">
+        <div class="comment-form-title">Napísať komentár</div>
+        <div class="rating-stars" id="commentStarPicker" style="margin-bottom:10px;">
+          <span class="rating-star" data-v="1">★</span>
+          <span class="rating-star" data-v="2">★</span>
+          <span class="rating-star" data-v="3">★</span>
+          <span class="rating-star" data-v="4">★</span>
+          <span class="rating-star" data-v="5">★</span>
+        </div>
+        <textarea class="comment-textarea" id="commentText" placeholder="Napíš svoj zážitok z akcie..."></textarea>
+        <button class="comment-submit" onclick="submitComment()">Zverejniť komentár</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MESSAGING MODAL ===== -->
+<div class="msg-modal" id="msgModal" onclick="closeMsgIfBg(event)">
+  <div class="msg-box">
+    <div class="msg-header">
+      <div class="msg-header-info">
+        <div class="msg-header-title">✉️ Správa organizátorovi</div>
+        <div class="msg-header-sub" id="msgRecipient">—</div>
+      </div>
+      <button class="msg-close" onclick="closeMsgModal()">✕</button>
+    </div>
+    <div class="msg-body">
+      <div id="msgLoginNote" class="msg-login-note">
+        Pre odosielanie správ sa musíš <a onclick="closeMsgModal();showPage('ucet')">prihlásiť</a>.<br/>
+        <span style="font-size:11px;">Správy môžu posielať len registrovaní používatelia.</span>
+      </div>
+      <div id="msgForm" style="display:none;">
+        <label class="msg-label">Správa</label>
+        <textarea class="msg-textarea" id="msgText" placeholder="Napíš správu organizátorovi — záujem o event, spoluprácu, technické otázky..."></textarea>
+        <div class="msg-success" id="msgSuccess">✅ Správa odoslaná! Organizátor ti odpovie na email.</div>
+        <button class="msg-send" onclick="sendMsg()">Odoslať správu →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div><!-- /app -->
 
 <!-- Mobile bottom nav -->
@@ -2190,6 +2588,7 @@ function showPage(id, navEl) {
   window.scrollTo(0, 0);
   // Init sub-pages
   if (id === 'gastro') { setTimeout(initGastroMap, 80); }
+  if (id === 'hotely') { /* hotel page loaded */ }
   if (id === 'radio')  { setTimeout(() => { if(typeof initRadioPage==='function') initRadioPage(); }, 80); }
   if (id === 'billiard') { /* billiard auto-scales */ }
 }
@@ -2951,149 +3350,7 @@ document.querySelectorAll(".rank-tab").forEach(tab=>{
   }
 })();
 
-// ===== RÁDIO — YouTube Live Streams (100% funkčné) =====
-(function(){
-  // YouTube live stream video IDs — overené 24/7 live streamy
-  // Každý žáner má viacero možností (záloha ak jedno nefunguje)
-  const STATIONS = {
-    pop: [
-      {name:'PopHits Radio',     desc:'Best Pop Hits 24/7',     vid:'36YnV9STBqc', ico:'🎤'},
-      {name:'Hit Music Only',    desc:'Top 40 Pop Nonstop',      vid:'HoRX6yBCHpY', ico:'🎤'},
-      {name:'Pop Generations',   desc:'Pop Classics & New',      vid:'4xDzrJKXOOY', ico:'🎤'},
-    ],
-    rock: [
-      {name:'Classic Rock Radio',desc:'Rock Legends 24/7',       vid:'YHSHf4bUbSA', ico:'🎸'},
-      {name:'Rock Hits Nonstop', desc:'Best of Rock',            vid:'gE4RHzLynJk', ico:'🎸'},
-      {name:'Metal & Rock',      desc:'Heavy & Alt Rock',        vid:'7NOSDKb0HlU', ico:'🎸'},
-    ],
-    hiphop: [
-      {name:'Hip Hop Nation',    desc:'Rap & Hip Hop 24/7',      vid:'hHW1oY26kxQ', ico:'🎧'},
-      {name:'Trap Music Radio',  desc:'Trap Beats Nonstop',      vid:'5qap5aO4i9A', ico:'🎧'},
-      {name:'Old School Hip Hop',desc:'90s & 2000s Hip Hop',     vid:'c_9q1D0Wsgc', ico:'🎧'},
-    ],
-    hits: [
-      {name:'Top 40 Radio',      desc:'Billboard Charts 24/7',   vid:'Na0w3Mz46GA', ico:'🔥'},
-      {name:'Global Hits',       desc:'Worldwide #1 Hits',       vid:'jfKfPfyJRdk', ico:'🔥'},
-      {name:'Dance Hits Radio',  desc:'Club & Dance Charts',     vid:'K4TOrB7at0Y', ico:'🔥'},
-    ],
-    '80s': [
-      {name:'80s Pop Radio',     desc:'Best of the 80s',         vid:'4fndeDfaWCg', ico:'📻'},
-      {name:'80s Hits Nonstop',  desc:'80s Pop & Rock Classics', vid:'Tkg2nF1PfNI', ico:'📻'},
-      {name:'Retro 80s',         desc:'80s Rewind 24/7',         vid:'56SXgdTk5W4', ico:'📻'},
-    ],
-    '90s': [
-      {name:'90s Radio',         desc:'90s Hits All Day',        vid:'riyBv2BtXE0', ico:'💿'},
-      {name:'90s Pop Hits',      desc:'Best 90s Pop & R&B',      vid:'0VFG5vC2Vy0', ico:'💿'},
-      {name:'Retro 90s',         desc:'90s Eurodance & Pop',     vid:'YkMETK7B8sg', ico:'💿'},
-    ],
-    dance: [
-      {name:'EDM Radio',         desc:'Electronic Dance 24/7',   vid:'jfKfPfyJRdk', ico:'💃'},
-      {name:'Club Bangers',      desc:'Club Music Nonstop',      vid:'K4TOrB7at0Y', ico:'💃'},
-      {name:'House Music Radio', desc:'Deep & Progressive House', vid:'36YnV9STBqc', ico:'💃'},
-    ],
-    jazz: [
-      {name:'Jazz 24 Radio',     desc:'Jazz Standards 24/7',     vid:'Dx5qFachd3A', ico:'🎷'},
-      {name:'Smooth Jazz',       desc:'Relaxing Jazz & Blues',   vid:'DSGyEsJ17cI', ico:'🎷'},
-      {name:'Late Night Jazz',   desc:'Jazz for Night Owls',     vid:'rUxyKA_-grg', ico:'🎷'},
-    ],
-    classical: [
-      {name:'Classical Music',   desc:'Orchestra & Piano 24/7',  vid:'SfY3cW56-c8', ico:'🎻'},
-      {name:'Piano Radio',       desc:'Solo Piano Masterpieces', vid:'SlfcFbz4H4U', ico:'🎻'},
-      {name:'Opera & Classical', desc:'Opera & Symphonies',      vid:'jAZ8X0-HMis', ico:'🎻'},
-    ],
-    country: [
-      {name:'Country Radio',     desc:'Country Hits 24/7',       vid:'6V_mHoKDpMw', ico:'🤠'},
-      {name:'Country Gold',      desc:'Classic Country Legends', vid:'lp9soZMHqMQ', ico:'🤠'},
-      {name:'New Country',       desc:'Modern Country Hits',     vid:'J6-bkPkZhIE', ico:'🤠'},
-    ],
-  };
-
-  let activeTab = 'pop';
-  let openStation = null; // {idx, tab}
-
-  window.switchRadioTab = function(tab, el) {
-    activeTab = tab;
-    document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('on'));
-    if(el) el.classList.add('on');
-    renderRadioGrid(tab);
-  };
-
-  function renderRadioGrid(tab) {
-    const grid = document.getElementById('radioGrid');
-    if (!grid) return;
-    const stations = STATIONS[tab] || [];
-    grid.innerHTML = stations.map((s, i) => `
-      <div class="scard ${openStation?.tab===tab && openStation?.idx===i ? 'on' : ''}" id="sc_${tab}_${i}">
-        <div class="scard-top">
-          <div class="scard-ico">${s.ico}</div>
-          <div class="scard-info">
-            <div class="scard-name">${s.name}</div>
-            <div class="scard-desc">${s.desc}</div>
-          </div>
-          <button class="scard-play" onclick="toggleStation('${tab}',${i})" title="Prehrať">
-            ${openStation?.tab===tab && openStation?.idx===i ? '⏸' : '▶'}
-          </button>
-        </div>
-        <div class="scard-yt ${openStation?.tab===tab && openStation?.idx===i ? 'open' : ''}" id="yt_${tab}_${i}">
-          ${openStation?.tab===tab && openStation?.idx===i
-            ? `<iframe src="https://www.youtube.com/embed/${s.vid}?autoplay=1&mute=0&controls=1&modestbranding=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`
-            : ''}
-        </div>
-      </div>`).join('');
-  }
-
-  window.toggleStation = function(tab, idx) {
-    const s = (STATIONS[tab]||[])[idx];
-    if (!s) return;
-
-    // Ak tá istá — zatvor
-    if (openStation?.tab === tab && openStation?.idx === idx) {
-      openStation = null;
-      renderRadioGrid(tab);
-      document.getElementById('rbar')?.classList.remove('on');
-      return;
-    }
-
-    // Otvor novú
-    openStation = {tab, idx};
-    renderRadioGrid(tab);
-
-    // Player bar
-    const rbar = document.getElementById('rbar');
-    const rbarIco = document.getElementById('rbarIco');
-    const rbarName = document.getElementById('rbarName');
-    const rbarDesc = document.getElementById('rbarDesc');
-    if (rbar) rbar.classList.add('on');
-    if (rbarIco) rbarIco.textContent = s.ico;
-    if (rbarName) rbarName.textContent = s.name;
-    if (rbarDesc) rbarDesc.textContent = s.desc;
-
-    // Scroll to card
-    setTimeout(() => {
-      document.getElementById(`sc_${tab}_${idx}`)?.scrollIntoView({behavior:'smooth',block:'nearest'});
-    }, 100);
-  };
-
-  window.stopAllRadio = function() {
-    openStation = null;
-    renderRadioGrid(activeTab);
-    document.getElementById('rbar')?.classList.remove('on');
-  };
-
-  // Init
-  window.initRadioPage = function() {
-    renderRadioGrid('pop');
-    // Reset active tab button
-    document.querySelectorAll('.rtab').forEach((t,i) => {
-      t.classList.toggle('on', i===0);
-    });
-    activeTab = 'pop';
-  };
-
-  if (document.getElementById('page-radio')?.classList.contains('active')) {
-    initRadioPage();
-  }
-})();
+// (radio migrated to new system)
 
 
 // ===== ARTIST DETAIL MODAL =====
@@ -3128,6 +3385,51 @@ document.addEventListener('keydown', e => {
     });
   }
 });
+
+// ===== HOTELY =====
+window.filterHotel = function(kraj, el) {
+  document.querySelectorAll('.hotel-chip').forEach(c => c.classList.remove('on'));
+  if(el) el.classList.add('on');
+  document.querySelectorAll('.hotel-card[data-kraj]').forEach(c => {
+    c.style.display = (kraj === 'all' || c.dataset.kraj === kraj) ? '' : 'none';
+  });
+};
+
+var htPlanSel = 'free';
+window.selectHotelPlan = function(plan) {
+  htPlanSel = plan;
+  document.getElementById('htPlanFree').classList.toggle('sel', plan === 'free');
+  document.getElementById('htPlanPrem').classList.toggle('sel', plan === 'prem');
+  document.getElementById('htPremFields').style.display = plan === 'prem' ? 'block' : 'none';
+};
+
+window.submitHotelReg = function() {
+  var name  = (document.getElementById('htName')?.value || '').trim();
+  var phone = (document.getElementById('htPhone')?.value || '').trim();
+  var email = (document.getElementById('htEmail')?.value || '').trim();
+  var kraj  = (document.getElementById('htKraj')?.value || '');
+  if(!name || !phone) { alert('Vyplň aspoň názov a telefónne číslo.'); return; }
+  var ok = document.getElementById('htSuccess');
+  if(ok) ok.classList.add('show');
+  var booking = (document.getElementById('htBooking')?.value || '').trim();
+  var web     = (document.getElementById('htWeb')?.value || '').trim();
+  var stars   = (document.getElementById('htStars')?.value || '');
+  var desc    = (document.getElementById('htDesc')?.value || '').trim();
+  var plan    = htPlanSel === 'prem' ? 'Premium (19e/mes)' : 'Free';
+  var bodyStr = 'REGISTRACIA HOTELA/PENZIONU\n\nNazov: '+name+'\nTelefon: '+phone+
+    '\nKraj: '+(kraj||'-')+'\nEmail: '+(email||'-')+
+    (booking ? '\nBooking.com: '+booking : '')+
+    (web ? '\nWeb: '+web : '')+
+    (stars ? '\nHviezdicky: '+stars : '')+
+    (desc ? '\nPopis: '+desc : '')+
+    '\nPlan: '+plan;
+  var body = encodeURIComponent(bodyStr);
+  setTimeout(function() {
+    var a = document.createElement('a');
+    a.href = 'mailto:cerno2611@gmail.com?subject=Hotel+registracia:+'+encodeURIComponent(name)+'&body='+body;
+    a.click();
+  }, 600);
+};
 
 // ===== TAXI =====
 var taxiAllCards = [];
@@ -3227,6 +3529,51 @@ window.submitArtistReg = function() {
 };
 
 
+// ===== HOTELY =====
+window.filterHotel = function(kraj, el) {
+  document.querySelectorAll('.hotel-chip').forEach(c => c.classList.remove('on'));
+  if(el) el.classList.add('on');
+  document.querySelectorAll('.hotel-card[data-kraj]').forEach(c => {
+    c.style.display = (kraj === 'all' || c.dataset.kraj === kraj) ? '' : 'none';
+  });
+};
+
+var htPlanSel = 'free';
+window.selectHotelPlan = function(plan) {
+  htPlanSel = plan;
+  document.getElementById('htPlanFree').classList.toggle('sel', plan === 'free');
+  document.getElementById('htPlanPrem').classList.toggle('sel', plan === 'prem');
+  document.getElementById('htPremFields').style.display = plan === 'prem' ? 'block' : 'none';
+};
+
+window.submitHotelReg = function() {
+  var name  = (document.getElementById('htName')?.value || '').trim();
+  var phone = (document.getElementById('htPhone')?.value || '').trim();
+  var email = (document.getElementById('htEmail')?.value || '').trim();
+  var kraj  = (document.getElementById('htKraj')?.value || '');
+  if(!name || !phone) { alert('Vyplň aspoň názov a telefónne číslo.'); return; }
+  var ok = document.getElementById('htSuccess');
+  if(ok) ok.classList.add('show');
+  var booking = (document.getElementById('htBooking')?.value || '').trim();
+  var web     = (document.getElementById('htWeb')?.value || '').trim();
+  var stars   = (document.getElementById('htStars')?.value || '');
+  var desc    = (document.getElementById('htDesc')?.value || '').trim();
+  var plan    = htPlanSel === 'prem' ? 'Premium (19e/mes)' : 'Free';
+  var bodyStr = 'REGISTRACIA HOTELA/PENZIONU\n\nNazov: '+name+'\nTelefon: '+phone+
+    '\nKraj: '+(kraj||'-')+'\nEmail: '+(email||'-')+
+    (booking ? '\nBooking.com: '+booking : '')+
+    (web ? '\nWeb: '+web : '')+
+    (stars ? '\nHviezdicky: '+stars : '')+
+    (desc ? '\nPopis: '+desc : '')+
+    '\nPlan: '+plan;
+  var body = encodeURIComponent(bodyStr);
+  setTimeout(function() {
+    var a = document.createElement('a');
+    a.href = 'mailto:cerno2611@gmail.com?subject=Hotel+registracia:+'+encodeURIComponent(name)+'&body='+body;
+    a.click();
+  }, 600);
+};
+
 // ===== TAXI =====
 window.selectTaxiPlan = function(plan) {
   document.getElementById('taxiPlanFree').classList.toggle('sel', plan==='free');
@@ -3255,6 +3602,268 @@ window.submitTaxiReg = function() {
     a.click();
   }, 600);
 };
+
+
+
+// ===== USER AUTH STATE (simulácia) =====
+// V produkcii by toto riešil backend. Tu simulujeme localStorage.
+var NB_USER = null;
+try {
+  var stored = localStorage.getItem('nb_user');
+  if (stored) NB_USER = JSON.parse(stored);
+} catch(e) {}
+
+function isLoggedIn() { return !!NB_USER; }
+
+// Simulácia prihlásenia po kliknutí "Vytvoriť účet"
+document.addEventListener('DOMContentLoaded', function() {
+  var regBtn = document.querySelector('.form-submit');
+  if (regBtn) {
+    regBtn.addEventListener('click', function() {
+      var name = document.getElementById('formName') || {value:'Používateľ'};
+      NB_USER = { name: (name.value || 'Používateľ'), loggedIn: true };
+      try { localStorage.setItem('nb_user', JSON.stringify(NB_USER)); } catch(e) {}
+      alert('✅ Vítaj, ' + NB_USER.name + '! Si prihlásený/á.');
+    });
+  }
+});
+
+// ===== SMART EVENTS — zoradenie podľa dátumu + ratingu =====
+var ALL_EVENTS = [
+  { id:1, title:'NIGHTSHIFT VOL. 14', tag:'Techno', venue:'Subclub', city:'Bratislava',
+    date: new Date(2026, 4, 10), time:'22:00', price:'15 €', rating:4.9, reviews:24,
+    grad:'rgba(225,11,31,0.6)', org:'NightShift Events' },
+  { id:2, title:'RED ROOM SESSIONS', tag:'House', venue:'KC Dunaj', city:'Bratislava',
+    date: new Date(2026, 4, 17), time:'21:00', price:'12 €', rating:4.6, reviews:18,
+    grad:'rgba(180,11,31,0.55)', org:'Red Room BA' },
+  { id:3, title:'BASS RIOT ZA', tag:"D'N'B", venue:'Stanica', city:'Žilina',
+    date: new Date(2026, 4, 24), time:'22:30', price:'10 €', rating:4.8, reviews:31,
+    grad:'rgba(200,11,31,0.5)', org:'Bass Riot Crew' },
+  { id:4, title:'UNDERGROUND BB', tag:'Techno', venue:'Klub 77', city:'Banská Bystrica',
+    date: new Date(2026, 4, 16), time:'22:00', price:'8 €', rating:4.5, reviews:12,
+    grad:'rgba(160,11,31,0.55)', org:'Underground BB' },
+  { id:5, title:'EAST SIDE FEST', tag:'Electronic', venue:'Wave', city:'Prešov',
+    date: new Date(2026, 4, 17), time:'21:00', price:'9 €', rating:4.3, reviews:8,
+    grad:'rgba(140,11,31,0.5)', org:'East Side Prešov' },
+  { id:6, title:'CASTLE RAVE', tag:'Electronic', venue:'Hidepark', city:'Nitra',
+    date: new Date(2026, 4, 18), time:'22:00', price:'Free', rating:4.7, reviews:22,
+    grad:'rgba(190,11,31,0.6)', org:'Castle Events' },
+];
+
+function renderHomeEvents() {
+  var grid = document.getElementById('homeEventsGrid');
+  if (!grid) return;
+  var today = new Date();
+  today.setHours(0,0,0,0);
+  var upcoming = ALL_EVENTS
+    .filter(function(e) { return e.date >= today; })
+    .sort(function(a, b) {
+      // Skóre = rating × 2 − daysDiff × 0.1 (bližší + lepší = vyššie)
+      var dA = (a.date - today) / 86400000;
+      var dB = (b.date - today) / 86400000;
+      var sA = a.rating * 2 - dA * 0.1;
+      var sB = b.rating * 2 - dB * 0.1;
+      return sB - sA;
+    });
+
+  var months = ['JAN','FEB','MAR','APR','MÁJ','JÚN','JÚL','AUG','SEP','OKT','NOV','DEC'];
+  grid.innerHTML = upcoming.map(function(ev) {
+    return '<article class="event-card" style="cursor:pointer;" onclick="openEventDetail(' + ev.id + ')">' +
+      '<div class="event-cover" style="position:relative;background-image:linear-gradient(135deg,' + ev.grad + ',rgba(10,5,8,0.9)),url(party-people-bg.png);background-size:cover;">' +
+      '<span class="event-tag">' + ev.tag + '</span>' +
+      '<div class="event-date-badge">' + ev.date.getDate() + '<span>' + months[ev.date.getMonth()] + '</span></div>' +
+      '<div class="event-rating-badge">★ ' + ev.rating.toFixed(1) + '</div>' +
+      '</div>' +
+      '<div class="event-body">' +
+      '<div class="event-title">' + ev.title + '</div>' +
+      '<div class="event-meta"><span class="event-dot"></span>' + ev.venue + ' · ' + ev.city + ' · ' + ev.time + '</div>' +
+      '<div class="event-foot"><span class="event-price">' + ev.price + '</span>' +
+      '<button class="event-btn" onclick="event.stopPropagation();openEventDetail(' + ev.id + ')">Detail</button></div>' +
+      '</div></article>';
+  }).join('');
+}
+
+// Zavolaj po načítaní
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', renderHomeEvents);
+} else {
+  renderHomeEvents();
+}
+
+// ===== EVENT DETAIL MODAL =====
+var currentEventId = null;
+window.openEventDetail = function(id) {
+  var ev = ALL_EVENTS.find(function(e) { return e.id === id; });
+  if (!ev) return;
+  currentEventId = id;
+  var months2 = ['januára','februára','marca','apríla','mája','júna','júla','augusta','septembra','októbra','novembra','decembra'];
+  document.getElementById('edTag').textContent = ev.tag;
+  document.getElementById('edTitle').textContent = ev.title;
+  document.getElementById('edVenue').textContent = ev.venue + ' · ' + ev.city;
+  document.getElementById('edDate').textContent = ev.date.getDate() + '. ' + months2[ev.date.getMonth()] + ' 2026';
+  document.getElementById('edTime').textContent = ev.time;
+  document.getElementById('edPrice').textContent = ev.price;
+  document.getElementById('edRatingVal').textContent = ev.rating.toFixed(1);
+  document.getElementById('edRatingCount').textContent = '(' + ev.reviews + ' hodnotení)';
+  document.getElementById('msgRecipient').textContent = ev.org;
+  // Login gate
+  var loggedIn = isLoggedIn();
+  document.getElementById('edRateGate').style.display = loggedIn ? 'none' : 'block';
+  document.getElementById('edRateForm').style.display = loggedIn ? 'block' : 'none';
+  document.getElementById('edCommentGate').style.display = loggedIn ? 'none' : 'block';
+  document.getElementById('edCommentForm').style.display = loggedIn ? 'block' : 'none';
+  document.getElementById('eventDetailModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeEventDetail = function() {
+  document.getElementById('eventDetailModal').classList.remove('open');
+  document.body.style.overflow = '';
+};
+window.closeEventIfBg = function(e) {
+  if (e.target === e.currentTarget) closeEventDetail();
+};
+
+// Star picker
+document.querySelectorAll('#edStarPicker .rating-star, #commentStarPicker .rating-star').forEach(function(star) {
+  star.addEventListener('click', function() {
+    var parent = this.parentElement;
+    var val = parseInt(this.getAttribute('data-v'));
+    parent.querySelectorAll('.rating-star').forEach(function(s) {
+      s.classList.toggle('on', parseInt(s.getAttribute('data-v')) <= val);
+    });
+  });
+});
+
+window.submitComment = function() {
+  var text = (document.getElementById('commentText')?.value || '').trim();
+  var stars = document.querySelectorAll('#commentStarPicker .rating-star.on').length;
+  if (!text) { alert('Napíš komentár.'); return; }
+  var list = document.getElementById('edComments');
+  var starsStr = '★'.repeat(stars) + '☆'.repeat(5-stars);
+  var initials = (NB_USER?.name || 'A').charAt(0).toUpperCase();
+  var div = document.createElement('div');
+  div.className = 'comment-item';
+  div.innerHTML = '<div class="comment-header"><div class="comment-avatar">' + initials + '</div><div><div class="comment-name">' + (NB_USER?.name || 'Anonym') + '</div><div class="comment-stars">' + starsStr + '</div></div><div class="comment-date">Práve teraz</div></div><div class="comment-text">' + text + '</div>';
+  list.insertBefore(div, list.firstChild);
+  document.getElementById('commentText').value = '';
+  document.querySelectorAll('#commentStarPicker .rating-star').forEach(function(s) { s.classList.remove('on'); });
+};
+
+// ===== MESSAGING =====
+window.openMsgModal = function() {
+  document.getElementById('msgModal').classList.add('open');
+  var loggedIn = isLoggedIn();
+  document.getElementById('msgLoginNote').style.display = loggedIn ? 'none' : 'block';
+  document.getElementById('msgForm').style.display = loggedIn ? 'block' : 'none';
+  document.getElementById('msgSuccess').classList.remove('show');
+};
+window.closeMsgModal = function() {
+  document.getElementById('msgModal').classList.remove('open');
+};
+window.closeMsgIfBg = function(e) {
+  if (e.target === e.currentTarget) closeMsgModal();
+};
+window.sendMsg = function() {
+  var text = (document.getElementById('msgText')?.value || '').trim();
+  if (!text) { alert('Napíš správu.'); return; }
+  document.getElementById('msgSuccess').classList.add('show');
+  document.getElementById('msgText').value = '';
+  // Mailto fallback
+  var ev = ALL_EVENTS.find(function(e) { return e.id === currentEventId; });
+  var to = 'cerno2611@gmail.com';
+  var subj = encodeURIComponent('Správa cez NightBase: ' + (ev?.title || ''));
+  var body = encodeURIComponent('Od: ' + (NB_USER?.name || '?') + '\n\n' + text);
+  setTimeout(function() {
+    var a = document.createElement('a');
+    a.href = 'mailto:' + to + '?subject=' + subj + '&body=' + body;
+    a.click();
+  }, 500);
+};
+
+// ===== RADIO 2 =====
+var RADIO_STATIONS2 = {
+  pop: [
+    {name:'PopHits 24/7', desc:'Top Pop nonstop', ico:'🎤', vid:'36YnV9STBqc'},
+    {name:'Hot Hits Radio', desc:'Charts & New Music', ico:'🔥', vid:'HoRX6yBCHpY'},
+    {name:'Absolute Radio', desc:'Pop & Rock Classics', ico:'🎵', vid:'4xDzrJKXOOY'},
+  ],
+  rock: [
+    {name:'Classic Rock', desc:'Rock Legends', ico:'🎸', vid:'YHSHf4bUbSA'},
+    {name:'Rock Hits', desc:'Best of Rock', ico:'🤘', vid:'gE4RHzLynJk'},
+  ],
+  hiphop: [
+    {name:'Hip Hop Nation', desc:'Rap & Hip Hop', ico:'🎧', vid:'hHW1oY26kxQ'},
+    {name:'Old School', desc:'90s & 2000s', ico:'🎚️', vid:'c_9q1D0Wsgc'},
+  ],
+  dance: [
+    {name:'Dance Radio', desc:'EDM & Club', ico:'💃', vid:'K4TOrB7at0Y'},
+    {name:'Groove 24/7', desc:'House & Dance', ico:'⚡', vid:'jfKfPfyJRdk'},
+  ],
+  '80s': [
+    {name:'80s Hits', desc:'Best of 80s', ico:'📻', vid:'4fndeDfaWCg'},
+    {name:'80s Nonstop', desc:'80s Pop & Rock', ico:'🕺', vid:'Tkg2nF1PfNI'},
+  ],
+  '90s': [
+    {name:'90s Radio', desc:'90s All Day', ico:'💿', vid:'riyBv2BtXE0'},
+    {name:'90s Hits', desc:'Best 90s Pop', ico:'🎀', vid:'0VFG5vC2Vy0'},
+  ],
+  jazz: [
+    {name:'Jazz Lounge', desc:'Jazz & Blues 24/7', ico:'🎷', vid:'Dx5qFachd3A'},
+    {name:'Smooth Jazz', desc:'Relaxing Jazz', ico:'🎹', vid:'DSGyEsJ17cI'},
+    {name:'Late Night Jazz', desc:'Atmospheric Jazz', ico:'🌙', vid:'rUxyKA_-grg'},
+  ],
+  lofi: [
+    {name:'Lofi Hip Hop', desc:'Beats to relax', ico:'☕', vid:'jfKfPfyJRdk'},
+    {name:'Chill Vibes', desc:'Lo-fi & Chill', ico:'🌿', vid:'Na0w3Mz46GA'},
+  ],
+};
+
+var activeRadioTab2 = 'pop';
+var openRadioCard = null;
+
+window.switchRadio2 = function(tab, el) {
+  activeRadioTab2 = tab;
+  document.querySelectorAll('.rtab').forEach(function(t) { t.classList.remove('on'); });
+  if (el) el.classList.add('on');
+  openRadioCard = null;
+  renderRadio2();
+};
+
+function renderRadio2() {
+  var grid = document.getElementById('radioStations2');
+  if (!grid) return;
+  var stations = RADIO_STATIONS2[activeRadioTab2] || [];
+  grid.innerHTML = stations.map(function(s, i) {
+    var isOpen = openRadioCard === i;
+    return '<div class="rstation ' + (isOpen ? 'on' : '') + '">' +
+      '<div class="rstation-head" onclick="toggleRadio2(' + i + ')">' +
+        '<div class="rstation-ico">' + s.ico + '</div>' +
+        '<div class="rstation-info"><div class="rstation-name">' + s.name + '</div><div class="rstation-desc">' + s.desc + '</div></div>' +
+        '<button class="rstation-play">' + (isOpen ? '⏸' : '▶') + '</button>' +
+      '</div>' +
+      '<div class="rstation-embed ' + (isOpen ? 'open' : '') + '">' +
+        (isOpen ? '<iframe width="100%" height="120" src="https://www.youtube.com/embed/' + s.vid + '?autoplay=1&controls=1&modestbranding=1" allow="autoplay;encrypted-media" allowfullscreen></iframe>' : '') +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+window.toggleRadio2 = function(idx) {
+  openRadioCard = (openRadioCard === idx) ? null : idx;
+  renderRadio2();
+};
+
+window.initRadioPage = function() {
+  activeRadioTab2 = 'pop';
+  openRadioCard = null;
+  document.querySelectorAll('.rtab').forEach(function(t, i) { t.classList.toggle('on', i === 0); });
+  renderRadio2();
+};
+
+if (document.getElementById('page-radio')?.classList.contains('active')) {
+  initRadioPage();
+}
 
 </script>
 </body>
