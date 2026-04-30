@@ -59,8 +59,8 @@ h1,h2,h3,h4,p{margin:0;}
 .header-actions{display:flex;gap:8px;flex-shrink:0;align-items:center;}
 
 /* Nav tabs (right side, desktop) */
-.header-tabs{display:none;gap:2px;align-items:center;margin-right:6px;}
-@media(min-width:768px){.header-tabs{display:flex;}}
+.header-tabs{display:none;}
+@media(min-width:900px){.header-tabs{display:none;}}
 .htab{
   padding:7px 13px;border-radius:8px;font-size:13px;font-weight:600;
   color:var(--muted);transition:color .15s,background .15s;white-space:nowrap;cursor:pointer;
@@ -534,9 +534,19 @@ h1,h2,h3,h4,p{margin:0;}
       <img class="brand-logo" src="nightbase-logo.png" alt="NightBase"/>
       <span class="brand-text">Night<b>Base</b></span>
     </div>
-    <!-- Desktop tab nav (right side) -->
-    <div class="header-tabs">
-      <button class="htab" onclick="showPage('home')">Akcie</button>
+    <div class="header-actions"><div class="header-actions">
+      <button class="btn btn-primary" onclick="showPage('ucet')" style="white-space:nowrap;">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        <span class="btn-text">Pridať udalosť</span>
+      </button>
+      <button class="btn btn-icon" onclick="showPage('ucet')" aria-label="Účet">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6"/></svg>
+      </button>
+    </div>
+  </div>
+  <!-- Desktop nav row -->
+  <nav class="header-nav">
+    <button class="htab" onclick="showPage('home')">Akcie</button>
       <button class="htab" onclick="showPage('interpreti')">Interpreti</button>
       <button class="htab" onclick="showPage('gastro')">Gastro</button>
       <button class="htab" onclick="showPage('hotely')">Hotely</button>
@@ -547,17 +557,7 @@ h1,h2,h3,h4,p{margin:0;}
       <button class="htab" onclick="showPage('monetiz')">Monetizovanie</button>
       <button class="htab" onclick="showPage('radio')">Rádio</button>
       <button class="htab" onclick="showPage('billiard')">Biliard</button>
-    </div>
-    <div class="header-actions">
-      <button class="btn btn-primary" onclick="showPage('ucet')" style="white-space:nowrap;">
-        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        <span class="btn-text">Pridať udalosť</span>
-      </button>
-      <button class="btn btn-icon" onclick="showPage('ucet')" aria-label="Účet">
-        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6"/></svg>
-      </button>
-    </div>
-  </div>
+  </nav>
 </header>
 
 <div class="app">
